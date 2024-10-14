@@ -1,0 +1,99 @@
+.game-card {
+  /* display: grid;
+  grid-template-columns: repeat(auto-fit, 250px);
+  gap: 20px;
+  justify-content: space-around; */
+}
+
+.game-card__box {
+  position: relative;
+  border: 1px solid #000;
+  height: 400px;
+  border-radius: 3%;
+  box-shadow: #fff -1px 1px 1px 1px, #fff 1px -1px 1px 1px;
+}
+
+.game-card__header {
+  text-align: center;
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0;
+  padding: 16px 0;
+  border-top-left-radius: 3%;
+  border-top-right-radius: 3%;
+  border-bottom: 1px solid #000;
+  background-color: lightgray;
+  color: rgba(53, 101, 77, 1);
+}
+
+.game-card__link {
+  display: block;
+  width: 100%;
+  height: calc(100% - 63px);
+  perspective: 600px;
+}
+
+.game-card__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.game-card__face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.game-card__back {
+  transform: rotateY(180deg);
+}
+
+.game-card__image {
+  cursor: pointer;
+  opacity: 1;
+  transition: 0.3s linear;
+}
+
+.game-card__link:hover .game-card__container {
+  transform: rotateY(180deg);
+}
+
+.game-card__description {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  color: #35654d;
+  background-color: #f3f3f3;
+  border-radius: 3%;
+  text-align: center;
+}
+
+.game-card__like-btn {
+  background-image: url("../../assets/Star.svg");
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.game-card__like-btn_liked {
+  background-image: url("../../assets/react.svg");
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}

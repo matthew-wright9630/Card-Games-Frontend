@@ -1,0 +1,23 @@
+.page {
+  background-color: #35654d;
+  font-family: "Cabinet Grotesk";
+  color: #f3f3f3;
+  width: 100vw;
+}
+
+.page__content {
+  max-width: 1360px;
+  /* width: 100%; */
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 795px) {
+  .page__content {
+    padding: 0 8px;
+  }
+}
+
+/* @media screen and (max-width: 490px) {
+  
+} */
