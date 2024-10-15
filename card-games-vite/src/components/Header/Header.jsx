@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "./Header.css";
 import avatar from "../../assets/Matthew_Wright_Headshot.jpg";
+import homeIcon from "../../assets/home.svg";
 
 function Header(user) {
   const clickTest = () => {
@@ -12,7 +13,7 @@ function Header(user) {
       <h1 className="header__title">The Wright Collection of Card Games</h1>
       <div className="header__container">
         <Link className="header__link" to="/">
-          <img src="" alt="Wright Games Logo" className="header__logo" />
+          <img src={homeIcon} alt="Home Icon" className="header__home" />
         </Link>
         {loggedInTest ? (
           <div className="header__profile">

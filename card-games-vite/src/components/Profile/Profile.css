@@ -1,0 +1,23 @@
+.profile {
+  display: flex;
+  gap: 120px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.profile__edit-btn {
+  height: 23px;
+  font-size: 20px;
+}
+
+.profile__liked-games {
+  flex-grow: 2;
+}
+
+@media screen and (max-width: 795px) {
+  .profile {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 50px;
+  }
+}

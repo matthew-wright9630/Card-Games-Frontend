@@ -10,6 +10,11 @@ import "./App.css";
 
 function App() {
   const user = "Matthew";
+  const gameInfo = [
+    { name: "Solitaire", gamesPlayed: 3, gamesWon: 1, gamesLost: 2 },
+    { name: "War", gamesPlayed: 0, gamesWon: 0, gamesLost: 0 },
+  ];
+  console.log(gameInfo);
   return (
     <div className="page">
       <div className="page__content">
@@ -17,7 +22,10 @@ function App() {
         <Routes>
           <Route path="*" element={<PageNotFound />}></Route>
           <Route path="/" element={<Main />}></Route>
-          <Route path="/profile" element={<Profile />}></Route>
+          <Route
+            path="/profile"
+            element={<Profile gameInfo={gameInfo} />}
+          ></Route>
           <Route path="/solitaire" element={<Solitaire />}></Route>
           <Route path="/war" element={<War />}></Route>
         </Routes>
