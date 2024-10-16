@@ -1,0 +1,7 @@
+.liked-games-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 150px);
+    grid-auto-rows: 250px;
+    gap: 20px;
+    justify-content: space-around;
+  }

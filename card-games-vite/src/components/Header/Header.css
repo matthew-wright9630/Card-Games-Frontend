@@ -80,6 +80,7 @@ header {
 .header__button {
   padding: 0;
   margin: 0;
+  font-size: 20px;
   width: 129px;
   border: none;
   background-color: #35654d;

@@ -1,8 +1,9 @@
 import GameCards from "../GameCards/GameCards";
+import "./LikedGames.css";
 
 function LikedGames() {
   return (
-    <div className="games-list">
+    <div className="liked-games-list">
       {
         <GameCards
           title={"Solitaire"}

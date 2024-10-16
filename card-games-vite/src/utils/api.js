@@ -1,4 +1,4 @@
-const baseUrl = "https://deckofcardsapi.com";
+const baseUrl = "http://localhost:3001";
 
 function checkResponse(res) {
   return res ? res.json() : Promise.reject(`Error: ${res.status}`);
@@ -10,6 +10,10 @@ function request(url, options) {
   });
 }
 
-const backOfCard = "https://deckofcardsapi.com/static/img/back.png";
+function editProfileInfo({ name, avatar }, { token }) {
+  return Promise((resolve, reject) => {
+    resolve({ data: { name: name, avatar: avatar } });
+  });
+}
 
-export { backOfCard, baseUrl };
+export { baseUrl, request, checkResponse, editProfileInfo };

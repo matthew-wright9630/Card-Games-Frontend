@@ -3,7 +3,7 @@ import LikedGames from "../LikedGames/LikedGames";
 import avatar from "../../assets/Matthew_Wright_Headshot.jpg";
 import "./Profile.css";
 
-function Profile(gameInfo) {
+function Profile({gameInfo, handleEditProfileClick}) {
   /* 
   The Profile component will have 3 functions. It will allow users to edit their profile info (name, avatar), 
   they can see their history (what games have been played, and how many times), and liked games will appear in the list for easy access.
@@ -17,7 +17,11 @@ function Profile(gameInfo) {
         <section className="profile__liked-games">
           <LikedGames />
         </section>
-        <button className="profile__edit-btn header__button">
+        <button
+          type="button"
+          onClick={handleEditProfileClick}
+          className="profile__edit-btn header__button"
+        >
           Edit Profile
         </button>
       </div>

@@ -1,4 +1,4 @@
-import { backOfCard } from "../../utils/api";
+import { backOfCard } from "../../utils/constants";
 import { Link } from "react-router-dom";
 import "./GameCards.css";
 

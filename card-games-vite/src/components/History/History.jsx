@@ -5,12 +5,11 @@ The history section will display how many rounds have been played, number of win
 Currently these values will be hard-coded, but future implementation will pull data from the database.
 */
 
-function History(gameInfo) {
-  console.log("History", gameInfo.gameInfo.gameInfo);
+function History({ gameInfo }) {
   return (
     <div className="history">
       <div className="history__grid">
-        {gameInfo.gameInfo.gameInfo.map((game) => {
+        {gameInfo.map((game) => {
           return (
             <div className="history__grid-row">
               <p className="history__grid-item">{game.name} </p>

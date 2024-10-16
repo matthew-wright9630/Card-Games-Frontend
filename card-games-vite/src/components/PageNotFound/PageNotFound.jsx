@@ -11,12 +11,8 @@ function PageNotFound() {
         <span>404</span> - Page Not Found!
       </h3>
       <p className="not-found__text">
-        Uh oh! There&apos;s nothing here... Sorry.
+        Page does not exist! Please go back to the homepage.
       </p>
-      <button type="button" onClick={() => navigate("/")}>
-        Back to Homepage
-      </button>
-      {/* <Link to="/">Go back</Link> */}
     </div>
   );
 }

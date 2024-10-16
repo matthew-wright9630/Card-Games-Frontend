@@ -3,11 +3,18 @@ import "./Header.css";
 import avatar from "../../assets/Matthew_Wright_Headshot.jpg";
 import homeIcon from "../../assets/home.svg";
 
-function Header(user) {
+function Header({
+  user,
+  handleLoginClick,
+  handleRegistrationClick,
+  isMobileMenuOpen,
+  toggleMobileMenu,
+  isLoggedIn,
+}) {
   const clickTest = () => {
     console.log("I am clicked");
   };
-  let loggedInTest = true;
+  let loggedInTest = false;
   return (
     <header className="header">
       <h1 className="header__title">The Wright Collection of Card Games</h1>
@@ -38,14 +45,14 @@ function Header(user) {
         ) : (
           <div className="header__auth">
             <button
-              onClick={clickTest}
+              onClick={handleRegistrationClick}
               type="button"
               className="header__signup header__button"
             >
               Sign Up
             </button>
             <button
-              onClick={clickTest}
+              onClick={handleLoginClick}
               type="button"
               className="header__login header__button"
             >
