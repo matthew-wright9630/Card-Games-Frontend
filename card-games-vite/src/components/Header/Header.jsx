@@ -1,20 +1,18 @@
 import { Link } from "react-router-dom";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { useContext } from "react";
 import "./Header.css";
-import avatar from "../../assets/Matthew_Wright_Headshot.jpg";
 import homeIcon from "../../assets/home.svg";
 
 function Header({
-  user,
   handleLoginClick,
   handleRegistrationClick,
   isMobileMenuOpen,
   toggleMobileMenu,
   isLoggedIn,
+  handleLogout,
 }) {
-  const clickTest = () => {
-    console.log("I am clicked");
-  };
-  let loggedInTest = false;
+  const user = useContext(CurrentUserContext);
   return (
     <header className="header">
       <h1 className="header__title">The Wright Collection of Card Games</h1>
@@ -22,10 +20,10 @@ function Header({
         <Link className="header__link" to="/">
           <img src={homeIcon} alt="Home Icon" className="header__home" />
         </Link>
-        {loggedInTest ? (
+        {isLoggedIn ? (
           <div className="header__profile">
             <button
-              onClick={clickTest}
+              onClick={handleLogout}
               type="button"
               className="header__button"
             >
@@ -33,9 +31,9 @@ function Header({
             </button>
             <Link className="header__link" to="/profile">
               <div className="header__profile-info">
-                <p className="header__username">{user.user}</p>
+                <p className="header__username">{user.name}</p>
                 <img
-                  src={avatar}
+                  src={user.avatar}
                   alt="Profile Avatar"
                   className="header__avatar"
                 />

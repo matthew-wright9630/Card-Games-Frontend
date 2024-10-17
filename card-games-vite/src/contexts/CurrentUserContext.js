@@ -9,4 +9,4 @@ const CurrentUserContext = createContext();
 //   avatar: avatar,
 // };
 
-export default CurrentUserContext;
+export { CurrentUserContext };

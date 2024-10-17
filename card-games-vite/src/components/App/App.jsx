@@ -9,17 +9,30 @@ import War from "../War/War";
 import EditModal from "../EditModal/EditModal";
 import LoginModal from "../LoginModal/LoginModal";
 import RegistrationModal from "../RegistrationModal/RegistrationModal";
-import CurrentUserContext from "../../contexts/CurrentUserContext";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { authorize, register, checkToken } from "../../utils/auth";
 import { editProfileInfo } from "../../utils/api";
 import "./App.css";
 import { useEffect, useState } from "react";
+import { createNewDeck, shuffleAllCards } from "../../utils/deckOfCardsApi";
 
 function App() {
-  const user = "Matthew";
   const gameInfo = [
-    { name: "Solitaire", gamesPlayed: 3, gamesWon: 1, gamesLost: 2 },
-    { name: "War", gamesPlayed: 0, gamesWon: 0, gamesLost: 0 },
+    {
+      name: "Solitaire",
+      gamesPlayed: 3,
+      gamesWon: 1,
+      gamesLost: 2,
+      id: "671114d6c9ccabb738b926ed",
+    },
+    {
+      name: "War",
+      gamesPlayed: 0,
+      gamesWon: 0,
+      gamesLost: 0,
+      id: "671114f4bdeb49a9b52ebc00",
+    },
   ];
 
   const [activeModal, setActiveModal] = useState("");
@@ -28,6 +41,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
   const [currentUser, setCurrentUser] = useState({});
+  const [gameActive, setGameActive] = useState(false);
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -57,7 +71,7 @@ function App() {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
           setIsLoggedIn(true);
-          setUser(data.token);
+          setUser(data);
           handleCloseModal();
           resetForm();
         }
@@ -69,7 +83,6 @@ function App() {
     register(email, password, name, avatar)
       .then((data) => {
         if (data.name) {
-          navigate("/");
           handleLogin({ email, password }, resetForm);
           resetForm();
           handleCloseModal();
@@ -78,8 +91,25 @@ function App() {
       .catch(console.error);
   };
 
-  const editProfile = ({ name, avatar }, resetForm) => {
-    editProfileInfo(name, avatar);
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem("jwt");
+    setUserData({});
+  };
+
+  const handleEditProfile = ({ name, avatar }, resetForm) => {
+    editProfileInfo(name, avatar)
+      .then((profile) => {
+        setUserData({
+          name: profile.name,
+          avatar: profile.avatar,
+          email: profile.email,
+        });
+        setCurrentUser(profile);
+        resetForm();
+        handleCloseModal();
+      })
+      .catch((err) => console.error);
   };
 
   const setUser = (token) => {
@@ -93,6 +123,30 @@ function App() {
         setIsLoggedIn(false);
       });
   };
+
+  const toggleMobileMenu = () => {
+    if (isMobileMenuOpen === true) {
+      setMobilMenuOpen(false);
+    } else {
+      setMobilMenuOpen(true);
+    }
+  };
+
+  const handleGameStart = () => {
+    setGameActive(true);
+  };
+
+  const handleGameEnd = () => {
+    setGameActive(false);
+  };
+
+  const startDemoGame = () => {
+    createNewDeck();
+  }
+
+  const endDemoGame = () => {
+    shuffleAllCards();
+  }
 
   useEffect(() => {
     if (!activeModal) return;
@@ -118,13 +172,15 @@ function App() {
     };
   }, [activeModal]);
 
-  const toggleMobileMenu = () => {
-    if (isMobileMenuOpen === true) {
-      setMobilMenuOpen(false);
-    } else {
-      setMobilMenuOpen(true);
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+
+    if (!token) {
+      return;
     }
-  };
+
+    setUser(token);
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -136,18 +192,29 @@ function App() {
             isMobileMenuOpen={isMobileMenuOpen}
             toggleMobileMenu={toggleMobileMenu}
             isLoggedIn={isLoggedIn}
-            user={user}
+            handleLogout={handleLogout}
           />
           <Routes>
             <Route path="*" element={<PageNotFound />}></Route>
-            <Route path="/" element={<Main />}></Route>
+            <Route
+              path="/"
+              element={
+                <Main
+                gameActive={gameActive}
+                  handleGameStart={handleGameStart}
+                  handleGameEnd={handleGameEnd}
+                />
+              }
+            ></Route>
             <Route
               path="/profile"
               element={
-                <Profile
-                  gameInfo={gameInfo}
-                  handleEditProfileClick={handleEditProfileClick}
-                />
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <Profile
+                    gameInfo={gameInfo}
+                    handleEditProfileClick={handleEditProfileClick}
+                  />
+                </ProtectedRoute>
               }
             ></Route>
             <Route path="/solitaire" element={<Solitaire />}></Route>
@@ -164,7 +231,8 @@ function App() {
           <EditModal
             isOpen={isEditProfileModalOpen}
             onCloseModal={handleCloseModal}
-            handle
+            handleEditProfile={handleEditProfile}
+            isLoading={isLoading}
           />
           <RegistrationModal
             isOpen={isRegistrationModalOpen}

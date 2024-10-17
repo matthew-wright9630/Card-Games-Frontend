@@ -1,3 +1,4 @@
+import HistoryGrid from "../HistoryGrid/HistoryGrid";
 import "./History.css";
 
 /*
@@ -8,18 +9,9 @@ Currently these values will be hard-coded, but future implementation will pull d
 function History({ gameInfo }) {
   return (
     <div className="history">
-      <div className="history__grid">
-        {gameInfo.map((game) => {
-          return (
-            <div className="history__grid-row">
-              <p className="history__grid-item">{game.name} </p>
-              <p className="history__grid-item">Played: {game.gamesPlayed} </p>
-              <p className="history__grid-item">Won: {game.gamesWon} </p>
-              <p className="history__grid-item">Lost: {game.gamesLost} </p>
-            </div>
-          );
-        })}
-      </div>
+      {gameInfo.map((game) => {
+        return <HistoryGrid game={game} key={game.id} />;
+      })}
     </div>
   );
 }
