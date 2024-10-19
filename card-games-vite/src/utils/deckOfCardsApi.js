@@ -9,7 +9,7 @@ function createNewDeck(deckNumber) {
   ).then(checkResponse);
 }
 
-function drawACard(deck_id, numberOfCards) {
+function drawCard(deck_id, numberOfCards) {
   return fetch(
     `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=${numberOfCards}`
   ).then(checkResponse);
@@ -72,7 +72,7 @@ function returnCardsFromPile(deck_id, pileName) {
 
 export {
   createNewDeck,
-  drawACard,
+  drawCard,
   shuffleAllCards,
   shuffleCardsNotInPlay,
   createUnshuffledDeck,

@@ -1,0 +1,55 @@
+.card {
+  width: 100px;
+  height: 150px;
+}
+
+.card__box {
+  position: relative;
+  border: 1px solid #000;
+  height: 100%;
+  border-radius: 3%;
+  box-shadow: #fff -1px 1px 1px 1px, #fff 1px -1px 1px 1px;
+}
+
+.card__link {
+  display: block;
+  width: 100%;
+  height: calc(100% - 56px);
+  perspective: 600px;
+}
+
+.card__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.card__container_flipped {
+    transform: rotateY(180deg);
+}
+
+.card__face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card__back {
+  transform: rotateY(180deg);
+}
+
+.card__image {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: 0.3s linear;
+}
+
+/* .card__box:hover .card__container {
+  transform: rotateY(180deg);
+} */
+
+

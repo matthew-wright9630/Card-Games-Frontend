@@ -1,17 +1,24 @@
 import GameCards from "../GameCards/GameCards";
 import "./LikedGames.css";
 
-function LikedGames() {
+function LikedGames({ gameInfo, handleCardLike }) {
   return (
     <div className="liked-games-list">
-      {
-        <GameCards
-          title={"Solitaire"}
-          description={`Solitaire is a single player game where cards need to be sorted
-                    from Ace to King in each suit.`}
-          cardIsLiked={true}
-        />
-      }
+      {gameInfo
+        ?.filter((game) => {
+          if (game.liked) {
+            return game;
+          }
+        })
+        ?.map((game) => {
+          return (
+            <GameCards
+              key={game.id}
+              game={game}
+              handleCardLike={handleCardLike}
+            />
+          );
+        })}
     </div>
   );
 }

@@ -20,4 +20,20 @@ function editProfileInfo({ name, avatar }, { token }) {
   });
 }
 
-export { baseUrl, request, checkResponse, editProfileInfo };
+function likeGame(id, token) {
+  return new Promise((resolve, reject) => {
+    resolve({
+      liked: true,
+    });
+  });
+}
+
+function dislikeGame(id, token) {
+  return new Promise((resolve, reject) => {
+    resolve({
+      liked: false,
+    });
+  });
+}
+
+export { baseUrl, request, checkResponse, editProfileInfo, likeGame, dislikeGame };

@@ -12,29 +12,17 @@ import RegistrationModal from "../RegistrationModal/RegistrationModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { authorize, register, checkToken } from "../../utils/auth";
-import { editProfileInfo } from "../../utils/api";
+import { editProfileInfo, likeGame, dislikeGame } from "../../utils/api";
 import "./App.css";
 import { useEffect, useState } from "react";
-import { createNewDeck, shuffleAllCards } from "../../utils/deckOfCardsApi";
+import {
+  createNewDeck,
+  createPartialDeck,
+  drawCard,
+  shuffleAllCards,
+} from "../../utils/deckOfCardsApi";
 
 function App() {
-  const gameInfo = [
-    {
-      name: "Solitaire",
-      gamesPlayed: 3,
-      gamesWon: 1,
-      gamesLost: 2,
-      id: "671114d6c9ccabb738b926ed",
-    },
-    {
-      name: "War",
-      gamesPlayed: 0,
-      gamesWon: 0,
-      gamesLost: 0,
-      id: "671114f4bdeb49a9b52ebc00",
-    },
-  ];
-
   const [activeModal, setActiveModal] = useState("");
   const [isMobileMenuOpen, setMobilMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +30,8 @@ function App() {
   const [userData, setUserData] = useState({});
   const [currentUser, setCurrentUser] = useState({});
   const [gameActive, setGameActive] = useState(false);
+  const [hand, setHand] = useState([]);
+  const [gameInfo, setGameInfo] = useState([]);
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -132,20 +122,80 @@ function App() {
     }
   };
 
-  const handleGameStart = () => {
+  const handleCardLike = (game) => {
+    const setGameCardLikes = (updatedGame) => {
+      setGameInfo((games) => {
+        return games.map((item) =>
+          item.id === updatedGame.id ? updatedGame : item
+        );
+      });
+    };
+
+    if (game.liked) {
+      dislikeGame(game.id, localStorage.getItem("jwt"))
+        .then((res) => {
+          game.liked = res.liked;
+          setGameCardLikes(game);
+        })
+        .catch(console.error);
+    } else {
+      likeGame(game.id, localStorage.getItem("jwt"))
+        .then((res) => {
+          game.liked = res.liked;
+          setGameCardLikes(game);
+        })
+        .catch(console.error);
+    }
+  };
+
+  const handleGameStart = (numberOfDecks) => {
     setGameActive(true);
+    if (localStorage.getItem("deck_id") === null) {
+      createNewDeck(numberOfDecks).then((data) => {
+        //   localStorage.setItem("deck_id", `${data.deck_id}`);
+        //   localStorage.setItem("remaining", `${data.remaining}`);
+      });
+    } else {
+      shuffleAllCards(localStorage.getItem("deck_id")).then((data) => {
+        if (data.success) {
+          console.log(data);
+        } else {
+          console.log("Sorry, an error has occurred");
+        }
+      });
+    }
   };
 
   const handleGameEnd = () => {
     setGameActive(false);
+    shuffleAllCards(localStorage.getItem("deck_id")).then((data) => {
+      setHand([]);
+      if (data.success) {
+        console.log(data);
+      } else {
+        console.log("Sorry, an error has occurred");
+      }
+    });
   };
 
-  const startDemoGame = () => {
-    createNewDeck();
-  }
+  const pullCard = (numberOfCards) => {
+    
+    drawCard(localStorage.getItem("deck_id"), numberOfCards).then((data) => {
+      console.log(data);
+      addCardToHand(data.cards.pop());
+    });
+  };
 
-  const endDemoGame = () => {
-    shuffleAllCards();
+  const addCardToHand = (card) => {
+    // card.ownwer = localStorage.getItem("jwt");
+    console.log(card);
+    setHand([...hand, card]);
+  };
+
+  const checkDeckNotEmpty = (deck_id) => {
+    if (test) {
+
+    }
   }
 
   useEffect(() => {
@@ -182,6 +232,29 @@ function App() {
     setUser(token);
   }, []);
 
+  useEffect(() => {
+    setGameInfo([
+      {
+        name: "Solitaire",
+        gamesPlayed: 3,
+        gamesWon: 1,
+        gamesLost: 2,
+        liked: true,
+        id: "671114d6c9ccabb738b926ed",
+        description: `Solitaire is a single player game where cards need to be sorted
+                          from Ace to King in each suit.`,
+      },
+      {
+        name: "War",
+        gamesPlayed: 0,
+        gamesWon: 0,
+        gamesLost: 0,
+        liked: false,
+        id: "671114f4bdeb49a9b52ebc00",
+      },
+    ]);
+  }, []);
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -200,9 +273,13 @@ function App() {
               path="/"
               element={
                 <Main
-                gameActive={gameActive}
+                  gameInfo={gameInfo}
+                  gameActive={gameActive}
                   handleGameStart={handleGameStart}
                   handleGameEnd={handleGameEnd}
+                  pullCard={pullCard}
+                  hand={hand}
+                  handleCardLike={handleCardLike}
                 />
               }
             ></Route>
@@ -213,6 +290,7 @@ function App() {
                   <Profile
                     gameInfo={gameInfo}
                     handleEditProfileClick={handleEditProfileClick}
+                    handleCardLike={handleCardLike}
                   />
                 </ProtectedRoute>
               }

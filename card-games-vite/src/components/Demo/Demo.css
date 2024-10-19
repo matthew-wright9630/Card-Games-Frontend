@@ -1,3 +1,11 @@
 .demo {
   border: 1px #000 solid;
 }
+
+.demo__cards {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 15px auto;
+}
