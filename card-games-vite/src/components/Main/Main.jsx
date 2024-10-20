@@ -1,6 +1,7 @@
 import GamesList from "../GamesList/GamesList";
 import Demo from "../Demo/Demo";
 import "./Main.css";
+import Preloader from "../Preloader/Preloader";
 
 function Main({
   gameInfo,
@@ -10,6 +11,11 @@ function Main({
   pullCard,
   hand,
   handleCardLike,
+  isDrawPileEmpty,
+  handleDiscard,
+  discardPile,
+  isDiscardPileEmpty,
+  isLoading,
 }) {
   return (
     <main>
@@ -28,6 +34,11 @@ function Main({
               handleGameEnd={handleGameEnd}
               pullCard={pullCard}
               hand={hand}
+              isDrawPileEmpty={isDrawPileEmpty}
+              handleDiscard={handleDiscard}
+              discardPile={discardPile}
+              isDiscardPileEmpty={isDiscardPileEmpty}
+              isLoading={isLoading}
             />
           }
         </div>

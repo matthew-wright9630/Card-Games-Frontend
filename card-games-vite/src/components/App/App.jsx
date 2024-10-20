@@ -16,11 +16,14 @@ import { editProfileInfo, likeGame, dislikeGame } from "../../utils/api";
 import "./App.css";
 import { useEffect, useState } from "react";
 import {
+  addCardsToPiles,
   createNewDeck,
   createPartialDeck,
   drawCard,
   shuffleAllCards,
+  shuffleCardsNotInPlay,
 } from "../../utils/deckOfCardsApi";
+import Preloader from "../Preloader/Preloader";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -31,7 +34,10 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [gameActive, setGameActive] = useState(false);
   const [hand, setHand] = useState([]);
+  const [discardPile, setDiscardPile] = useState([]);
   const [gameInfo, setGameInfo] = useState([]);
+  const [isDrawPileEmpty, setIsDrawPileEmpty] = useState(false);
+  const [isDiscardPileEmpty, setIsDiscardPileEmpty] = useState(true);
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -94,6 +100,7 @@ function App() {
           name: profile.name,
           avatar: profile.avatar,
           email: profile.email,
+          id: profile.id,
         });
         setCurrentUser(profile);
         resetForm();
@@ -131,20 +138,23 @@ function App() {
       });
     };
 
+    setIsLoading(true);
     if (game.liked) {
       dislikeGame(game.id, localStorage.getItem("jwt"))
         .then((res) => {
           game.liked = res.liked;
           setGameCardLikes(game);
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(setIsLoading(false));
     } else {
       likeGame(game.id, localStorage.getItem("jwt"))
         .then((res) => {
           game.liked = res.liked;
           setGameCardLikes(game);
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(setIsLoading(false));
     }
   };
 
@@ -152,51 +162,93 @@ function App() {
     setGameActive(true);
     if (localStorage.getItem("deck_id") === null) {
       createNewDeck(numberOfDecks).then((data) => {
-        //   localStorage.setItem("deck_id", `${data.deck_id}`);
-        //   localStorage.setItem("remaining", `${data.remaining}`);
+        localStorage.setItem("deck_id", `${data.deck_id}`);
       });
     } else {
-      shuffleAllCards(localStorage.getItem("deck_id")).then((data) => {
-        if (data.success) {
-          console.log(data);
-        } else {
-          console.log("Sorry, an error has occurred");
-        }
-      });
+      shuffle();
     }
   };
 
   const handleGameEnd = () => {
     setGameActive(false);
-    shuffleAllCards(localStorage.getItem("deck_id")).then((data) => {
-      setHand([]);
-      if (data.success) {
-        console.log(data);
-      } else {
-        console.log("Sorry, an error has occurred");
-      }
-    });
+    shuffle();
+  };
+
+  const shuffle = () => {
+    setIsLoading(true);
+    shuffleAllCards(localStorage.getItem("deck_id"))
+      .then((data) => {
+        if (data.success) {
+          setHand([]);
+          setDiscardPile([]);
+        } else {
+          console.log("Sorry, an error has occurred");
+        }
+      })
+      .catch(console.error)
+      .finally(setIsLoading(false));
+  };
+
+  const renderDrawPile = (remaining) => {
+    if (remaining > 0) {
+      setIsDrawPileEmpty(false);
+    } else {
+      setIsDrawPileEmpty(true);
+    }
+  };
+
+  const renderDiscardPile = () => {
+    if (discardPile.length === 0) {
+      setIsDiscardPileEmpty(true);
+    } else {
+      setIsDiscardPileEmpty(false);
+    }
   };
 
   const pullCard = (numberOfCards) => {
-    
-    drawCard(localStorage.getItem("deck_id"), numberOfCards).then((data) => {
-      console.log(data);
-      addCardToHand(data.cards.pop());
-    });
+    for (let i = 0; i < numberOfCards; i++) {
+      setIsLoading(true);
+      drawCard(localStorage.getItem("deck_id"), 1)
+        .then((data) => {
+          if (data.success) {
+            console.log(data);
+            addCardToHand(data.cards.pop());
+          } else {
+            console.log("Please discard some cards");
+            shuffleAllCards(localStorage.getItem("deck_id"));
+          }
+          if (data.remaining === 0) {
+            renderDrawPile(data.remaining);
+          }
+        })
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
+    }
   };
 
   const addCardToHand = (card) => {
-    // card.ownwer = localStorage.getItem("jwt");
-    console.log(card);
+    card.ownwer = localStorage.getItem("jwt");
     setHand([...hand, card]);
   };
 
-  const checkDeckNotEmpty = (deck_id) => {
-    if (test) {
+  const handleDiscard = (id) => {
+    setHand((cards) => {
+      return cards.filter((card) => {
+        if (card.code !== id) {
+          return card;
+        } else {
+          addToDiscard(card);
+        }
+      });
+    });
+  };
 
-    }
-  }
+  const addToDiscard = (card) => {
+    setDiscardPile([card, ...discardPile]);
+    // renderDiscardPile()
+  };
+
+  const handleDiscardPileClick = () => {};
 
   useEffect(() => {
     if (!activeModal) return;
@@ -251,9 +303,15 @@ function App() {
         gamesLost: 0,
         liked: false,
         id: "671114f4bdeb49a9b52ebc00",
+        description: `War is a two player game where each player flips the top card of their deck and the highest card wins. 
+        Game ends when one player has the entire deck`,
       },
     ]);
   }, []);
+
+  useEffect(() => {
+    renderDiscardPile();
+  }, [discardPile]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -280,6 +338,11 @@ function App() {
                   pullCard={pullCard}
                   hand={hand}
                   handleCardLike={handleCardLike}
+                  isDrawPileEmpty={isDrawPileEmpty}
+                  isDiscardPileEmpty={isDiscardPileEmpty}
+                  handleDiscard={handleDiscard}
+                  discardPile={discardPile}
+                  isLoading={isLoading}
                 />
               }
             ></Route>

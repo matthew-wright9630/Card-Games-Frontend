@@ -3,7 +3,6 @@ import { checkResponse } from "./api";
 const deckOfCardsUrl = "https://deckofcardsapi.com";
 
 function createNewDeck(deckNumber) {
-  console.log(deckNumber);
   return fetch(
     `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=${deckNumber}`
   ).then(checkResponse);
