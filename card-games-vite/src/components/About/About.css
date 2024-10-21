@@ -1,0 +1,28 @@
+.about {
+    margin: 25px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .about__image {
+    border-radius: 50%;
+    width: 200px;
+  }
+  
+  .about__link-image {
+    width: 24px;
+    height: 24px;
+    transition: 0.3s linear;
+  }
+  
+  .about__link-image:hover {
+    opacity: 0.7;
+  }
+  
+  @media screen and (max-width: 550px) {
+    .about {
+      flex-direction: column;
+    }
+  }

@@ -1,5 +1,5 @@
 {
-  "name": "card-games-vite",
+  "name": "card-games-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -25,6 +25,8 @@
     "eslint-plugin-react": "^7.34.2",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "gh-pages": "^6.2.0",
     "vite": "^5.3.1"
-  }
+  },
+  "homepage": "https://matthew-wright9630.github.io/Card-Games-Frontend/"
 }
