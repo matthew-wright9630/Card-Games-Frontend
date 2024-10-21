@@ -356,10 +356,10 @@ function App() {
                 </ProtectedRoute>
               }
             ></Route>
+            <Route path="/about-me" element={<About />} />
             <Route path="/solitaire" element={<Solitaire />}></Route>
             <Route path="/war" element={<War />}></Route>
           </Routes>
-          <About />
           <Footer />
           <LoginModal
             isOpen={isLoginModalOpen}
