@@ -1,6 +1,6 @@
 .history__grid-row {
   display: grid;
-  grid-template-columns: repeat(4, 50px);
+  grid-template-columns: repeat(2, 80px);
   /* grid-auto-rows: minmax(45px, 60px); */
 }
 

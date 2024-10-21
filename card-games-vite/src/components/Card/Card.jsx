@@ -32,13 +32,17 @@ function Card({ card, handleDiscard }) {
           />
           <div className="card__face card__front">
             <img src={card.image} alt={card.code} className="card__image" />
-            <button
-              onClick={discardCard}
-              type="button"
-              className="card__discard-btn"
-            >
-              discard
-            </button>
+            {handleDiscard ? (
+              <button
+                onClick={discardCard}
+                type="button"
+                className="card__discard-btn"
+              >
+                discard
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

@@ -77,11 +77,11 @@
   bottom: 0;
   right: 0;
   cursor: pointer;
-  transition: .3s linear;
+  transition: 0.3s linear;
 }
 
 .game-card__like-btn:hover {
-  opacity: .6;
+  opacity: 0.6;
 }
 
 .game-card__like-btn_liked {

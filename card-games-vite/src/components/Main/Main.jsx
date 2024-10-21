@@ -16,6 +16,7 @@ function Main({
   discardPile,
   isDiscardPileEmpty,
   isLoading,
+  handleDiscardPileClick,
 }) {
   return (
     <main>
@@ -39,6 +40,7 @@ function Main({
               discardPile={discardPile}
               isDiscardPileEmpty={isDiscardPileEmpty}
               isLoading={isLoading}
+              handleDiscardPileClick={handleDiscardPileClick}
             />
           }
         </div>

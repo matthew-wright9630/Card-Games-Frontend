@@ -24,10 +24,10 @@ import {
   shuffleCardsNotInPlay,
 } from "../../utils/deckOfCardsApi";
 import Preloader from "../Preloader/Preloader";
+import DiscardModal from "../DiscardModal/DiscardModal";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
-  const [isMobileMenuOpen, setMobilMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({});
@@ -49,6 +49,10 @@ function App() {
     setActiveModal("signup-modal");
   };
 
+  const handleDiscardPileClick = () => {
+    setActiveModal("discard-modal");
+  };
+
   const handleCloseModal = () => {
     setActiveModal("");
   };
@@ -56,6 +60,7 @@ function App() {
   const isEditProfileModalOpen = activeModal === "edit-profile-modal";
   const isLoginModalOpen = activeModal === "login-modal";
   const isRegistrationModalOpen = activeModal === "signup-modal";
+  const isDiscardModalOpen = activeModal === "discard-modal";
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
@@ -121,14 +126,6 @@ function App() {
       });
   };
 
-  const toggleMobileMenu = () => {
-    if (isMobileMenuOpen === true) {
-      setMobilMenuOpen(false);
-    } else {
-      setMobilMenuOpen(true);
-    }
-  };
-
   const handleCardLike = (game) => {
     const setGameCardLikes = (updatedGame) => {
       setGameInfo((games) => {
@@ -160,10 +157,14 @@ function App() {
 
   const handleGameStart = (numberOfDecks) => {
     setGameActive(true);
+    setIsLoading(true);
     if (localStorage.getItem("deck_id") === null) {
-      createNewDeck(numberOfDecks).then((data) => {
-        localStorage.setItem("deck_id", `${data.deck_id}`);
-      });
+      createNewDeck(numberOfDecks)
+        .then((data) => {
+          localStorage.setItem("deck_id", `${data.deck_id}`);
+        })
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
     } else {
       shuffle();
     }
@@ -181,6 +182,7 @@ function App() {
         if (data.success) {
           setHand([]);
           setDiscardPile([]);
+          renderDrawPile(data.remaining);
         } else {
           console.log("Sorry, an error has occurred");
         }
@@ -214,8 +216,8 @@ function App() {
             console.log(data);
             addCardToHand(data.cards.pop());
           } else {
-            console.log("Please discard some cards");
-            shuffleAllCards(localStorage.getItem("deck_id"));
+            setIsDiscardPileEmpty(true);
+            shuffle();
           }
           if (data.remaining === 0) {
             renderDrawPile(data.remaining);
@@ -245,10 +247,7 @@ function App() {
 
   const addToDiscard = (card) => {
     setDiscardPile([card, ...discardPile]);
-    // renderDiscardPile()
   };
-
-  const handleDiscardPileClick = () => {};
 
   useEffect(() => {
     if (!activeModal) return;
@@ -320,8 +319,6 @@ function App() {
           <Header
             handleLoginClick={handleLoginClick}
             handleRegistrationClick={handleRegistrationClick}
-            isMobileMenuOpen={isMobileMenuOpen}
-            toggleMobileMenu={toggleMobileMenu}
             isLoggedIn={isLoggedIn}
             handleLogout={handleLogout}
           />
@@ -343,6 +340,7 @@ function App() {
                   handleDiscard={handleDiscard}
                   discardPile={discardPile}
                   isLoading={isLoading}
+                  handleDiscardPileClick={handleDiscardPileClick}
                 />
               }
             ></Route>
@@ -381,6 +379,11 @@ function App() {
             handleRegistration={handleRegistration}
             isLoading={isLoading}
             handleLoginClick={handleLoginClick}
+          />
+          <DiscardModal
+            isOpen={isDiscardModalOpen}
+            onCloseModal={handleCloseModal}
+            discardPile={discardPile}
           />
         </div>
       </div>

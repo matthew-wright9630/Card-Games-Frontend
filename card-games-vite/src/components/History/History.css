@@ -6,9 +6,7 @@
 }
 
 .history__grid-row {
-   display: grid;
-   grid-template-columns: repeat(4, 50px);
-   /* grid-auto-rows: minmax(45px, 60px); */
+  display: grid;
 }
 
 .history__grid-item {

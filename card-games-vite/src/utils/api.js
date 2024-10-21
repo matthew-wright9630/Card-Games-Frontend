@@ -36,4 +36,11 @@ function dislikeGame(id, token) {
   });
 }
 
-export { baseUrl, request, checkResponse, editProfileInfo, likeGame, dislikeGame };
+export {
+  baseUrl,
+  request,
+  checkResponse,
+  editProfileInfo,
+  likeGame,
+  dislikeGame,
+};

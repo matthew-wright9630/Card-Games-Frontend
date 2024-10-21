@@ -25,7 +25,7 @@ function EditModal({ isOpen, onCloseModal, handleEditProfile, isLoading }) {
           handleEditProfile(values, handleReset);
         }}
       >
-        <label htmlFor="name" className="modal__label">
+        <label htmlFor="editProfileName" className="modal__label">
           Name *
           <input
             onChange={handleChange}
@@ -34,11 +34,12 @@ function EditModal({ isOpen, onCloseModal, handleEditProfile, isLoading }) {
             name="name"
             id="editProfileName"
             placeholder="Name"
+            autoComplete="username"
             value={values.name}
             required={true}
           />
         </label>
-        <label htmlFor="changeProfileAvatar" className="modal__label">
+        <label htmlFor="editProfileAvatar" className="modal__label">
           Avatar *
           <input
             onChange={handleChange}

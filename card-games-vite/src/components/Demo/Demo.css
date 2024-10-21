@@ -2,10 +2,22 @@
   border: 1px #000 solid;
 }
 
+.demo__title {
+  text-align: center;
+  font-size: 44px;
+  margin: 20px;
+}
+
+.demo__description {
+  text-align: center;
+  font-size: 16px;
+  margin: 5px auto;
+}
+
 .demo__btn {
   padding: 0;
   margin: 0;
-  font-size: 15px;
+  font-size: 30px;
   width: 129px;
   border: none;
   background-color: #35654d;
@@ -32,10 +44,12 @@
 
 .demo__draw-title {
   text-align: center;
+  font-size: 20px;
 }
 
 .demo__discard-title {
   text-align: center;
+  font-size: 20px;
 }
 
 .demo__card-btn {
@@ -58,7 +72,9 @@
 }
 
 .demo__pile_empty {
-  background-image: none;
+  background-image: url("../../assets//Cross.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
   background-color: #35654d;
   border: none;
   /* border: 5px solid #000 */

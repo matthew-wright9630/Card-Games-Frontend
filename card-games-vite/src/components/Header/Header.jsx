@@ -7,8 +7,6 @@ import homeIcon from "../../assets/home.svg";
 function Header({
   handleLoginClick,
   handleRegistrationClick,
-  isMobileMenuOpen,
-  toggleMobileMenu,
   isLoggedIn,
   handleLogout,
 }) {

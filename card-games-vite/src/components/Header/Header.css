@@ -102,12 +102,4 @@ header {
   .header__button {
     width: 100px;
   }
-
-  .header__profile {
-    /* visibility: hidden; */
-  }
-
-  .header__auth {
-    /* visibility: hidden; */
-  }
 }
