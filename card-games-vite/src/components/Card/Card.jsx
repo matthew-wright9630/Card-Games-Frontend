@@ -38,7 +38,7 @@ function Card({ card, handleDiscard }) {
                 type="button"
                 className="card__discard-btn"
               >
-                discard
+                Discard
               </button>
             ) : (
               ""

@@ -1,7 +1,6 @@
 import "./DiscardModal.css";
 
 function DiscardModal({ isOpen, discardPile, onCloseModal }) {
-  function renderDiscardView() {}
   return (
     <div className={`modal modal__discard ${isOpen ? "modal_opened" : ""}`}>
       <div className="modal__container modal__discard-container">
@@ -14,10 +13,9 @@ function DiscardModal({ isOpen, discardPile, onCloseModal }) {
         <div className="modal__discard-cards">
           {discardPile?.map((card) => {
             return (
-              <img className="modal__discard__images" src={card.image}></img>
+              <img key={card.code} className="modal__discard__images" src={card.image}></img>
             );
           })}
-          {/* <button className="modal__discard__expand-btn"></button> */}
         </div>
       </div>
     </div>
