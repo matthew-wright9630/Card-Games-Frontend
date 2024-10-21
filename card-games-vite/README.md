@@ -18,6 +18,10 @@ React can be downloaded using npm.
 
 npm install react-router-dom@6
 
+## Future Improvements
+
+Currently the program does not allow users to create their own profiles, and the games do not work yet. These will be added in the future, so be sure the check back for any updates!
+
 ## Links
 
 - [Figma Design for Icons] (https://www.figma.com/design/f6T3pOY9yZzXrYHk7cUwWA/Final-Project-UI-Kit?node-id=0-1&node-type=canvas&t=6LoD4gGZjh6UEPAA-0)
