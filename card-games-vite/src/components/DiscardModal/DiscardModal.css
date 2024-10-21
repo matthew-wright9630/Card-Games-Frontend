@@ -1,0 +1,19 @@
+.modal__discard {
+}
+
+.modal__discard-container {
+  max-height: 90%;
+  overflow: auto;
+}
+
+.modal__discard-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-around;
+}
+
+.modal__discard__images {
+  width: 100px;
+  height: 150px;
+}

@@ -1,0 +1,18 @@
+.page {
+  background-color: #35654d;
+  font-family: "Roboto";
+  color: #f3f3f3;
+  /* width: 100%;   */
+}
+
+.page__content {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media screen and (max-width: 795px) {
+  .page__content {
+    padding: 0 8px;
+  }
+}
