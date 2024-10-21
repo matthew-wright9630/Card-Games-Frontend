@@ -1,5 +1,6 @@
 import History from "../History/History";
 import LikedGames from "../LikedGames/LikedGames";
+import avatar from "../../assets/Matthew_Wright_Headshot.jpg";
 import "./Profile.css";
 
 function Profile({ gameInfo, handleEditProfileClick, handleCardLike }) {

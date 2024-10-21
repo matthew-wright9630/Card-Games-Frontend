@@ -10,9 +10,6 @@ import EditModal from "../EditModal/EditModal";
 import LoginModal from "../LoginModal/LoginModal";
 import RegistrationModal from "../RegistrationModal/RegistrationModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
-import Preloader from "../Preloader/Preloader";
-import DiscardModal from "../DiscardModal/DiscardModal";
-import About from "../About/About";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { authorize, register, checkToken } from "../../utils/auth";
 import { editProfileInfo, likeGame, dislikeGame } from "../../utils/api";
@@ -26,6 +23,8 @@ import {
   shuffleAllCards,
   shuffleCardsNotInPlay,
 } from "../../utils/deckOfCardsApi";
+import Preloader from "../Preloader/Preloader";
+import DiscardModal from "../DiscardModal/DiscardModal";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -214,6 +213,7 @@ function App() {
       drawCard(localStorage.getItem("deck_id"), 1)
         .then((data) => {
           if (data.success) {
+            console.log(data);
             addCardToHand(data.cards.pop());
           } else {
             setIsDiscardPileEmpty(true);
@@ -359,8 +359,7 @@ function App() {
             <Route path="/solitaire" element={<Solitaire />}></Route>
             <Route path="/war" element={<War />}></Route>
           </Routes>
-          <About />
-          <Footer />
+          <Footer></Footer>
           <LoginModal
             isOpen={isLoginModalOpen}
             onCloseModal={handleCloseModal}

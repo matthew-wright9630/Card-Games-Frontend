@@ -1,24 +1,8 @@
 # React + Vite
 
-## About the Project
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-This website can be used to play various card games. The website will display the available card games, and users will be able to register, login, and like their preferred card games for easier access.
+Currently, two official plugins are available:
 
-## Technologies Used
-
-HTML, CSS, and JavaScript were used to create the website, and Vite was used for the project template. The project was split into different components using React.
-To get the cards and decks, deckofcardsapi.com is used.
-
-## Requirements
-
-For components to interact and work correctly, React is required.
-
-Windows:
-React can be downloaded using npm.
-
-npm install react-router-dom@6
-
-## Links
-
-- [Figma Design for Icons] (https://www.figma.com/design/f6T3pOY9yZzXrYHk7cUwWA/Final-Project-UI-Kit?node-id=0-1&node-type=canvas&t=6LoD4gGZjh6UEPAA-0)
-- [GitHub] (https://github.com/matthew-wright9630/Card-Games-Frontend)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
