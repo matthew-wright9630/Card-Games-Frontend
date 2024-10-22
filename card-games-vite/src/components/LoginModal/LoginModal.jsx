@@ -22,7 +22,7 @@ function LoginModal({
     <ModalWithForm
       title="Login"
       buttonTitle="Login"
-      handleCloseModal={onCloseModal}
+      onClose={onCloseModal}
       isOpen={isOpen}
       buttonText={isLoading ? "Logging in..." : "Login"}
       handleSubmit={(evt) => {

@@ -1,8 +1,7 @@
 .page {
   background-color: #35654d;
-  font-family: "Roboto";
+  font-family: "Roboto", sans-serif;
   color: #f3f3f3;
-  /* width: 100%;   */
 }
 
 .page__content {

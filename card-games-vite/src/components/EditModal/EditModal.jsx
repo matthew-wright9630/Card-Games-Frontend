@@ -17,7 +17,7 @@ function EditModal({ isOpen, onCloseModal, handleEditProfile, isLoading }) {
       <ModalWithForm
         title="Edit Profile"
         buttonTitle="Save changes"
-        handleCloseModal={onCloseModal}
+        onClose={onCloseModal}
         isOpen={isOpen}
         buttonText={isLoading ? "Saving..." : "Save changes"}
         handleSubmit={(evt) => {

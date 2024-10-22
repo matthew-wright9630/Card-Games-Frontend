@@ -24,7 +24,7 @@ function RegisterationModal({
     <ModalWithForm
       title="Sign Up"
       buttonTitle="Sign Up"
-      handleCloseModal={onCloseModal}
+      onClose={onCloseModal}
       isOpen={isOpen}
       buttonText={isLoading ? "Registering..." : "Sign Up"}
       handleSubmit={(evt) => {

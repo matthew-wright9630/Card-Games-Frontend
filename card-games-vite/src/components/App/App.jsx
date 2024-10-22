@@ -78,7 +78,7 @@ function App() {
           resetForm();
         }
       })
-      .catch(console.error);
+      .catch((err) => console.error(err));
   };
 
   const handleRegistration = ({ email, password, name, avatar }, resetForm) => {
@@ -90,7 +90,7 @@ function App() {
           handleCloseModal();
         }
       })
-      .catch(console.error);
+      .catch((err) => console.error(err));
   };
 
   const handleLogout = () => {
@@ -112,7 +112,7 @@ function App() {
         resetForm();
         handleCloseModal();
       })
-      .catch((err) => console.error);
+      .catch((err) => console.error(err));
   };
 
   const setUser = (token) => {
@@ -143,16 +143,16 @@ function App() {
           game.liked = res.liked;
           setGameCardLikes(game);
         })
-        .catch(console.error)
-        .finally(setIsLoading(false));
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
     } else {
       likeGame(game.id, localStorage.getItem("jwt"))
         .then((res) => {
           game.liked = res.liked;
           setGameCardLikes(game);
         })
-        .catch(console.error)
-        .finally(setIsLoading(false));
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -164,7 +164,7 @@ function App() {
         .then((data) => {
           localStorage.setItem("deck_id", `${data.deck_id}`);
         })
-        .catch(console.error)
+        .catch((err) => console.error(err))
         .finally(() => setIsLoading(false));
     } else {
       shuffle();
@@ -188,8 +188,8 @@ function App() {
           console.log("Sorry, an error has occurred");
         }
       })
-      .catch(console.error)
-      .finally(setIsLoading(false));
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
   };
 
   const renderDrawPile = (remaining) => {
@@ -223,7 +223,7 @@ function App() {
             renderDrawPile(data.remaining);
           }
         })
-        .catch(console.error)
+        .catch((err) => console.error(err))
         .finally(() => setIsLoading(false));
     }
   };

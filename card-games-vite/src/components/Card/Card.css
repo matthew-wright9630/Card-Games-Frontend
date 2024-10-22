@@ -46,9 +46,6 @@
 .card__back {
   transform: rotateY(180deg);
 }
-.card__front {
-  /* position: relative; */
-}
 
 .card__image {
   width: 100%;
@@ -69,6 +66,3 @@
   opacity: 0.5;
 }
 
-/* .card__box:hover .card__container {
-  transform: rotateY(180deg);
-} */
