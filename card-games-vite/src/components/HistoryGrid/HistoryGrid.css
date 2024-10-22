@@ -1,0 +1,12 @@
+.history__grid-row {
+  display: grid;
+  grid-template-columns: repeat(2, 80px);
+}
+
+.history__grid-item {
+  margin: 0;
+  background-color: #35654d;
+  border: 1px #000 solid;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
