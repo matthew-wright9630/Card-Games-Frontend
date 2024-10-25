@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 import PageNotFound from "../PageNotFound/PageNotFound";
 import Header from "../Header/Header";
 import Main from "../Main/Main";
@@ -13,7 +14,13 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import About from "../About/About";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { authorize, register, checkToken } from "../../utils/auth";
-import { editProfileInfo, likeGame, dislikeGame } from "../../utils/api";
+import {
+  editProfileInfo,
+  likeGame,
+  dislikeGame,
+  createGameHistory,
+  getGameHistory,
+} from "../../utils/api";
 import "./App.css";
 import { useEffect, useState } from "react";
 import {
@@ -26,6 +33,7 @@ import {
 } from "../../utils/deckOfCardsApi";
 import Preloader from "../Preloader/Preloader";
 import DiscardModal from "../DiscardModal/DiscardModal";
+import { games } from "../../utils/constants";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -72,13 +80,14 @@ function App() {
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
-          setIsLoggedIn(true);
-          setUser(data);
+          setUser(data.token);
           handleCloseModal();
           resetForm();
+          console.log(localStorage.getItem("jwt"));     //Token
         }
       })
       .catch((err) => console.error(err));
+    console.log(localStorage.getItem("jwt"));     //null
   };
 
   const handleRegistration = ({ email, password, name, avatar }, resetForm) => {
@@ -86,8 +95,9 @@ function App() {
       .then((data) => {
         if (data.name) {
           handleLogin({ email, password }, resetForm);
-          resetForm();
-          handleCloseModal();
+          console.log(localStorage);
+          console.log(localStorage.getItem(jwt));
+          createHistory();
         }
       })
       .catch((err) => console.error(err));
@@ -96,7 +106,7 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.removeItem("jwt");
-    setUserData({});
+    setCurrentUser({});
   };
 
   const handleEditProfile = ({ name, avatar }, resetForm) => {
@@ -118,6 +128,7 @@ function App() {
   const setUser = (token) => {
     checkToken(token)
       .then((user) => {
+        // localStorage.setItem("jwt", token);
         setCurrentUser(user);
         setIsLoggedIn(true);
       })
@@ -154,6 +165,24 @@ function App() {
         .catch((err) => console.error(err))
         .finally(() => setIsLoading(false));
     }
+  };
+
+  const createHistory = () => {
+    console.log(localStorage.getItem("jwt"));
+    games.map((game) => {
+      console.log(game, game.name, game.description);
+      createGameHistory(
+        {
+          name: game.name,
+          gamesPlayed: 0,
+          gamesWon: 0,
+          user: currentUser._id,
+          liked: false,
+          description: game.description,
+        },
+        localStorage.getItem("jwt")
+      );
+    });
   };
 
   const handleGameStart = (numberOfDecks) => {
@@ -284,29 +313,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setGameInfo([
-      {
-        name: "Solitaire",
-        gamesPlayed: 3,
-        gamesWon: 1,
-        gamesLost: 2,
-        liked: true,
-        id: "671114d6c9ccabb738b926ed",
-        description: `Solitaire is a single player game where cards need to be sorted
-                          from Ace to King in each suit.`,
-      },
-      {
-        name: "War",
-        gamesPlayed: 0,
-        gamesWon: 0,
-        gamesLost: 0,
-        liked: false,
-        id: "671114f4bdeb49a9b52ebc00",
-        description: `War is a two player game where each player flips the top card of their deck and the highest card wins. 
-        Game ends when one player has the entire deck`,
-      },
-    ]);
-  }, []);
+    if (currentUser) {
+      getGameHistory(localStorage.getItem("jwt")).then((games) => {
+        setGameInfo(games);
+      });
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     renderDiscardPile();
@@ -341,6 +353,7 @@ function App() {
                   discardPile={discardPile}
                   isLoading={isLoading}
                   handleDiscardPileClick={handleDiscardPileClick}
+                  isLoggedIn={isLoggedIn}
                 />
               }
             ></Route>
@@ -352,6 +365,7 @@ function App() {
                     gameInfo={gameInfo}
                     handleEditProfileClick={handleEditProfileClick}
                     handleCardLike={handleCardLike}
+                    isLoggedIn={isLoggedIn}
                   />
                 </ProtectedRoute>
               }

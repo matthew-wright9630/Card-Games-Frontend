@@ -17,6 +17,7 @@ function Main({
   isDiscardPileEmpty,
   isLoading,
   handleDiscardPileClick,
+  isLoggedIn,
 }) {
   return (
     <main>
@@ -25,7 +26,13 @@ function Main({
           Select a game below! Hover to see a brief introduction
         </p>
         <div className="homepage__grid">
-          {<GamesList gameInfo={gameInfo} handleCardLike={handleCardLike} />}
+          {
+            <GamesList
+              gameInfo={gameInfo}
+              handleCardLike={handleCardLike}
+              isLoggedIn={isLoggedIn}
+            />
+          }
         </div>
         <div className="homepage__demo">
           {

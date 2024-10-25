@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./GameCards.css";
 
-function GameCards({ game, handleCardLike }) {
+function GameCards({ game, handleCardLike, isLoggedIn }) {
   function likeCard() {
     handleCardLike(game);
   }
@@ -23,7 +23,7 @@ function GameCards({ game, handleCardLike }) {
             </div>
           </div>
         </Link>
-        {
+        {isLoggedIn ? (
           <button
             type="button"
             onClick={likeCard}
@@ -31,7 +31,9 @@ function GameCards({ game, handleCardLike }) {
               game.liked ? "game-card__like-btn_liked" : ""
             }`}
           ></button>
-        }
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

@@ -18,6 +18,40 @@ function editProfileInfo({ name, avatar }, { token }) {
   });
 }
 
+function getGameHistory(token) {
+  return request(`${baseUrl}/games`);
+}
+
+function createGameHistory(
+  { name, gamesPlayed, gamesWon, user, liked, description }, token,
+) {
+  return request(`${baseUrl}/games`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      name,
+      gamesPlayed,
+      gamesWon,
+      user,
+      liked,
+      description,
+    }),
+  });
+}
+
+function updateGamesPlayed(id, token) {
+  return request(`${baseUrl}/games/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 function likeGame(id, token) {
   return new Promise((resolve, reject) => {
     resolve({
@@ -41,4 +75,6 @@ export {
   editProfileInfo,
   likeGame,
   dislikeGame,
+  createGameHistory,
+  getGameHistory,
 };

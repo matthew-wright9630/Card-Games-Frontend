@@ -1,10 +1,17 @@
 import GameCards from "../GameCards/GameCards";
 import "./LikedGames.css";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { useContext } from "react";
 
-function LikedGames({ gameInfo, handleCardLike }) {
+function LikedGames({ gameInfo, handleCardLike, isLoggedIn }) {
+  const currentUser = useContext(CurrentUserContext);
   return (
     <div className="liked-games-list">
-      {gameInfo
+      {gameInfo.data
+        ?.filter((game) => {
+          const isOwn = game?.user[0] == currentUser._id;
+          return isOwn;
+        })
         ?.filter((game) => {
           if (game.liked) {
             return game;
@@ -13,9 +20,10 @@ function LikedGames({ gameInfo, handleCardLike }) {
         ?.map((game) => {
           return (
             <GameCards
-              key={game.id}
+              key={game._id}
               game={game}
               handleCardLike={handleCardLike}
+              isLoggedIn={isLoggedIn}
             />
           );
         })}
