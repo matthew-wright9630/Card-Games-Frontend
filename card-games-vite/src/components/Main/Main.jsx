@@ -18,6 +18,8 @@ function Main({
   isLoading,
   handleDiscardPileClick,
   isLoggedIn,
+  handleGameIncrement,
+  openGameSite
 }) {
   return (
     <main>
@@ -31,6 +33,8 @@ function Main({
               gameInfo={gameInfo}
               handleCardLike={handleCardLike}
               isLoggedIn={isLoggedIn}
+              handleGameIncrement={handleGameIncrement}
+              openGameSite={openGameSite}
             />
           }
         </div>
@@ -48,6 +52,7 @@ function Main({
               isDiscardPileEmpty={isDiscardPileEmpty}
               isLoading={isLoading}
               handleDiscardPileClick={handleDiscardPileClick}
+              handleGameIncrement={handleGameIncrement}
             />
           }
         </div>

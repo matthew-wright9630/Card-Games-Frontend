@@ -12,7 +12,7 @@ function History({ gameInfo }) {
   const currentUser = useContext(CurrentUserContext);
   return (
     <div className="history">
-      {gameInfo.data
+      {gameInfo
         ?.filter((game) => {
           const isOwn = game?.user[0] == currentUser._id;
           return isOwn;

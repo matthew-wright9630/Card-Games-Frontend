@@ -4,7 +4,7 @@ import "./GamesList.css";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { useContext } from "react";
 
-function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
+function GamesList({ gameInfo, handleCardLike, isLoggedIn, openGameSite }) {
   const currentUser = useContext(CurrentUserContext);
 
   return (
@@ -20,7 +20,7 @@ function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
               />
             );
           })
-        : gameInfo.data
+        : gameInfo
             ?.filter((game) => {
               const isOwn = game?.user[0] == currentUser._id;
               return isOwn;
@@ -32,6 +32,7 @@ function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
                   game={game}
                   handleCardLike={handleCardLike}
                   isLoggedIn={isLoggedIn}
+                  openGameSite={openGameSite}
                 />
               );
             })}

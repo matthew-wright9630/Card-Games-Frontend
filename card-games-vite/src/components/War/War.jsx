@@ -1,6 +1,19 @@
 import "./War.css";
 
-function War() {
+function War({
+  currentGame,
+  handleGameIncrement,
+  gameActive,
+  handleGameStart,
+  handleGameEnd,
+  incrementGameWon,
+}) {
+  function incrementGame() {
+    handleGameIncrement(currentGame);
+  }
+  function incrementGameWin() {
+    incrementGameWon(currentGame);
+  }
   return (
     <div className="war">
       <h2 className="war__title">War</h2>
@@ -8,6 +21,27 @@ function War() {
         Thank you for your interest! This page is still under development.
         Please come back another time!
       </p>
+      {!gameActive ? (
+        <button
+          onClick={() => {
+            incrementGame();
+            handleGameStart();
+          }}
+          className="playGame"
+        >
+          Increment Games Played
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            incrementGameWin();
+            handleGameEnd();
+          }}
+          className="solitaire__win-game"
+        >
+          Increment Games Won
+        </button>
+      )}
     </div>
   );
 }

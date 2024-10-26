@@ -20,6 +20,8 @@ import {
   dislikeGame,
   createGameHistory,
   getGameHistory,
+  updateGamesPlayed,
+  updateGamesWon,
 } from "../../utils/api";
 import "./App.css";
 import { useEffect, useState } from "react";
@@ -47,6 +49,7 @@ function App() {
   const [gameInfo, setGameInfo] = useState([]);
   const [isDrawPileEmpty, setIsDrawPileEmpty] = useState(false);
   const [isDiscardPileEmpty, setIsDiscardPileEmpty] = useState(true);
+  const [currentGame, setCurrentGame] = useState({});
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -76,28 +79,33 @@ function App() {
       return;
     }
 
-    authorize(email, password)
+    return authorize(email, password)
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
           setUser(data.token);
           handleCloseModal();
           resetForm();
-          console.log(localStorage.getItem("jwt"));     //Token
+          return data.token;
+        } else {
+          throw new Error("No token received");
         }
       })
-      .catch((err) => console.error(err));
-    console.log(localStorage.getItem("jwt"));     //null
+      .catch((err) => {
+        console.error(err);
+        throw err;
+      });
   };
 
   const handleRegistration = ({ email, password, name, avatar }, resetForm) => {
     register(email, password, name, avatar)
       .then((data) => {
         if (data.name) {
-          handleLogin({ email, password }, resetForm);
-          console.log(localStorage);
-          console.log(localStorage.getItem(jwt));
-          createHistory();
+          handleLogin({ email, password }, resetForm)
+            .then((token) => {
+              createHistory(token);
+            })
+            .catch((err) => console.error(err));
         }
       })
       .catch((err) => console.error(err));
@@ -110,7 +118,7 @@ function App() {
   };
 
   const handleEditProfile = ({ name, avatar }, resetForm) => {
-    editProfileInfo(name, avatar)
+    editProfileInfo({ name: name, avatar: avatar }, localStorage.getItem("jwt"))
       .then((profile) => {
         setUserData({
           name: profile.name,
@@ -128,7 +136,6 @@ function App() {
   const setUser = (token) => {
     checkToken(token)
       .then((user) => {
-        // localStorage.setItem("jwt", token);
         setCurrentUser(user);
         setIsLoggedIn(true);
       })
@@ -138,51 +145,80 @@ function App() {
       });
   };
 
-  const handleCardLike = (game) => {
+  const handleCardLike = ({ game, isLiked }) => {
     const setGameCardLikes = (updatedGame) => {
       setGameInfo((games) => {
-        return games.map((item) =>
-          item.id === updatedGame.id ? updatedGame : item
-        );
+        return games.map((item) => {
+          return item._id === updatedGame._id ? updatedGame : item;
+        });
       });
     };
 
     setIsLoading(true);
-    if (game.liked) {
-      dislikeGame(game.id, localStorage.getItem("jwt"))
+    if (isLiked) {
+      dislikeGame(game._id, localStorage.getItem("jwt"))
         .then((res) => {
-          game.liked = res.liked;
-          setGameCardLikes(game);
+          setGameCardLikes(res);
         })
         .catch((err) => console.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      likeGame(game.id, localStorage.getItem("jwt"))
+      likeGame(game._id, localStorage.getItem("jwt"))
         .then((res) => {
-          game.liked = res.liked;
-          setGameCardLikes(game);
+          setGameCardLikes(res);
         })
         .catch((err) => console.error(err))
         .finally(() => setIsLoading(false));
     }
   };
 
-  const createHistory = () => {
-    console.log(localStorage.getItem("jwt"));
-    games.map((game) => {
-      console.log(game, game.name, game.description);
-      createGameHistory(
-        {
-          name: game.name,
-          gamesPlayed: 0,
-          gamesWon: 0,
-          user: currentUser._id,
-          liked: false,
-          description: game.description,
-        },
-        localStorage.getItem("jwt")
-      );
-    });
+  const handleGameIncrement = (game) => {
+    setIsLoading(true);
+    updateGamesPlayed(game._id, localStorage.getItem("jwt"))
+      .then((res) => {
+        getGameHistory().then((games) => {
+          setGameInfo(games.data);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const incrementGameWon = (game) => {
+    setIsLoading(true);
+    updateGamesWon(game._id, localStorage.getItem("jwt"))
+      .then((res) => {
+        getGameHistory().then((games) => {
+          setGameInfo(games.data);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const createHistory = (token) => {
+    checkToken(token)
+      .then((user) => {
+        games.map((game) => {
+          createGameHistory(
+            {
+              name: game.name,
+              gamesPlayed: 0,
+              gamesWon: 0,
+              user: user._id,
+              liked: false,
+              description: game.description,
+            },
+            localStorage.getItem("jwt")
+          );
+        });
+        setCurrentUser(user);
+      })
+      .catch((err) => console.error(err));
   };
 
   const handleGameStart = (numberOfDecks) => {
@@ -278,6 +314,10 @@ function App() {
     setDiscardPile([card, ...discardPile]);
   };
 
+  const openGameSite = (game) => {
+    setCurrentGame(game);
+  };
+
   useEffect(() => {
     if (!activeModal) return;
 
@@ -315,7 +355,7 @@ function App() {
   useEffect(() => {
     if (currentUser) {
       getGameHistory(localStorage.getItem("jwt")).then((games) => {
-        setGameInfo(games);
+        setGameInfo(games.data);
       });
     }
   }, [currentUser]);
@@ -354,6 +394,8 @@ function App() {
                   isLoading={isLoading}
                   handleDiscardPileClick={handleDiscardPileClick}
                   isLoggedIn={isLoggedIn}
+                  openGameSite={openGameSite}
+                  handleGameIncrement={handleGameIncrement}
                 />
               }
             ></Route>
@@ -366,13 +408,38 @@ function App() {
                     handleEditProfileClick={handleEditProfileClick}
                     handleCardLike={handleCardLike}
                     isLoggedIn={isLoggedIn}
+                    openGameSite={openGameSite}
                   />
                 </ProtectedRoute>
               }
             ></Route>
             <Route path="/about-me" element={<About />} />
-            <Route path="/solitaire" element={<Solitaire />}></Route>
-            <Route path="/war" element={<War />}></Route>
+            <Route
+              path="/solitaire"
+              element={
+                <Solitaire
+                  currentGame={currentGame}
+                  handleGameIncrement={handleGameIncrement}
+                  incrementGameWon={incrementGameWon}
+                  gameActive={gameActive}
+                  handleGameStart={handleGameStart}
+                  handleGameEnd={handleGameEnd}
+                />
+              }
+            ></Route>
+            <Route
+              path="/war"
+              element={
+                <War
+                  currentGame={currentGame}
+                  handleGameIncrement={handleGameIncrement}
+                  incrementGameWon={incrementGameWon}
+                  gameActive={gameActive}
+                  handleGameStart={handleGameStart}
+                  handleGameEnd={handleGameEnd}
+                />
+              }
+            ></Route>
           </Routes>
           <Footer />
           <LoginModal
