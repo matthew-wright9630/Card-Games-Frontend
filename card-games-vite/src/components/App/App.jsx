@@ -424,6 +424,7 @@ function App() {
                   gameActive={gameActive}
                   handleGameStart={handleGameStart}
                   handleGameEnd={handleGameEnd}
+                  isLoggedIn={isLoggedIn}
                 />
               }
             ></Route>
@@ -437,6 +438,7 @@ function App() {
                   gameActive={gameActive}
                   handleGameStart={handleGameStart}
                   handleGameEnd={handleGameEnd}
+                  isLoggedIn={isLoggedIn}
                 />
               }
             ></Route>

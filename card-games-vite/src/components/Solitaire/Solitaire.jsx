@@ -8,12 +8,17 @@ function Solitaire({
   handleGameStart,
   handleGameEnd,
   incrementGameWon,
+  isLoggedIn,
 }) {
   function incrementGame() {
-    handleGameIncrement(currentGame);
+    if (isLoggedIn) {
+      handleGameIncrement(currentGame);
+    }
   }
   function incrementGameWin() {
-    incrementGameWon(currentGame);
+    if (isLoggedIn) {
+      incrementGameWon(currentGame);
+    }
   }
   return (
     <div className="solitaire">

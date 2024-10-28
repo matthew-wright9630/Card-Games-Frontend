@@ -1,4 +1,6 @@
-const baseUrl = "http://localhost:3002";
+const baseUrl = process.env.NODE_ENV === "production" 
+  ? "https://api.cardgamesmw.fairuse.org"
+  : "http://localhost:3001";
 
 function checkResponse(res) {
   return res ? res.json() : Promise.reject(`Error: ${res.status}`);
