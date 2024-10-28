@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --open",
     "build": "vite build",
     "predeploy": "npm run build",
     "deploy": "npm run build && scp -r ./dist/* billygoat9630@cardgamesmw.fairuse.org:/home/billygoat9630/frontend",
@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "feather-icons": "^4.29.2",
+    "mongoose": "^8.7.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",

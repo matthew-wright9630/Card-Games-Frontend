@@ -1,6 +1,7 @@
-const baseUrl = process.env.NODE_ENV === "production" 
-  ? "https://api.cardgamesmw.fairuse.org"
-  : "http://localhost:3001";
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://api.cardgamesmw.fairuse.org"
+    : "http://localhost:3001";
 
 function checkResponse(res) {
   return res ? res.json() : Promise.reject(`Error: ${res.status}`);
@@ -24,7 +25,7 @@ function editProfileInfo({ name, avatar }, token) {
   });
 }
 
-function getGameHistory(token) {
+function getGameHistory() {
   return request(`${baseUrl}/games`);
 }
 

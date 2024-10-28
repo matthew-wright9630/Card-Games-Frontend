@@ -1,4 +1,4 @@
-import { checkResponse, request } from "./api";
+import { request } from "./api";
 
 const deckOfCardsUrl = "https://deckofcardsapi.com/api/deck/";
 
