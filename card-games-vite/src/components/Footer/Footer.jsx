@@ -3,7 +3,7 @@ import "./Footer.css";
 
 function Footer() {
   return (
-    <div className="footer">
+    <footer className="footer">
       <div>
         <p className="footer__copyright">Developed By: Matthew Wright</p>
         <p className="footer__about">
@@ -15,7 +15,7 @@ function Footer() {
         </p>
       </div>
       <p className="footer__year">2024</p>
-    </div>
+    </footer>
   );
 }
 
