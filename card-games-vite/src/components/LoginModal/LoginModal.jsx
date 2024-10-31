@@ -1,6 +1,6 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import "./LoginModal.css";
-import { useForm } from "../../hooks/useForm";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 function LoginModal({
   isOpen,
@@ -8,15 +8,15 @@ function LoginModal({
   handleLogin,
   isLoading,
   handleRegistrationClick,
+  serverError,
 }) {
-  const { values, handleChange, setValues } = useForm({
-    email: "",
-    password: "",
-  });
-
-  const handleReset = () => {
-    setValues({ email: "", password: "" });
-  };
+  const {
+    values = { email: "", password: "" },
+    handleChange,
+    errors,
+    isValid,
+    resetForm,
+  } = useFormWithValidation({ email: "", password: "" });
 
   return (
     <ModalWithForm
@@ -25,9 +25,10 @@ function LoginModal({
       onClose={onCloseModal}
       isOpen={isOpen}
       buttonText={isLoading ? "Logging in..." : "Login"}
+      isDisabled={!isValid}
       handleSubmit={(evt) => {
         evt.preventDefault();
-        handleLogin(values, handleReset);
+        handleLogin(values, resetForm);
       }}
     >
       <label className="modal__label">
@@ -39,11 +40,12 @@ function LoginModal({
           name="email"
           id="loginEmail"
           placeholder="email"
-          value={values.email}
+          value={values.email || ""}
           required={true}
           autoComplete="username"
         />
       </label>
+      <span className="modal__error">{errors.email}</span>
       <label className="modal__label">
         Password *
         <input
@@ -53,11 +55,13 @@ function LoginModal({
           id="loginPassword"
           name="password"
           placeholder="password"
-          value={values.password}
+          value={values.password || ""}
           required={true}
           autoComplete="current-password"
+          minLength={8}
         />
       </label>
+      <span className="modal__error">{errors.password}</span>
       <button
         type="button"
         onClick={handleRegistrationClick}
@@ -65,6 +69,7 @@ function LoginModal({
       >
         or sign up
       </button>
+      <span className="modal__error">{serverError.error}</span>
     </ModalWithForm>
   );
 }

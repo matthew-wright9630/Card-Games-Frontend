@@ -137,6 +137,11 @@
   opacity: 0.3;
 }
 
+.modal__error {
+  color: red;
+  transition: 0.3s linear;
+}
+
 @media screen and (max-width: 550px) {
   .modal {
     margin-bottom: auto;

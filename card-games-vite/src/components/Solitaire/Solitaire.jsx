@@ -2,24 +2,40 @@ import "./Solitaire.css";
 import { React } from "react";
 
 function Solitaire({
-  currentGame,
   handleGameIncrement,
   gameActive,
   handleGameStart,
   handleGameEnd,
   incrementGameWon,
   isLoggedIn,
+  getCurrentGame,
 }) {
   function incrementGame() {
     if (isLoggedIn) {
-      handleGameIncrement(currentGame);
+      const currentGame = getGame();
+      if (typeof currentGame === "string") {
+        handleGameIncrement(currentGame);
+      }
     }
   }
+
   function incrementGameWin() {
     if (isLoggedIn) {
-      incrementGameWon(currentGame);
+      const currentGame = getGame();
+      if (typeof currentGame === "string") {
+        incrementGameWon(currentGame);
+      }
     }
   }
+
+  function getGame() {
+    return getCurrentGame({
+      name: "Solitaire",
+      description: `Solitaire is a single player game where cards need to be sorted
+                        from Ace to King in each suit.`,
+    });
+  }
+
   return (
     <div className="solitaire">
       <h2 className="solitaire__title">Solitaire</h2>

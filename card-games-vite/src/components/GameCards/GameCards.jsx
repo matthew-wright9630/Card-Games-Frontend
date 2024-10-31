@@ -1,32 +1,39 @@
 import { backOfCard } from "../../utils/constants";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./GameCards.css";
 
-function GameCards({ game, handleCardLike, isLoggedIn, openGameSite }) {
+function GameCards({
+  gameConstant,
+  handleCardLike,
+  isLoggedIn,
+  gameInfo,
+  isNotLiked,
+}) {
   function likeCard() {
-    handleCardLike({ game: game, isLiked: game.liked });
+    handleCardLike({
+      name: gameConstant.name,
+      description: gameConstant.description,
+    });
   }
-  function openGame() {
-    openGameSite(game);
-  }
+
   return (
     <div className="game-card">
       <div className="game-card__box">
-        <p className="game-card__header">{game.name}</p>
+        <p className="game-card__header">{gameConstant.name}</p>
         <Link
           className="game-card__link"
-          to={`/${game.name.toLowerCase()}`}
-          onClick={openGame}
+          to={`/${gameConstant.name.toLowerCase()}`}
         >
           <div className="game-card__container">
             <img
               src={backOfCard}
-              alt={`Image of ${game.name.toLowerCase()} game`}
+              alt={`Image of ${gameConstant.name.toLowerCase()} game`}
               className="game-card__face game-card__image"
             />
             <div className="game-card__face game-card__back">
-              <p className="game-card__description">{game.description}</p>
+              <p className="game-card__description">
+                {gameConstant.description}
+              </p>
             </div>
           </div>
         </Link>
@@ -35,7 +42,7 @@ function GameCards({ game, handleCardLike, isLoggedIn, openGameSite }) {
             type="button"
             onClick={likeCard}
             className={`game-card__like-btn ${
-              game.liked ? "game-card__like-btn_liked" : ""
+              isNotLiked ? "" : "game-card__like-btn_liked"
             }`}
           ></button>
         ) : (

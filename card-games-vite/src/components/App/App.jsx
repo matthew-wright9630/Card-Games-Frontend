@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import { useLocalStorage } from "react-use";
 import PageNotFound from "../PageNotFound/PageNotFound";
 import Header from "../Header/Header";
 import Main from "../Main/Main";
@@ -10,6 +9,7 @@ import War from "../War/War";
 import EditModal from "../EditModal/EditModal";
 import LoginModal from "../LoginModal/LoginModal";
 import RegistrationModal from "../RegistrationModal/RegistrationModal";
+import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import About from "../About/About";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
@@ -22,20 +22,18 @@ import {
   getGameHistory,
   updateGamesPlayed,
   updateGamesWon,
+  deleteUser,
+  deleteGameInfo,
+  checkResponse,
 } from "../../utils/api";
 import "./App.css";
 import { useEffect, useState } from "react";
 import {
-  addCardsToPiles,
   createNewDeck,
-  createPartialDeck,
   drawCard,
   shuffleAllCards,
-  shuffleCardsNotInPlay,
 } from "../../utils/deckOfCardsApi";
-import Preloader from "../Preloader/Preloader";
 import DiscardModal from "../DiscardModal/DiscardModal";
-import { games } from "../../utils/constants";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -50,6 +48,8 @@ function App() {
   const [isDrawPileEmpty, setIsDrawPileEmpty] = useState(false);
   const [isDiscardPileEmpty, setIsDiscardPileEmpty] = useState(true);
   const [currentGame, setCurrentGame] = useState({});
+  const [selectedItem, setSelectedItem] = useState({});
+  const [serverError, setServerError] = useState({});
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -65,50 +65,77 @@ function App() {
     setActiveModal("discard-modal");
   };
 
+  const handleDeleteClick = (item) => {
+    setActiveModal("delete-confirmation-modal");
+    setSelectedItem(item);
+  };
+
   const handleCloseModal = () => {
     setActiveModal("");
+    setServerError({});
   };
 
   const isEditProfileModalOpen = activeModal === "edit-profile-modal";
   const isLoginModalOpen = activeModal === "login-modal";
   const isRegistrationModalOpen = activeModal === "signup-modal";
   const isDiscardModalOpen = activeModal === "discard-modal";
+  const isDeleteConfirmationModalOpen =
+    activeModal === "delete-confirmation-modal";
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
       return;
     }
 
-    return authorize(email, password)
+    const checkError = (data) => {
+      if (data.validation) {
+        setServerError({
+          error: data.validation.body.message,
+        });
+      } else {
+        setServerError({ error: data.message });
+      }
+    };
+
+    setIsLoading(true);
+    authorize(email, password)
       .then((data) => {
         if (data.token) {
           localStorage.setItem("jwt", data.token);
           setUser(data.token);
           handleCloseModal();
           resetForm();
-          return data.token;
+          setServerError({});
+        } else if (data.validation) {
+          setServerError({
+            error: data.validation.body.message,
+          });
         } else {
-          throw new Error("No token received");
+          setServerError({ error: data.message });
         }
       })
       .catch((err) => {
-        console.error(err);
-        throw err;
-      });
+        console.log(err);
+      })
+      .finally(() => setIsLoading(false));
   };
 
-  const handleRegistration = ({ email, password, name, avatar }, resetForm) => {
-    register(email, password, name, avatar)
+  const handleRegistration = ({ email, password, name }, resetForm) => {
+    setIsLoading(true);
+    register(email, password, name)
       .then((data) => {
         if (data.name) {
-          handleLogin({ email, password }, resetForm)
-            .then((token) => {
-              createHistory(token);
-            })
-            .catch((err) => console.error(err));
+          handleLogin({ email, password }, resetForm);
+        } else if (data.validation) {
+          setServerError({
+            error: data.validation.body.message,
+          });
+        } else {
+          setServerError({ error: data.message });
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
   };
 
   const handleLogout = () => {
@@ -117,108 +144,169 @@ function App() {
     setCurrentUser({});
   };
 
-  const handleEditProfile = ({ name, avatar }, resetForm) => {
-    editProfileInfo({ name: name, avatar: avatar }, localStorage.getItem("jwt"))
-      .then((profile) => {
-        setUserData({
-          name: profile.name,
-          avatar: profile.avatar,
-          email: profile.email,
-          id: profile.id,
-        });
-        setCurrentUser(profile);
-        resetForm();
+  const handleEditProfile = ({ name }, resetForm) => {
+    setIsLoading(true);
+    editProfileInfo({ name: name }, localStorage.getItem("jwt"))
+      .then((data) => {
+        if (data.name) {
+          setUserData({
+            name: data.name,
+            email: data.email,
+            id: data.id,
+          });
+          setCurrentUser(data);
+          resetForm();
+          handleCloseModal();
+        } else if (data.validation) {
+          setServerError({
+            error: data.validation.body.message,
+          });
+        } else {
+          setServerError({ error: data.message });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const handleDeleteUser = (userToDelete) => {
+    setIsLoading(true);
+    deleteUser({ id: userToDelete }, localStorage.getItem("jwt"))
+      .then(() => {
+        handleDeleteCards(userToDelete);
+        handleLogout();
         handleCloseModal();
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
+
+  const handleDeleteCards = (userId) => {
+    gameInfo.map((game) => {
+      if (game.owner === userId) {
+        handleDeleteGameInfo(game._id);
+      }
+    });
   };
 
   const setUser = (token) => {
+    setIsLoading(true);
     checkToken(token)
       .then((user) => {
         setCurrentUser(user);
+        getGameInfo(user._id);
         setIsLoggedIn(true);
       })
       .catch((err) => {
         console.error(err);
         setIsLoggedIn(false);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
-  const handleCardLike = ({ game, isLiked }) => {
+  const handleCardLike = ({ name, description }) => {
+    if (!checkGameIsInList(name)) {
+      createAndLikeCard(name, description);
+    }
+
     const setGameCardLikes = (updatedGame) => {
       setGameInfo((games) => {
-        return games.map((item) => {
+        return games?.map((item) => {
           return item._id === updatedGame._id ? updatedGame : item;
         });
       });
     };
 
-    setIsLoading(true);
-    if (isLiked) {
-      dislikeGame(game._id, localStorage.getItem("jwt"))
-        .then((res) => {
-          setGameCardLikes(res);
-        })
-        .catch((err) => console.error(err))
-        .finally(() => setIsLoading(false));
-    } else {
-      likeGame(game._id, localStorage.getItem("jwt"))
-        .then((res) => {
-          setGameCardLikes(res);
-        })
-        .catch((err) => console.error(err))
-        .finally(() => setIsLoading(false));
-    }
+    gameInfo.filter((game) => {
+      if (game.name === name) {
+        setIsLoading(true);
+        if (game.liked) {
+          dislikeGame(game._id, localStorage.getItem("jwt"))
+            .then((res) => {
+              setGameCardLikes(res);
+            })
+            .catch((err) => console.error(err))
+            .finally(() => setIsLoading(false));
+        } else {
+          likeGame(game._id, localStorage.getItem("jwt"))
+            .then((res) => {
+              setGameCardLikes(res);
+            })
+            .catch((err) => console.error(err))
+            .finally(() => setIsLoading(false));
+        }
+      }
+    });
   };
 
-  const handleGameIncrement = (game) => {
+  const checkGameIsInList = (name) => {
+    let gameIsInList = false;
+    gameInfo?.filter((game) => {
+      if (game.name === name && game.owner === currentUser._id) {
+        gameIsInList = true;
+      }
+    });
+    return gameIsInList;
+  };
+
+  const createAndLikeCard = (name, description) => {
     setIsLoading(true);
-    updateGamesPlayed(game._id, localStorage.getItem("jwt"))
-      .then((res) => {
-        getGameHistory().then((games) => {
-          setGameInfo(games.data);
-        });
+    createNewGameInfo(name, description)
+      .then((game) => {
+        setGameInfo(getGameInfo(currentUser._id));
+
+        likeGame(game._id, localStorage.getItem("jwt"))
+          .then((res) => {
+            setGameInfo((games) => {
+              if (games === undefined) {
+                return [res];
+              }
+              return games.map((item) => {
+                return item._id === res._id ? res : item;
+              });
+            });
+          })
+          .catch((err) => console.error(err));
       })
-      .catch((err) => {
-        console.error(err);
-      })
+      .catch((err) => console.error())
       .finally(() => setIsLoading(false));
   };
 
-  const incrementGameWon = (game) => {
+  const createNewGameInfo = (name, description) => {
+    return createGameHistory(
+      {
+        name: name,
+        gamesWon: 0,
+        gamesPlayed: 0,
+        liked: false,
+        description: description,
+        owner: currentUser._id,
+      },
+      localStorage.getItem("jwt")
+    );
+  };
+
+  const getGameInfo = (userId) => {
     setIsLoading(true);
-    updateGamesWon(game._id, localStorage.getItem("jwt"))
-      .then((res) => {
-        getGameHistory().then((games) => {
-          setGameInfo(games.data);
-        });
+    getGameHistory({ id: userId }, localStorage.getItem("jwt"))
+      .then((games) => {
+        setGameInfo(games.data);
       })
-      .catch((err) => {
-        console.error(err);
-      })
+      .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
 
-  const createHistory = (token) => {
-    checkToken(token)
-      .then((user) => {
-        games.map((game) => {
-          createGameHistory(
-            {
-              name: game.name,
-              gamesPlayed: 0,
-              gamesWon: 0,
-              user: user._id,
-              liked: false,
-              description: game.description,
-            },
-            localStorage.getItem("jwt")
-          );
-        });
-        setCurrentUser(user);
+  const handleDeleteGameInfo = (gameId) => {
+    setIsLoading(true);
+    deleteGameInfo({ id: gameId }, localStorage.getItem("jwt"))
+      .then(() => {
+        handleCloseModal();
+        getGameInfo(currentUser._id);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
   };
 
   const handleGameStart = (numberOfDecks) => {
@@ -234,6 +322,63 @@ function App() {
     } else {
       shuffle();
     }
+  };
+
+  const getCurrentGame = ({ name, description }) => {
+    let gameIsInList = false;
+    const gameId = gameInfo?.filter((game) => {
+      if (game.name === name && game.owner === currentUser._id) {
+        gameIsInList = true;
+        return game._id;
+      }
+    });
+    if (!gameIsInList) {
+      setIsLoading(true);
+      return createNewGameInfo(name, description)
+        .then((res) => {
+          handleGameIncrement(res._id);
+          setGameInfo(getGameInfo(currentUser._id));
+          return res._id;
+        })
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
+    } else {
+      return gameId[0]._id;
+    }
+  };
+
+  const handleGameIncrement = (gameId) => {
+    setIsLoading(true);
+    updateGamesPlayed(gameId, localStorage.getItem("jwt"))
+      .then(() => {
+        getGameHistory(
+          { id: currentUser._id },
+          localStorage.getItem("jwt")
+        ).then((games) => {
+          setGameInfo(games.data);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const incrementGameWon = (gameId) => {
+    setIsLoading(true);
+    updateGamesWon(gameId, localStorage.getItem("jwt"))
+      .then((res) => {
+        getGameHistory(
+          { id: currentUser._id },
+          localStorage.getItem("jwt")
+        ).then((games) => {
+          setGameInfo(games.data);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const handleGameEnd = () => {
@@ -318,6 +463,10 @@ function App() {
     setCurrentGame(game);
   };
 
+  const closeGameSite = (game) => {
+    setGameActive(false);
+  };
+
   useEffect(() => {
     if (!activeModal) return;
 
@@ -353,14 +502,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (currentUser) {
-      getGameHistory(localStorage.getItem("jwt")).then((games) => {
-        setGameInfo(games.data);
-      });
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
     renderDiscardPile();
   }, [discardPile]);
 
@@ -373,6 +514,7 @@ function App() {
             handleRegistrationClick={handleRegistrationClick}
             isLoggedIn={isLoggedIn}
             handleLogout={handleLogout}
+            closeGameSite={closeGameSite}
           />
           <Routes>
             <Route path="*" element={<PageNotFound />}></Route>
@@ -394,8 +536,6 @@ function App() {
                   isLoading={isLoading}
                   handleDiscardPileClick={handleDiscardPileClick}
                   isLoggedIn={isLoggedIn}
-                  openGameSite={openGameSite}
-                  handleGameIncrement={handleGameIncrement}
                 />
               }
             ></Route>
@@ -409,6 +549,9 @@ function App() {
                     handleCardLike={handleCardLike}
                     isLoggedIn={isLoggedIn}
                     openGameSite={openGameSite}
+                    handleDeleteUser={handleDeleteUser}
+                    handleDeleteGameInfo={handleDeleteGameInfo}
+                    handleDeleteClick={handleDeleteClick}
                   />
                 </ProtectedRoute>
               }
@@ -425,6 +568,7 @@ function App() {
                   handleGameStart={handleGameStart}
                   handleGameEnd={handleGameEnd}
                   isLoggedIn={isLoggedIn}
+                  getCurrentGame={getCurrentGame}
                 />
               }
             ></Route>
@@ -439,6 +583,7 @@ function App() {
                   handleGameStart={handleGameStart}
                   handleGameEnd={handleGameEnd}
                   isLoggedIn={isLoggedIn}
+                  getCurrentGame={getCurrentGame}
                 />
               }
             ></Route>
@@ -450,12 +595,14 @@ function App() {
             handleLogin={handleLogin}
             isLoading={isLoading}
             handleRegistrationClick={handleRegistrationClick}
+            serverError={serverError}
           />
           <EditModal
             isOpen={isEditProfileModalOpen}
             onCloseModal={handleCloseModal}
             handleEditProfile={handleEditProfile}
             isLoading={isLoading}
+            serverError={serverError}
           />
           <RegistrationModal
             isOpen={isRegistrationModalOpen}
@@ -463,11 +610,21 @@ function App() {
             handleRegistration={handleRegistration}
             isLoading={isLoading}
             handleLoginClick={handleLoginClick}
+            serverError={serverError}
           />
           <DiscardModal
             isOpen={isDiscardModalOpen}
             onCloseModal={handleCloseModal}
             discardPile={discardPile}
+          />
+          <DeleteConfirmationModal
+            activeModal={activeModal}
+            isOpen={isDeleteConfirmationModalOpen}
+            handleCloseModal={handleCloseModal}
+            handleDeleteGameInfo={handleDeleteGameInfo}
+            handleDeleteUser={handleDeleteUser}
+            selectedItem={selectedItem}
+            buttonText={isLoading ? "Deleting..." : "Yes, delete item"}
           />
         </div>
       </div>

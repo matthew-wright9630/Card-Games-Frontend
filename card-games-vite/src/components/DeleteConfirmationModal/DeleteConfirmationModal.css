@@ -1,0 +1,55 @@
+.modal__delete-section {
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.modal__delete-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+.modal__delete-paragraph {
+  margin: 0 auto;
+  text-align: center;
+  margin: 5px 0;
+}
+
+.modal__delete-btn-confirm {
+  background-color: #fff;
+  border: none;
+  color: #ff4d00;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 0;
+  margin-bottom: 24px;
+  cursor: pointer;
+  opacity: 1;
+  transition: 0.2s linear;
+}
+
+.modal__delete-btn-confirm:hover {
+  opacity: 0.5;
+}
+
+.modal__cancel-btn {
+  background-color: #fff;
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 0;
+  margin-bottom: 24px;
+  cursor: pointer;
+  opacity: 1;
+  transition: 0.2s linear;
+}
+
+.modal__cancel-btn:hover {
+  opacity: 0.5;
+}

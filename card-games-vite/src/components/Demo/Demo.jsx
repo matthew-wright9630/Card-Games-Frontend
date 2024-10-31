@@ -15,7 +15,6 @@ function Demo({
   isDiscardPileEmpty,
   isLoading,
   handleDiscardPileClick,
-  handleGameIncrement,
 }) {
   const handLimit = 7;
   const startDemoGame = () => {
