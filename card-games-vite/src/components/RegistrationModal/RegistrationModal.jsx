@@ -1,6 +1,6 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import "./RegistrationModal.css";
-import { useForm } from "../../hooks/useForm";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 function RegisterationModal({
   isOpen,
@@ -8,17 +8,15 @@ function RegisterationModal({
   handleRegistration,
   isLoading,
   handleLoginClick,
+  serverError,
 }) {
-  const { values, handleChange, setValues } = useForm({
-    email: "",
-    password: "",
-    name: "",
-    avatar: "",
-  });
-
-  const handleReset = () => {
-    setValues({ email: "", password: "", name: "", avatar: "" });
-  };
+  const {
+    values = { name: "", email: "", password: "" },
+    handleChange,
+    errors,
+    isValid,
+    resetForm,
+  } = useFormWithValidation({ name: "", email: "", password: "" });
 
   return (
     <ModalWithForm
@@ -27,9 +25,10 @@ function RegisterationModal({
       onClose={onCloseModal}
       isOpen={isOpen}
       buttonText={isLoading ? "Registering..." : "Sign Up"}
+      isDisabled={!isValid}
       handleSubmit={(evt) => {
         evt.preventDefault();
-        handleRegistration(values, handleReset);
+        handleRegistration(values, resetForm);
       }}
     >
       <label className="modal__label">
@@ -41,11 +40,12 @@ function RegisterationModal({
           name="email"
           id="email"
           placeholder="email"
-          value={values.email}
+          value={values.email || ""}
           required={true}
           autoComplete="username"
         />
       </label>
+      <span className="modal__error">{errors.email}</span>
       <label className="modal__label">
         Password *
         <input
@@ -55,11 +55,13 @@ function RegisterationModal({
           id="password"
           name="password"
           placeholder="password"
-          value={values.password}
+          value={values.password || ""}
           required={true}
+          minLength={8}
           autoComplete="current-password"
         />
       </label>
+      <span className="modal__error">{errors.password}</span>
       <label className="modal__label">
         Name *
         <input
@@ -69,24 +71,13 @@ function RegisterationModal({
           id="username"
           name="name"
           placeholder="username"
-          value={values.name}
+          value={values.name || ""}
           required={true}
           autoComplete="username"
+          minLength={2}
         />
       </label>
-      <label className="modal__label">
-        Avatar URL *
-        <input
-          onChange={handleChange}
-          type="url"
-          className="modal__input"
-          id="avatar"
-          name="avatar"
-          placeholder="avatar"
-          value={values.avatar}
-          required={true}
-        />
-      </label>
+      <span className="modal__error">{errors.name}</span>
       <button
         type="button"
         onClick={handleLoginClick}
@@ -94,6 +85,7 @@ function RegisterationModal({
       >
         or Login
       </button>
+      <span className="modal__error">{serverError.error}</span>
     </ModalWithForm>
   );
 }

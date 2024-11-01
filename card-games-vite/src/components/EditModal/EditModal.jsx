@@ -1,16 +1,25 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import Preloader from "../Preloader/Preloader";
-import { useForm } from "../../hooks/useForm";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
+import { useContext } from "react";
 
-function EditModal({ isOpen, onCloseModal, handleEditProfile, isLoading }) {
-  const { values, handleChange, setValues } = useForm({
-    name: "",
-    avatar: "",
-  });
+function EditModal({
+  isOpen,
+  onCloseModal,
+  handleEditProfile,
+  isLoading,
+  serverError,
+}) {
+  const user = useContext(CurrentUserContext);
+  const {
+    values = { name: user.name },
+    handleChange,
+    errors,
+    isValid,
+    resetForm,
+  } = useFormWithValidation(user.name);
 
-  const handleReset = () => {
-    setValues({ email: "", password: "", name: "", avatar: "" });
-  };
   return (
     <div>
       {isLoading ? <Preloader></Preloader> : ""}
@@ -20,9 +29,10 @@ function EditModal({ isOpen, onCloseModal, handleEditProfile, isLoading }) {
         onClose={onCloseModal}
         isOpen={isOpen}
         buttonText={isLoading ? "Saving..." : "Save changes"}
+        isDisabled={!isValid}
         handleSubmit={(evt) => {
           evt.preventDefault();
-          handleEditProfile(values, handleReset);
+          handleEditProfile(values, resetForm);
         }}
       >
         <label htmlFor="editProfileName" className="modal__label">
@@ -34,24 +44,15 @@ function EditModal({ isOpen, onCloseModal, handleEditProfile, isLoading }) {
             name="name"
             id="editProfileName"
             placeholder="Name"
-            autoComplete="username"
-            value={values.name}
+            autoComplete="off"
+            value={values.name || ""}
             required={true}
+            minLength={2}
+            maxLength={40}
           />
         </label>
-        <label htmlFor="editProfileAvatar" className="modal__label">
-          Avatar *
-          <input
-            onChange={handleChange}
-            type="url"
-            className="modal__input"
-            id="editProfileAvatar"
-            name="avatar"
-            placeholder="avatar"
-            value={values.avatar}
-            required={true}
-          />
-        </label>
+        <span className="modal__error">{errors.name}</span>
+        <span className="modal__error">{serverError.error}</span>
       </ModalWithForm>
     </div>
   );

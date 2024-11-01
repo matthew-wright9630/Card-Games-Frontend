@@ -1,7 +1,7 @@
 .profile {
   display: flex;
   gap: 120px;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -12,6 +12,12 @@
 
 .profile__liked-games {
   flex-grow: 2;
+}
+
+.profile__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 @media screen and (max-width: 795px) {

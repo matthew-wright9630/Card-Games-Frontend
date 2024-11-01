@@ -9,32 +9,35 @@ function Header({
   handleRegistrationClick,
   isLoggedIn,
   handleLogout,
+  closeGameSite,
 }) {
   const user = useContext(CurrentUserContext);
   return (
     <header className="header">
       <h1 className="header__title">The Wright Collection of Card Games</h1>
       <div className="header__container">
-        <Link className="header__link" to="/">
+        <Link onClick={closeGameSite} className="header__link" to="/">
           <img src={homeIcon} alt="Home Icon" className="header__home" />
         </Link>
         {isLoggedIn ? (
           <div className="header__profile">
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                handleLogout();
+                closeGameSite();
+              }}
               type="button"
               className="header__button"
             >
               Logout
             </button>
-            <Link className="header__link" to="/profile">
+            <Link
+              onClick={closeGameSite}
+              className="header__link"
+              to="/profile"
+            >
               <div className="header__profile-info">
                 <p className="header__username">{user.name}</p>
-                <img
-                  src={user.avatar}
-                  alt="Profile Avatar"
-                  className="header__avatar"
-                />
               </div>
             </Link>
           </div>

@@ -1,9 +1,11 @@
 .history {
-  margin-top: 20px;
+  /* margin-top: 20px; */
   text-align: center;
   background-color: #000;
   border: 2px #000 solid;
 }
+
+.history__grid
 
 .history__grid-row {
   display: grid;
@@ -15,4 +17,12 @@
   border: 1px #000 solid;
   line-height: 1.2;
   word-wrap: break-word;
+}
+
+.history__empty {
+  height: 100%;
+  margin: 0;
+  background-color: #35654d;
+  font-size: 20px;
+  width: 240px;
 }

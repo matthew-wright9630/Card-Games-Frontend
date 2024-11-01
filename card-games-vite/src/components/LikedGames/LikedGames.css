@@ -1,7 +1,21 @@
+.liked-games__title {
+  font-size: 36px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.liked-games__description {
+  font-size: 20px;
+  margin: 0;
+  text-align: center;
+}
+
 .liked-games-list {
+  margin-top: 28px;
   display: grid;
   grid-template-columns: repeat(auto-fit, 150px);
   grid-auto-rows: 250px;
   gap: 20px;
   justify-content: space-around;
 }
+
