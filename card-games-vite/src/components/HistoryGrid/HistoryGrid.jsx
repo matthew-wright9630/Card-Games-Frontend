@@ -1,9 +1,6 @@
 import "./HistoryGrid.css";
 
 function HistoryGrid({ game, handleDeleteGameInfo, handleDeleteClick }) {
-  function deleteRow() {
-    handleDeleteGameInfo(game._id);
-  }
   function deleteIsClicked() {
     handleDeleteClick(game, handleDeleteGameInfo);
   }
@@ -15,7 +12,6 @@ function HistoryGrid({ game, handleDeleteGameInfo, handleDeleteClick }) {
         <p className="history__grid-item">Won: {game.gamesWon} </p>
         <p className="history__grid-item">
           Lost: {game.gamesPlayed - game.gamesWon}
-          {""}
         </p>
       </div>
       <button

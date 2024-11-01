@@ -1,11 +1,14 @@
 import GameCards from "../GameCards/GameCards";
 import { games } from "../../utils/constants";
 import "./GamesList.css";
+import { useContext } from "react";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
+  const user = useContext(CurrentUserContext);
   function checkIsLiked(selectedGame) {
     const test = gameInfo?.filter((game) => {
-      if (game.name === selectedGame.name) {
+      if (game.name === selectedGame.name && game.owner === user._id) {
         return game;
       }
     });

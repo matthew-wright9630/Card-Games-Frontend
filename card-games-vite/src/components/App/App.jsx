@@ -251,7 +251,7 @@ function App() {
   const createAndLikeCard = (name, description) => {
     setIsLoading(true);
     createNewGameInfo(name, description)
-      .then((game) => {
+    .then((game) => {
         setGameInfo(getGameInfo(currentUser._id));
 
         likeGame(game._id, localStorage.getItem("jwt"))
