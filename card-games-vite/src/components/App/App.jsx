@@ -217,6 +217,7 @@ function App() {
     };
 
     gameInfo.filter((game) => {
+      console.log(game, "GAME INFO FILTERED");
       if (game.name === name) {
         setIsLoading(true);
         if (game.liked) {
@@ -251,7 +252,8 @@ function App() {
   const createAndLikeCard = (name, description) => {
     setIsLoading(true);
     createNewGameInfo(name, description)
-    .then((game) => {
+      .then((game) => {
+        console.log(game, "CREATE AND LIKE CARD");
         setGameInfo(getGameInfo(currentUser._id));
 
         likeGame(game._id, localStorage.getItem("jwt"))
