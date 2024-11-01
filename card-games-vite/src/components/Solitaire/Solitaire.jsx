@@ -48,7 +48,7 @@ function Solitaire({
         <button
           onClick={() => {
             incrementGame();
-            handleGameStart();
+            handleGameStart(1);
           }}
           className="playGame"
         >
