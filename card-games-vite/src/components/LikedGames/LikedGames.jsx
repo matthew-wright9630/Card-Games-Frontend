@@ -5,8 +5,6 @@ import { useContext } from "react";
 
 function LikedGames({ gameInfo, handleCardLike, isLoggedIn, openGameSite }) {
   const currentUser = useContext(CurrentUserContext);
-  console.log(gameInfo);
-  console.log(currentUser);
   return (
     <div className="liked-games">
       <h3 className="liked-games__title">Liked Games:</h3>
