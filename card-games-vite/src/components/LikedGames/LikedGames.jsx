@@ -8,9 +8,6 @@ function LikedGames({ gameInfo, handleCardLike, isLoggedIn, openGameSite }) {
   return (
     <div className="liked-games">
       <h3 className="liked-games__title">Liked Games:</h3>
-      {/* <p className="liked-games__description">
-        Games that have been liked (if any) are displayed below
-      </p> */}
       <div className="liked-games-list">
         {gameInfo
           ?.filter((game) => {
@@ -26,12 +23,10 @@ function LikedGames({ gameInfo, handleCardLike, isLoggedIn, openGameSite }) {
             return (
               <GameCards
                 key={game._id}
-                gameInfo={gameInfo}
                 gameConstant={game}
                 handleCardLike={handleCardLike}
                 isLoggedIn={isLoggedIn}
-                openGameSite={openGameSite}
-                isLiked={game.liked}
+                isNotLiked={!game.liked}
               />
             );
           })}

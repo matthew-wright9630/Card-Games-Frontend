@@ -60,7 +60,7 @@ function createGameHistory(
       gamesWon,
       liked,
       description,
-      owner
+      owner,
     }),
   });
 }

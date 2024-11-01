@@ -22,7 +22,6 @@ function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
         return (
           <GameCards
             key={game.name}
-            gameInfo={gameInfo}
             gameConstant={game}
             handleCardLike={handleCardLike}
             isLoggedIn={isLoggedIn}
@@ -30,7 +29,6 @@ function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
           />
         );
       })}
-      {}
     </div>
   );
 }

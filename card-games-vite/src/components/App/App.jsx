@@ -24,7 +24,6 @@ import {
   updateGamesWon,
   deleteUser,
   deleteGameInfo,
-  checkResponse,
 } from "../../utils/api";
 import "./App.css";
 import { useEffect, useState } from "react";

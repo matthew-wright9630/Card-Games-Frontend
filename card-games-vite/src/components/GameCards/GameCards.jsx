@@ -2,13 +2,7 @@ import { backOfCard } from "../../utils/constants";
 import { Link } from "react-router-dom";
 import "./GameCards.css";
 
-function GameCards({
-  gameConstant,
-  handleCardLike,
-  isLoggedIn,
-  gameInfo,
-  isNotLiked,
-}) {
+function GameCards({ gameConstant, handleCardLike, isLoggedIn, isNotLiked }) {
   function likeCard() {
     handleCardLike({
       name: gameConstant.name,
