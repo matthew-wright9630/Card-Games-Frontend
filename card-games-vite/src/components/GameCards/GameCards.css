@@ -93,6 +93,11 @@
   background-color: lightgray;
   color: rgba(53, 101, 77, 1);
   text-decoration: none;
+  transition: .3s linear;
+}
+
+.game-card__link:hover {
+  opacity: .6;
 }
 
 .game-card__like-btn {

@@ -48,7 +48,7 @@ function EditModal({
             value={values.name || ""}
             required={true}
             minLength={2}
-            maxLength={40}
+            maxLength={30}
           />
         </label>
         <span className="modal__error">{errors.name}</span>
