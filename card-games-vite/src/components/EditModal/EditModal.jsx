@@ -45,10 +45,10 @@ function EditModal({
             id="editProfileName"
             placeholder="Name"
             autoComplete="off"
-            value={values.name || ""}
+            value={values.name || user.name}
             required={true}
             minLength={2}
-            maxLength={40}
+            maxLength={30}
           />
         </label>
         <span className="modal__error">{errors.name}</span>

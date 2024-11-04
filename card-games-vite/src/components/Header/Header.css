@@ -23,6 +23,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .header__home {
@@ -39,6 +40,7 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .header__link {
@@ -62,7 +64,11 @@ header {
   font-weight: 500;
   font-size: 20px;
   line-height: 1.2;
+  margin: 0;
   transition: 0.3s linear;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 
 
@@ -88,6 +94,12 @@ header {
   opacity: 0.5;
 }
 
+@media screen and (max-width: 795px) {
+  .header__username {
+    max-width: 250px;
+  }
+}
+
 @media screen and (max-width: 550px) {
   .header__title {
     font-size: 40px;
@@ -96,5 +108,9 @@ header {
 
   .header__button {
     width: 100px;
+  }
+
+  .header__username {
+    max-width: 125px;
   }
 }

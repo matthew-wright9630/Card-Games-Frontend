@@ -5,16 +5,23 @@
   justify-content: space-between;
 }
 
+.profile__history {
+  margin-top: 20px;
+  align-self: flex-start;
+}
+
 .profile__edit-btn {
   height: 23px;
   font-size: 20px;
 }
 
 .profile__liked-games {
-  flex-grow: 2;
+  width: 100%;
 }
 
 .profile__buttons {
+  margin-top: 20px;
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -25,5 +32,15 @@
     flex-direction: column-reverse;
     align-items: center;
     gap: 50px;
+  }
+
+  .profile__buttons {
+    align-self: center;
+    margin: 0;
+  }
+
+  .profile__history {
+    align-self: center;
+    margin: 0;
   }
 }

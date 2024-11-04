@@ -100,3 +100,11 @@
   text-align: center;
   margin-bottom: 16px;
 }
+
+@media screen and (max-width: 550px)  {
+  .demo__btn {
+    font-size: 20px;
+  width: 70px;
+  }
+  
+}
