@@ -16,7 +16,7 @@
 }
 
 .profile__liked-games {
-  flex-grow: 2;
+  width: 100%;
 }
 
 .profile__buttons {

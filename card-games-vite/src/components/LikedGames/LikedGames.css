@@ -1,3 +1,7 @@
+.liked-games {
+  width: 100%;
+}
+
 .liked-games__title {
   font-size: 36px;
   margin: 20px 0;
