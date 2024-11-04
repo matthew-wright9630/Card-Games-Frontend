@@ -16,10 +16,6 @@ function Profile({
 }) {
   const user = useContext(CurrentUserContext);
 
-  function deleteUser() {
-    handleDeleteUser(user._id);
-  }
-
   function clickDeleteButton() {
     handleDeleteClick(user);
   }
