@@ -7,11 +7,14 @@
 }
 
 .game-card__header {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 700;
   font-size: 20px;
+  height: 10%;
   margin: 0;
-  padding: 16px 0;
+  /* padding: 16px 0; */
   border-top-left-radius: 3%;
   border-top-right-radius: 3%;
   border-bottom: 1px solid #000;
@@ -19,11 +22,13 @@
   color: rgba(53, 101, 77, 1);
 }
 
-.game-card__link {
+.game-card__card {
   display: block;
   width: 100%;
-  height: calc(100% - 56px);
+  height: 80%;
   perspective: 600px;
+  padding: 0;
+  background-color: #35654d;
 }
 
 .game-card__container {
@@ -34,15 +39,30 @@
   transform-style: preserve-3d;
 }
 
+.game-card__container_flipped {
+  transform: rotateY(180deg);
+}
+
+.game-card__card:hover .game-card__container {
+  transform: rotateY(180deg);
+}
+
 .game-card__face {
   position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
+  top: 0;
+  left: 0;
 }
 
 .game-card__back {
   transform: rotateY(180deg);
+  background-color: #f3f3f3;
+  display: flex;
+  align-items: center;
+  border-radius: 3%;
+  cursor: pointer;
 }
 
 .game-card__image {
@@ -51,18 +71,28 @@
   transition: 0.3s linear;
 }
 
-.game-card__link:hover .game-card__container {
-  transform: rotateY(180deg);
-}
-
 .game-card__description {
   width: 100%;
-  height: 100%;
   margin: 0;
   color: #35654d;
-  background-color: #f3f3f3;
-  border-radius: 3%;
   text-align: center;
+}
+
+.game-card__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10%;
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0;
+  border-bottom-left-radius: 3%;
+  border-bottom-right-radius: 3%;
+  border-bottom: 1px solid #000;
+  background-color: lightgray;
+  color: rgba(53, 101, 77, 1);
+  text-decoration: none;
+  /* height: 30px */
 }
 
 .game-card__like-btn {

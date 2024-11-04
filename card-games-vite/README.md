@@ -3,6 +3,7 @@
 ## About the Project
 
 This website can be used to play various card games. The website will display the available card games, and users will be able to register, login, and like their preferred card games for easier access.
+When a user is logged in, they are able to view their profile. The profile will show their liked games and their game history. Users are able to delete their game history and their account
 
 ## Technologies Used
 
@@ -15,12 +16,13 @@ For components to interact and work correctly, React is required.
 
 Windows:
 React can be downloaded using npm.
-
 npm install react-router-dom@6
+
+The local server can be found at the [Github - Backend] link below. Once both are ready and all dependencies downloaded, the local website will be found at http://localhost:3000/
 
 ## Future Improvements
 
-Currently the program does not allow users to create their own profiles, and the games do not work yet. These will be added in the future, so be sure the check back for any updates!
+Currently the website does not have any card games coded. The next major improvements will be to get Solitaire and War working, and adding drag and drop functionality. Be sure to check back later for any updates!
 
 ## Links
 
