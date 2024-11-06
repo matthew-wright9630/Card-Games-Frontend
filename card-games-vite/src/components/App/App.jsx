@@ -10,8 +10,11 @@ import EditModal from "../EditModal/EditModal";
 import LoginModal from "../LoginModal/LoginModal";
 import RegistrationModal from "../RegistrationModal/RegistrationModal";
 import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal";
+import DiscardModal from "../DiscardModal/DiscardModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import About from "../About/About";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { authorize, register, checkToken } from "../../utils/auth";
 import {
@@ -28,11 +31,12 @@ import {
 import "./App.css";
 import { useEffect, useState } from "react";
 import {
+  addCardsToPiles,
   createNewDeck,
   drawCard,
+  listCardsInPile,
   shuffleAllCards,
 } from "../../utils/deckOfCardsApi";
-import DiscardModal from "../DiscardModal/DiscardModal";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -60,7 +64,7 @@ function App() {
     setActiveModal("signup-modal");
   };
 
-  const handleDiscardPileClick = () => {
+  const handleDiscardPileClick = (deckId, pileName) => {
     setActiveModal("discard-modal");
   };
 
@@ -85,16 +89,6 @@ function App() {
     if (!email || !password) {
       return;
     }
-
-    const checkError = (data) => {
-      if (data.validation) {
-        setServerError({
-          error: data.validation.body.message,
-        });
-      } else {
-        setServerError({ error: data.message });
-      }
-    };
 
     setIsLoading(true);
     authorize(email, password)
@@ -415,13 +409,13 @@ function App() {
     }
   };
 
-  const pullCard = (numberOfCards) => {
+  const pullCard = (deck, playerName, numberOfCards) => {
     for (let i = 0; i < numberOfCards; i++) {
       setIsLoading(true);
-      drawCard(localStorage.getItem("deck_id"), 1)
+      drawCard(deck, 1)
         .then((data) => {
           if (data.success) {
-            addCardToHand(data.cards.pop());
+            addCardToHand(deck, playerName, data.cards.pop());
           } else {
             setIsDiscardPileEmpty(true);
             shuffle();
@@ -435,15 +429,25 @@ function App() {
     }
   };
 
-  const addCardToHand = (card) => {
-    card.ownwer = localStorage.getItem("jwt");
-    setHand([...hand, card]);
+  const removeSpacesFromName = (name) => {
+    return name.replaceAll(" ", "_");
   };
 
-  const handleDiscard = (id) => {
+  const addCardToHand = (deck, playerName, card) => {
+    const name = removeSpacesFromName(playerName);
+    addCardsToPiles(deck, name, card.code)
+      .then(() => {
+        listCardsInPile(deck, name).then((deck) => {
+          setHand(deck.piles[name].cards);
+        });
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const handleDiscard = (discardedCard) => {
     setHand((cards) => {
       return cards.filter((card) => {
-        if (card.code !== id) {
+        if (card.code !== discardedCard.code) {
           return card;
         } else {
           addToDiscard(card);
@@ -453,14 +457,26 @@ function App() {
   };
 
   const addToDiscard = (card) => {
-    setDiscardPile([card, ...discardPile]);
+    addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code)
+      .then(() => {
+        renderPiles(localStorage.getItem("deck_id"), "discard");
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const renderPiles = (deckId, pileName) => {
+    listCardsInPile(deckId, pileName)
+      .then((deck) => {
+        setDiscardPile(deck);
+      })
+      .catch((err) => console.error(err));
   };
 
   const openGameSite = (game) => {
     setCurrentGame(game);
   };
 
-  const closeGameSite = (game) => {
+  const closeGameSite = () => {
     setGameActive(false);
   };
 
@@ -505,125 +521,128 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <div className="page__content">
-          <Header
-            handleLoginClick={handleLoginClick}
-            handleRegistrationClick={handleRegistrationClick}
-            isLoggedIn={isLoggedIn}
-            handleLogout={handleLogout}
-            closeGameSite={closeGameSite}
-          />
-          <Routes>
-            <Route path="*" element={<PageNotFound />}></Route>
-            <Route
-              path="/"
-              element={
-                <Main
-                  gameInfo={gameInfo}
-                  gameActive={gameActive}
-                  handleGameStart={handleGameStart}
-                  handleGameEnd={handleGameEnd}
-                  pullCard={pullCard}
-                  hand={hand}
-                  handleCardLike={handleCardLike}
-                  isDrawPileEmpty={isDrawPileEmpty}
-                  isDiscardPileEmpty={isDiscardPileEmpty}
-                  handleDiscard={handleDiscard}
-                  discardPile={discardPile}
-                  isLoading={isLoading}
-                  handleDiscardPileClick={handleDiscardPileClick}
-                  isLoggedIn={isLoggedIn}
-                />
-              }
-            ></Route>
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute isLoggedIn={isLoggedIn}>
-                  <Profile
+        <DndProvider backend={HTML5Backend}>
+          <div className="page__content">
+            <Header
+              handleLoginClick={handleLoginClick}
+              handleRegistrationClick={handleRegistrationClick}
+              isLoggedIn={isLoggedIn}
+              handleLogout={handleLogout}
+              closeGameSite={closeGameSite}
+            />
+            <Routes>
+              <Route path="*" element={<PageNotFound />}></Route>
+              <Route
+                path="/"
+                element={
+                  <Main
                     gameInfo={gameInfo}
-                    handleEditProfileClick={handleEditProfileClick}
+                    gameActive={gameActive}
+                    handleGameStart={handleGameStart}
+                    handleGameEnd={handleGameEnd}
+                    pullCard={pullCard}
+                    hand={hand}
+                    setHand={setHand}
                     handleCardLike={handleCardLike}
+                    isDrawPileEmpty={isDrawPileEmpty}
+                    isDiscardPileEmpty={isDiscardPileEmpty}
+                    handleDiscard={handleDiscard}
+                    discardPile={discardPile}
+                    isLoading={isLoading}
+                    handleDiscardPileClick={handleDiscardPileClick}
                     isLoggedIn={isLoggedIn}
-                    openGameSite={openGameSite}
-                    handleDeleteUser={handleDeleteUser}
-                    handleDeleteGameInfo={handleDeleteGameInfo}
-                    handleDeleteClick={handleDeleteClick}
                   />
-                </ProtectedRoute>
-              }
-            ></Route>
-            <Route path="/about-me" element={<About />} />
-            <Route
-              path="/solitaire"
-              element={
-                <Solitaire
-                  currentGame={currentGame}
-                  handleGameIncrement={handleGameIncrement}
-                  incrementGameWon={incrementGameWon}
-                  gameActive={gameActive}
-                  handleGameStart={handleGameStart}
-                  handleGameEnd={handleGameEnd}
-                  isLoggedIn={isLoggedIn}
-                  getCurrentGame={getCurrentGame}
-                />
-              }
-            ></Route>
-            <Route
-              path="/war"
-              element={
-                <War
-                  currentGame={currentGame}
-                  handleGameIncrement={handleGameIncrement}
-                  incrementGameWon={incrementGameWon}
-                  gameActive={gameActive}
-                  handleGameStart={handleGameStart}
-                  handleGameEnd={handleGameEnd}
-                  isLoggedIn={isLoggedIn}
-                  getCurrentGame={getCurrentGame}
-                />
-              }
-            ></Route>
-          </Routes>
-          <Footer />
-          <LoginModal
-            isOpen={isLoginModalOpen}
-            onCloseModal={handleCloseModal}
-            handleLogin={handleLogin}
-            isLoading={isLoading}
-            handleRegistrationClick={handleRegistrationClick}
-            serverError={serverError}
-          />
-          <EditModal
-            isOpen={isEditProfileModalOpen}
-            onCloseModal={handleCloseModal}
-            handleEditProfile={handleEditProfile}
-            isLoading={isLoading}
-            serverError={serverError}
-          />
-          <RegistrationModal
-            isOpen={isRegistrationModalOpen}
-            onCloseModal={handleCloseModal}
-            handleRegistration={handleRegistration}
-            isLoading={isLoading}
-            handleLoginClick={handleLoginClick}
-            serverError={serverError}
-          />
-          <DiscardModal
-            isOpen={isDiscardModalOpen}
-            onCloseModal={handleCloseModal}
-            discardPile={discardPile}
-          />
-          <DeleteConfirmationModal
-            activeModal={activeModal}
-            isOpen={isDeleteConfirmationModalOpen}
-            handleCloseModal={handleCloseModal}
-            handleDeleteGameInfo={handleDeleteGameInfo}
-            handleDeleteUser={handleDeleteUser}
-            selectedItem={selectedItem}
-            buttonText={isLoading ? "Deleting..." : "Yes, delete item"}
-          />
-        </div>
+                }
+              ></Route>
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute isLoggedIn={isLoggedIn}>
+                    <Profile
+                      gameInfo={gameInfo}
+                      handleEditProfileClick={handleEditProfileClick}
+                      handleCardLike={handleCardLike}
+                      isLoggedIn={isLoggedIn}
+                      openGameSite={openGameSite}
+                      handleDeleteUser={handleDeleteUser}
+                      handleDeleteGameInfo={handleDeleteGameInfo}
+                      handleDeleteClick={handleDeleteClick}
+                    />
+                  </ProtectedRoute>
+                }
+              ></Route>
+              <Route path="/about-me" element={<About />} />
+              <Route
+                path="/solitaire"
+                element={
+                  <Solitaire
+                    currentGame={currentGame}
+                    handleGameIncrement={handleGameIncrement}
+                    incrementGameWon={incrementGameWon}
+                    gameActive={gameActive}
+                    handleGameStart={handleGameStart}
+                    handleGameEnd={handleGameEnd}
+                    isLoggedIn={isLoggedIn}
+                    getCurrentGame={getCurrentGame}
+                  />
+                }
+              ></Route>
+              <Route
+                path="/war"
+                element={
+                  <War
+                    currentGame={currentGame}
+                    handleGameIncrement={handleGameIncrement}
+                    incrementGameWon={incrementGameWon}
+                    gameActive={gameActive}
+                    handleGameStart={handleGameStart}
+                    handleGameEnd={handleGameEnd}
+                    isLoggedIn={isLoggedIn}
+                    getCurrentGame={getCurrentGame}
+                  />
+                }
+              ></Route>
+            </Routes>
+            <Footer />
+            <LoginModal
+              isOpen={isLoginModalOpen}
+              onCloseModal={handleCloseModal}
+              handleLogin={handleLogin}
+              isLoading={isLoading}
+              handleRegistrationClick={handleRegistrationClick}
+              serverError={serverError}
+            />
+            <EditModal
+              isOpen={isEditProfileModalOpen}
+              onCloseModal={handleCloseModal}
+              handleEditProfile={handleEditProfile}
+              isLoading={isLoading}
+              serverError={serverError}
+            />
+            <RegistrationModal
+              isOpen={isRegistrationModalOpen}
+              onCloseModal={handleCloseModal}
+              handleRegistration={handleRegistration}
+              isLoading={isLoading}
+              handleLoginClick={handleLoginClick}
+              serverError={serverError}
+            />
+            <DiscardModal
+              isOpen={isDiscardModalOpen}
+              onCloseModal={handleCloseModal}
+              discardPile={discardPile}
+            />
+            <DeleteConfirmationModal
+              activeModal={activeModal}
+              isOpen={isDeleteConfirmationModalOpen}
+              handleCloseModal={handleCloseModal}
+              handleDeleteGameInfo={handleDeleteGameInfo}
+              handleDeleteUser={handleDeleteUser}
+              selectedItem={selectedItem}
+              buttonText={isLoading ? "Deleting..." : "Yes, delete item"}
+            />
+          </div>
+        </DndProvider>
       </div>
     </CurrentUserContext.Provider>
   );

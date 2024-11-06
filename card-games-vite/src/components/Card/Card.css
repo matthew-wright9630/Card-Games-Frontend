@@ -1,6 +1,10 @@
 .card {
   width: 100px;
-  height: 150px;
+  height: 135px;
+}
+
+.card_is-dragging {
+  opacity: 0;
 }
 
 .card__box {

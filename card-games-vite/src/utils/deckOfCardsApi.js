@@ -29,9 +29,9 @@ function createPartialDeck(cards) {
   return request(`${deckOfCardsUrl}new/shuffle/?cards=${cards}`);
 }
 
-function addCardsToPiles(deck_id, pileName, cards) {
+function addCardsToPiles(deck_id, pileName, cardCode) {
   return request(
-    `${deckOfCardsUrl}${deck_id}/pile/${pileName}/add/?cards=${cards}`
+    `${deckOfCardsUrl}${deck_id}/pile/${pileName}/add/?cards=${cardCode}`
   );
 }
 

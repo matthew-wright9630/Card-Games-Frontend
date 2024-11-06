@@ -13,4 +13,8 @@ const games = [
   },
 ];
 
-export { backOfCard, games };
+const ItemTypes = {
+  CARD: "card",
+};
+
+export { backOfCard, games, ItemTypes };

@@ -1,7 +1,10 @@
 import { createNewDeck } from "../../utils/deckOfCardsApi";
 import Card from "../Card/Card";
 import Preloader from "../Preloader/Preloader";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import "./Demo.css";
+import { useContext, useCallback } from "react";
+import { useDrop } from "react-dnd";
 
 function Demo({
   handleGameStart,
@@ -9,6 +12,7 @@ function Demo({
   handleGameEnd,
   pullCard,
   hand,
+  setHand,
   isDrawPileEmpty,
   handleDiscard,
   discardPile,
@@ -16,6 +20,7 @@ function Demo({
   isLoading,
   handleDiscardPileClick,
 }) {
+  const currentUser = useContext(CurrentUserContext);
   const handLimit = 7;
   const startDemoGame = () => {
     handleGameStart(1);
@@ -29,9 +34,39 @@ function Demo({
     if (hand.length >= handLimit) {
       console.log("Please discard before drawing");
     } else {
-      pullCard(1);
+      pullCard(localStorage.getItem("deck_id"), currentUser.name, 1);
     }
   };
+
+  function clickedDiscardPile() {
+    handleDiscardPileClick(localStorage.getItem("deck_id"), "discard");
+  }
+
+  function test(item) {
+    handleDiscard(item.card);
+  }
+
+  const [{ isOver }, dropRef] = useDrop({
+    accept: "card",
+    drop: (item) => test(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  const moveCardListItem = useCallback(
+    (dragIndex, hoverIndex) => {
+      const dragItem = hand[dragIndex];
+      const hoverItem = hand[hoverIndex];
+      setHand((cards) => {
+        const updatedCards = [...cards];
+        updatedCards[dragIndex] = hoverItem;
+        updatedCards[hoverIndex] = dragItem;
+        return updatedCards;
+      });
+    },
+    [hand]
+  );
 
   return (
     <div>
@@ -84,11 +119,12 @@ function Demo({
                 }`}
               ></button>
             </div>
-            <div className="demo__discard-pile">
+            <div className="demo__discard-pile" ref={dropRef}>
+              {isOver && <div>Drop Here!</div>}
               <p className="demo__discard-title">Discard Pile</p>
               <button
                 type="button"
-                onClick={handleDiscardPileClick}
+                onClick={clickedDiscardPile}
                 className={`demo__card-btn ${
                   isDiscardPileEmpty ? "demo__pile_empty" : ""
                 }`}
@@ -98,7 +134,11 @@ function Demo({
                 ) : (
                   <img
                     className="demo__card-img"
-                    src={discardPile[0].image}
+                    src={
+                      discardPile.piles?.discard?.cards[
+                        discardPile.piles.discard.cards.length - 1
+                      ].image
+                    }
                   ></img>
                 )}
               </button>
@@ -109,9 +149,11 @@ function Demo({
           {hand?.map((card) => {
             return (
               <Card
+                index={hand.indexOf(card)}
+                draggable
                 key={card.code}
                 card={card}
-                handleDiscard={handleDiscard}
+                moveCardListItem={moveCardListItem}
               ></Card>
             );
           })}

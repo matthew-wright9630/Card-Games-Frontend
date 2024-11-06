@@ -1,8 +1,9 @@
 import { backOfCard } from "../../utils/constants";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useDrag, useDrop } from "react-dnd";
 import "./Card.css";
 
-function Card({ card, handleDiscard }) {
+function Card({ card, moveCardListItem, index }) {
   const [isCardFlipped, setIsCardFlipped] = useState([]);
 
   const flipCard = () => {
@@ -13,12 +14,39 @@ function Card({ card, handleDiscard }) {
     }
   };
 
-  const discardCard = () => {
-    handleDiscard(card.code);
-  };
+  const [{ isDragging }, dragRef] = useDrag({
+    type: "card",
+    item: { id: card.code, card: card, index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [spec, dropRef] = useDrop({
+    accept: "card",
+    hover: (item, monitor) => {
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      const hoverMiddleX =
+        (hoverBoundingRect.left - hoverBoundingRect.right) / 2;
+      const hoverActualX = monitor.getClientOffset().x - hoverBoundingRect.right;
+
+      if (dragIndex < hoverIndex && hoverActualX < hoverMiddleX) return;
+      if (dragIndex > hoverIndex && hoverActualX > hoverMiddleX) return;
+
+      moveCardListItem(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+
+  const ref = useRef(null);
+  const dragDropRef = dragRef(dropRef(ref));
+  const opacity = isDragging ? 0 : 1;
 
   return (
-    <div className="card">
+    <div className={`card ${isDragging ? "card_is-dragging" : ""}`} ref={dragDropRef}>
+      {isDragging}
       <div onClick={flipCard} className="card__box">
         <div
           className={`card__container ${
@@ -32,17 +60,6 @@ function Card({ card, handleDiscard }) {
           />
           <div className="card__face card__front">
             <img src={card.image} alt={card.code} className="card__image" />
-            {handleDiscard ? (
-              <button
-                onClick={discardCard}
-                type="button"
-                className="card__discard-btn"
-              >
-                Discard
-              </button>
-            ) : (
-              ""
-            )}
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ function Main({
   handleGameEnd,
   pullCard,
   hand,
+  setHand,
   handleCardLike,
   isDrawPileEmpty,
   handleDiscard,
@@ -42,6 +43,7 @@ function Main({
               handleGameEnd={handleGameEnd}
               pullCard={pullCard}
               hand={hand}
+              setHand={setHand}
               isDrawPileEmpty={isDrawPileEmpty}
               handleDiscard={handleDiscard}
               discardPile={discardPile}

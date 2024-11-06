@@ -109,7 +109,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   position: absolute;
-  bottom: 0;
+  bottom: 10%;
   right: 0;
   cursor: pointer;
   transition: 0.3s linear;

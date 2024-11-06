@@ -46,7 +46,8 @@ function GameCards({ gameConstant, handleCardLike, isLoggedIn, isNotLiked }) {
               </p>
             </div>
           </div>
-          {isLoggedIn ? (
+        </button>
+        {isLoggedIn ? (
           <button
             type="button"
             onClick={toggleCardLike}
@@ -57,7 +58,6 @@ function GameCards({ gameConstant, handleCardLike, isLoggedIn, isNotLiked }) {
         ) : (
           ""
         )}
-        </button>
         <Link
           className="game-card__link"
           to={`/${gameConstant.name.toLowerCase()}`}
