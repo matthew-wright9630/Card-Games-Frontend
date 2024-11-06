@@ -120,7 +120,7 @@ function Demo({
               ></button>
             </div>
             <div className="demo__discard-pile" ref={dropRef}>
-              {isOver && <div>Drop Here!</div>}
+              {isOver}
               <p className="demo__discard-title">Discard Pile</p>
               <button
                 type="button"

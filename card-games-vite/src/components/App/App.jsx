@@ -415,7 +415,9 @@ function App() {
       drawCard(deck, 1)
         .then((data) => {
           if (data.success) {
-            addCardToHand(deck, playerName, data.cards.pop());
+            const newCard = data.cards.pop();
+            setHand([...hand, newCard]);
+            addCardToHand(deck, playerName, newCard);
           } else {
             setIsDiscardPileEmpty(true);
             shuffle();
@@ -438,7 +440,7 @@ function App() {
     addCardsToPiles(deck, name, card.code)
       .then(() => {
         listCardsInPile(deck, name).then((deck) => {
-          setHand(deck.piles[name].cards);
+          console.log(deck);
         });
       })
       .catch((err) => console.error(err));
