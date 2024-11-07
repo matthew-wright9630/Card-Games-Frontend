@@ -10,6 +10,7 @@ function Main({
   handleGameEnd,
   pullCard,
   hand,
+  setHand,
   handleCardLike,
   isDrawPileEmpty,
   handleDiscard,
@@ -23,7 +24,8 @@ function Main({
     <main>
       <section className="homepage">
         <p className="homepage__description">
-          Select a game below! Hover or click a card to see a brief introduction.
+          Select a game below! Hover or click a card to see a brief
+          introduction.
         </p>
         <div className="homepage__grid">
           {
@@ -42,6 +44,7 @@ function Main({
               handleGameEnd={handleGameEnd}
               pullCard={pullCard}
               hand={hand}
+              setHand={setHand}
               isDrawPileEmpty={isDrawPileEmpty}
               handleDiscard={handleDiscard}
               discardPile={discardPile}

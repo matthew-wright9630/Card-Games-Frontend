@@ -45,7 +45,7 @@ function EditModal({
             id="editProfileName"
             placeholder="Name"
             autoComplete="off"
-            value={values.name || user.name}
+            value={values.name || ""}
             required={true}
             minLength={2}
             maxLength={30}

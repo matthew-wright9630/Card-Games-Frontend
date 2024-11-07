@@ -9,7 +9,21 @@ function Solitaire({
   incrementGameWon,
   isLoggedIn,
   getCurrentGame,
+  pullCard,
+  hand,
+  setHand,
+  isDrawPileEmpty,
+  handleDiscard,
+  discardPile,
+  isDiscardPileEmpty,
+  isLoading,
+  handleDiscardPileClick,
 }) {
+  function startSolitaireGame() {
+    incrementGame();
+    handleGameStart(1);
+  }
+
   function incrementGame() {
     if (isLoggedIn) {
       const currentGame = getGame();
@@ -45,13 +59,7 @@ function Solitaire({
       </p>
 
       {!gameActive ? (
-        <button
-          onClick={() => {
-            incrementGame();
-            handleGameStart(1);
-          }}
-          className="playGame"
-        >
+        <button onClick={startSolitaireGame} className="playGame">
           Increment Games Played
         </button>
       ) : (
