@@ -42,10 +42,6 @@
   transform: rotateY(180deg);
 }
 
-.game-card__card:hover .game-card__container {
-  transform: rotateY(180deg);
-}
-
 .game-card__face {
   position: absolute;
   width: 100%;
@@ -93,11 +89,11 @@
   background-color: lightgray;
   color: rgba(53, 101, 77, 1);
   text-decoration: none;
-  transition: .3s linear;
+  transition: 0.3s linear;
 }
 
 .game-card__link:hover {
-  opacity: .6;
+  opacity: 0.6;
 }
 
 .game-card__like-btn {

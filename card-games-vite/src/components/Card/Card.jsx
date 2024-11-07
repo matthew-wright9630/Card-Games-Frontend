@@ -2,6 +2,7 @@ import { backOfCard } from "../../utils/constants";
 import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import "./Card.css";
+import { usePreview } from "react-dnd-multi-backend";
 
 function Card({ card, moveCardListItem, index }) {
   const [isCardFlipped, setIsCardFlipped] = useState([]);
@@ -44,9 +45,12 @@ function Card({ card, moveCardListItem, index }) {
   const ref = useRef(null);
   const dragDropRef = dragRef(dropRef(ref));
 
-
   return (
-    <div className={`card ${isDragging ? "card_is-dragging" : ""}`} id={`id_${card.code}`} ref={dragDropRef}>
+    <div
+      className={`card ${isDragging ? "card_is-dragging" : ""}`}
+      id={`id_${card.code}`}
+      ref={dragDropRef}
+    >
       {isDragging}
       <div onClick={flipCard} className="card__box">
         <div

@@ -13,8 +13,11 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmati
 import DiscardModal from "../DiscardModal/DiscardModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import About from "../About/About";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+// import { DndProvider } from "react-dnd";
+// import { HTML5Backend } from "react-dnd-html5-backend";
+// import { TouchBackend } from "react-dnd-touch-backend";
+import { DndProvider, Preview, usePreview } from "react-dnd-multi-backend";
+import { HTML5toTouch } from "rdndmb-html5-to-touch";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { authorize, register, checkToken } from "../../utils/auth";
 import {
@@ -37,6 +40,7 @@ import {
   listCardsInPile,
   shuffleAllCards,
 } from "../../utils/deckOfCardsApi";
+import Card from "../Card/Card";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -560,10 +564,18 @@ function App() {
     renderDiscardPile();
   }, [discardPile]);
 
+  const generateCardPreview = ({ itemType, item, style }) => {
+    // console.log("TEST");
+    // <Card />;
+    return <img className="card" src={item.card.image} style={style}></img>;
+  };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <DndProvider backend={HTML5Backend}>
+        {/* <DndProvider backend={HTML5Backend}> */}
+        <DndProvider options={HTML5toTouch}>
+          <Preview generator={generateCardPreview} />
           <div className="page__content">
             <Header
               handleLoginClick={handleLoginClick}
