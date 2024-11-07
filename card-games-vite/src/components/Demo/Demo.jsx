@@ -20,10 +20,7 @@ function Demo({
   isDiscardPileEmpty,
   isLoading,
   handleDiscardPileClick,
-  animateCardDeal,
 }) {
-  const [loading, setLoading] = useState(false);
-
   const currentUser = useContext(CurrentUserContext);
   const handLimit = 7;
   const startDemoGame = () => {
@@ -39,8 +36,6 @@ function Demo({
       console.log("Please discard before drawing");
     } else {
       pullCard(localStorage.getItem("deck_id"), currentUser.name, 1);
-      animateCardDeal();
-      setTimeout(resetAnimationCard, 300);
     }
   }
 
@@ -73,50 +68,6 @@ function Demo({
     },
     [hand]
   );
-
-  function animateCardDeal() {
-    setLoading(true);
-    const elm = document.querySelector(".demo__animation-card");
-
-    const first = elm.getBoundingClientRect();
-
-    elm.style.setProperty("top", 150 + "px");
-
-    const last = elm.getBoundingClientRect();
-
-    const deltaX = first.left - last.left;
-    const deltaY = first.top - last.top;
-    const deltaW = first.width / last.width;
-    const deltaH = first.height / last.height;
-
-    elm.animate(
-      [
-        {
-          transformOrigin: "top left",
-          transform: `
-    translate(${deltaX}px, ${deltaY}px)
-    scale(${deltaW}, ${deltaH})
-  `,
-        },
-        {
-          transformOrigin: "top left",
-          transform: "none",
-        },
-      ],
-      {
-        duration: 300,
-        easing: "ease-in-out",
-        fill: "both",
-      }
-    );
-    setLoading(false);
-  }
-
-  function resetAnimationCard() {
-    const elm = document.querySelector(".demo__animation-card");
-
-    elm.style.setProperty("top", 0 + "px");
-  }
 
   return (
     <div>

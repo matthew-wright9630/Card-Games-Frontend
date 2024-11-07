@@ -46,7 +46,7 @@ function Card({ card, moveCardListItem, index }) {
 
 
   return (
-    <div className={`card`} id={`id_${card.code}`} ref={dragDropRef}>
+    <div className={`card ${isDragging ? "card_is-dragging" : ""}`} id={`id_${card.code}`} ref={dragDropRef}>
       {isDragging}
       <div onClick={flipCard} className="card__box">
         <div

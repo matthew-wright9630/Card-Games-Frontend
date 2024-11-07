@@ -418,6 +418,7 @@ function App() {
             const newCard = data.cards.pop();
             setHand([...hand, newCard]);
             addCardToHand(deck, playerName, newCard);
+            animateCardDeal();
           } else {
             setIsDiscardPileEmpty(true);
             shuffle();
@@ -431,6 +432,45 @@ function App() {
     }
   };
 
+  function animateCardDeal() {
+    const elm = document.querySelector(".demo__animation-card");
+
+    const first = elm.getBoundingClientRect();
+
+    elm.style.setProperty("top", 150 + "px");
+
+    const last = elm.getBoundingClientRect();
+
+    const deltaX = first.left - last.left;
+    const deltaY = first.top - last.top;
+    const deltaW = first.width / last.width;
+    const deltaH = first.height / last.height;
+
+    elm.animate(
+      [
+        {
+          transformOrigin: "top left",
+          transform: `
+    translate(${deltaX}px, ${deltaY}px)
+    scale(${deltaW}, ${deltaH})
+  `,
+        },
+        {
+          transformOrigin: "top left",
+          transform: "none",
+        },
+      ],
+      {
+        duration: 300,
+        easing: "ease-in-out",
+        fill: "both",
+      }
+    );
+    setTimeout(() => {
+      elm.style.setProperty("top", 0 + "px");
+    }, 300);
+  }
+
   const removeSpacesFromName = (name) => {
     return name.replaceAll(" ", "_");
   };
@@ -439,9 +479,7 @@ function App() {
     const name = removeSpacesFromName(playerName);
     addCardsToPiles(deck, name, card.code)
       .then(() => {
-        listCardsInPile(deck, name).then((deck) => {
-          console.log(deck);
-        });
+        listCardsInPile(deck, name).then((deck) => {});
       })
       .catch((err) => console.error(err));
   };
@@ -586,6 +624,16 @@ function App() {
                     handleGameEnd={handleGameEnd}
                     isLoggedIn={isLoggedIn}
                     getCurrentGame={getCurrentGame}
+                    pullCard={pullCard}
+                    hand={hand}
+                    setHand={setHand}
+                    handleCardLike={handleCardLike}
+                    isDrawPileEmpty={isDrawPileEmpty}
+                    isDiscardPileEmpty={isDiscardPileEmpty}
+                    handleDiscard={handleDiscard}
+                    discardPile={discardPile}
+                    isLoading={isLoading}
+                    handleDiscardPileClick={handleDiscardPileClick}
                   />
                 }
               ></Route>

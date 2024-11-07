@@ -1,7 +1,6 @@
 .card {
   width: 100px;
   height: 135px;
-  transition: 1s linear;
 }
 
 .card_is-dragging {
