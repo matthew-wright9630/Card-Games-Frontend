@@ -35,7 +35,11 @@ function Demo({
     if (hand.length >= handLimit) {
       console.log("Please discard before drawing");
     } else {
-      pullCard(localStorage.getItem("deck_id"), currentUser.name, 1);
+      if (currentUser.name !== undefined) {
+        pullCard(localStorage.getItem("deck_id"), currentUser.name, 1);
+      } else {
+        pullCard(localStorage.getItem("deck_id"), "Guest", 1);
+      }
     }
   }
 
