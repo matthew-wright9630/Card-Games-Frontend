@@ -261,7 +261,7 @@ function App() {
           })
           .catch((err) => console.error(err));
       })
-      .catch((err) => console.error())
+      .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
 

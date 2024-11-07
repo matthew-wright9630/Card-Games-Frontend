@@ -3,8 +3,9 @@ import Card from "../Card/Card";
 import Preloader from "../Preloader/Preloader";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import "./Demo.css";
-import { useContext, useCallback } from "react";
+import { useContext, useCallback, useState } from "react";
 import { useDrop } from "react-dnd";
+import { backOfCard } from "../../utils/constants";
 
 function Demo({
   handleGameStart,
@@ -19,7 +20,10 @@ function Demo({
   isDiscardPileEmpty,
   isLoading,
   handleDiscardPileClick,
+  animateCardDeal,
 }) {
+  const [loading, setLoading] = useState(false);
+
   const currentUser = useContext(CurrentUserContext);
   const handLimit = 7;
   const startDemoGame = () => {
@@ -30,25 +34,27 @@ function Demo({
     handleGameEnd();
   };
 
-  const draw = () => {
+  function draw() {
     if (hand.length >= handLimit) {
       console.log("Please discard before drawing");
     } else {
       pullCard(localStorage.getItem("deck_id"), currentUser.name, 1);
+      animateCardDeal();
+      setTimeout(resetAnimationCard, 300);
     }
-  };
+  }
 
   function clickedDiscardPile() {
     handleDiscardPileClick(localStorage.getItem("deck_id"), "discard");
   }
 
-  function test(item) {
+  function discard(item) {
     handleDiscard(item.card);
   }
 
   const [{ isOver }, dropRef] = useDrop({
     accept: "card",
-    drop: (item) => test(item),
+    drop: (item) => discard(item),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
@@ -67,6 +73,50 @@ function Demo({
     },
     [hand]
   );
+
+  function animateCardDeal() {
+    setLoading(true);
+    const elm = document.querySelector(".demo__animation-card");
+
+    const first = elm.getBoundingClientRect();
+
+    elm.style.setProperty("top", 150 + "px");
+
+    const last = elm.getBoundingClientRect();
+
+    const deltaX = first.left - last.left;
+    const deltaY = first.top - last.top;
+    const deltaW = first.width / last.width;
+    const deltaH = first.height / last.height;
+
+    elm.animate(
+      [
+        {
+          transformOrigin: "top left",
+          transform: `
+    translate(${deltaX}px, ${deltaY}px)
+    scale(${deltaW}, ${deltaH})
+  `,
+        },
+        {
+          transformOrigin: "top left",
+          transform: "none",
+        },
+      ],
+      {
+        duration: 300,
+        easing: "ease-in-out",
+        fill: "both",
+      }
+    );
+    setLoading(false);
+  }
+
+  function resetAnimationCard() {
+    const elm = document.querySelector(".demo__animation-card");
+
+    elm.style.setProperty("top", 0 + "px");
+  }
 
   return (
     <div>
@@ -117,7 +167,13 @@ function Demo({
                 className={`demo__card-btn ${
                   isDrawPileEmpty ? "demo__pile_empty" : "demo__pile"
                 }`}
-              ></button>
+              >
+                <img
+                  src={backOfCard}
+                  alt="Card Back"
+                  className="demo__animation-card"
+                />
+              </button>
             </div>
             <div className="demo__discard-pile" ref={dropRef}>
               {isOver}
@@ -149,11 +205,11 @@ function Demo({
           {hand?.map((card) => {
             return (
               <Card
-                index={hand.indexOf(card)}
-                draggable
                 key={card.code}
+                index={hand.indexOf(card)}
                 card={card}
                 moveCardListItem={moveCardListItem}
+                draggable
               ></Card>
             );
           })}

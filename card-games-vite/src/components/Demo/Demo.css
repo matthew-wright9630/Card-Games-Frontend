@@ -79,6 +79,14 @@
   border: none;
 }
 
+.demo__animation-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  
+}
+
 .demo__card-img {
   padding: 0;
   width: 100px;
@@ -94,6 +102,7 @@
   flex-wrap: wrap;
   justify-content: center;
   margin: 16px auto;
+  transition: .5s linear;
 }
 
 .demo__hand-size {

@@ -30,7 +30,8 @@ function Card({ card, moveCardListItem, index }) {
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const hoverMiddleX =
         (hoverBoundingRect.left - hoverBoundingRect.right) / 2;
-      const hoverActualX = monitor.getClientOffset().x - hoverBoundingRect.right;
+      const hoverActualX =
+        monitor.getClientOffset().x - hoverBoundingRect.right;
 
       if (dragIndex < hoverIndex && hoverActualX < hoverMiddleX) return;
       if (dragIndex > hoverIndex && hoverActualX > hoverMiddleX) return;
@@ -42,10 +43,10 @@ function Card({ card, moveCardListItem, index }) {
 
   const ref = useRef(null);
   const dragDropRef = dragRef(dropRef(ref));
-  const opacity = isDragging ? 0 : 1;
+
 
   return (
-    <div className={`card ${isDragging ? "card_is-dragging" : ""}`} ref={dragDropRef}>
+    <div className={`card`} id={`id_${card.code}`} ref={dragDropRef}>
       {isDragging}
       <div onClick={flipCard} className="card__box">
         <div
@@ -56,7 +57,9 @@ function Card({ card, moveCardListItem, index }) {
           <img
             src={backOfCard}
             alt={`Image of back of card`}
-            className="card__face card__back"
+            className={`card__face card__back ${
+              isDragging ? "card__container_is-dragging" : ""
+            }`}
           />
           <div className="card__face card__front">
             <img src={card.image} alt={card.code} className="card__image" />
