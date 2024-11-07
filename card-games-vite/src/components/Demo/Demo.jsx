@@ -44,6 +44,7 @@ function Demo({
   }
 
   function clickedDiscardPile() {
+    console.log(discardPile);
     handleDiscardPileClick();
   }
 

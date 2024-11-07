@@ -11,7 +11,7 @@ function DiscardModal({ isOpen, discardPile, onCloseModal }) {
           className="modal__close-button"
         />
         <div className="modal__discard-cards">
-          {discardPile.piles?.discard?.cards?.map((card) => {
+          {discardPile.map((card) => {
             return (
               <img
                 key={card.code}

@@ -506,7 +506,7 @@ function App() {
         listCardsInPile(localStorage.getItem("deck_id"), "discard")
           .then((deck) => {
             deck.piles.discard.cards.map((card) => {
-              setDiscardPile([...hand, card]);
+              setDiscardPile([...discardPile, card]);
             });
           })
           .catch((err) => console.error(err));
