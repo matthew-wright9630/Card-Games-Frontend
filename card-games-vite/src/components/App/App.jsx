@@ -64,7 +64,7 @@ function App() {
     setActiveModal("signup-modal");
   };
 
-  const handleDiscardPileClick = (deckId, pileName) => {
+  const handleDiscardPileClick = () => {
     setActiveModal("discard-modal");
   };
 
@@ -479,7 +479,11 @@ function App() {
     const name = removeSpacesFromName(playerName);
     addCardsToPiles(deck, name, card.code)
       .then(() => {
-        listCardsInPile(deck, name).then((deck) => {});
+        listCardsInPile(deck, name).then((deck) => {
+          deck.piles[name].cards.map((card) => {
+            setHand([...hand, card]);
+          });
+        });
       })
       .catch((err) => console.error(err));
   };
@@ -497,19 +501,17 @@ function App() {
   };
 
   const addToDiscard = (card) => {
-    addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code)
-      .then(() => {
-        renderPiles(localStorage.getItem("deck_id"), "discard");
-      })
-      .catch((err) => console.error(err));
-  };
-
-  const renderPiles = (deckId, pileName) => {
-    listCardsInPile(deckId, pileName)
-      .then((deck) => {
-        setDiscardPile(deck);
-      })
-      .catch((err) => console.error(err));
+    addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code).then(
+      () => {
+        listCardsInPile(localStorage.getItem("deck_id"), "discard")
+          .then((deck) => {
+            deck.piles.discard.cards.map((card) => {
+              setDiscardPile([...hand, card]);
+            });
+          })
+          .catch((err) => console.error(err));
+      }
+    );
   };
 
   const openGameSite = (game) => {
@@ -517,7 +519,7 @@ function App() {
   };
 
   const closeGameSite = () => {
-    setGameActive(false);
+    handleGameEnd();
   };
 
   useEffect(() => {

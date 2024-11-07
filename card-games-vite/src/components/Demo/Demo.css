@@ -33,7 +33,7 @@
 .demo__game-start {
   display: flex;
   justify-content: center;
-  margin-top: 24px;
+  margin: 24px 0;
 }
 
 .demo__game {

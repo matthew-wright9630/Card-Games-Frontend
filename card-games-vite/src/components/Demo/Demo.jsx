@@ -44,7 +44,7 @@ function Demo({
   }
 
   function clickedDiscardPile() {
-    handleDiscardPileClick(localStorage.getItem("deck_id"), "discard");
+    handleDiscardPileClick();
   }
 
   function discard(item) {
@@ -145,32 +145,34 @@ function Demo({
                 ) : (
                   <img
                     className="demo__card-img"
-                    src={
-                      discardPile.piles?.discard?.cards[
-                        discardPile.piles.discard.cards.length - 1
-                      ].image
-                    }
+                    src={discardPile[discardPile.length - 1].image}
                   ></img>
                 )}
               </button>
             </div>
           </div>
         )}
-        <div className="demo__cards">
-          {hand?.map((card) => {
-            return (
-              <Card
-                key={card.code}
-                index={hand.indexOf(card)}
-                card={card}
-                moveCardListItem={moveCardListItem}
-                draggable
-              ></Card>
-            );
-          })}
-        </div>
-        <div className="demo__hand-size">{`Hand Size: ${hand.length}/${handLimit}`}</div>
-        {isLoading ? <Preloader /> : ""}
+        {gameActive ? (
+          <div>
+            <div className="demo__cards">
+              {hand?.map((card) => {
+                return (
+                  <Card
+                    key={card.code}
+                    index={hand.indexOf(card)}
+                    card={card}
+                    moveCardListItem={moveCardListItem}
+                    draggable
+                  ></Card>
+                );
+              })}
+            </div>
+            <div className="demo__hand-size">{`Hand Size: ${hand.length}/${handLimit}`}</div>
+            {isLoading ? <Preloader /> : ""}
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
