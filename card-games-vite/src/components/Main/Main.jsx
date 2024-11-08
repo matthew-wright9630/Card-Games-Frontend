@@ -19,6 +19,7 @@ function Main({
   isLoading,
   handleDiscardPileClick,
   isLoggedIn,
+  animateCardDeal
 }) {
   return (
     <main>
@@ -50,6 +51,7 @@ function Main({
               isDiscardPileEmpty={isDiscardPileEmpty}
               isLoading={isLoading}
               handleDiscardPileClick={handleDiscardPileClick}
+              animateCardDeal={animateCardDeal}
             />
           }
         </div>

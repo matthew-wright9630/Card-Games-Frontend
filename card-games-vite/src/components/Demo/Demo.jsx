@@ -20,6 +20,7 @@ function Demo({
   isDiscardPileEmpty,
   isLoading,
   handleDiscardPileClick,
+  animateCardDeal,
 }) {
   const currentUser = useContext(CurrentUserContext);
   const handLimit = 7;
@@ -40,6 +41,7 @@ function Demo({
       } else {
         pullCard(localStorage.getItem("deck_id"), "Guest", 1);
       }
+      animateCardDeal(0, 150);
     }
   }
 

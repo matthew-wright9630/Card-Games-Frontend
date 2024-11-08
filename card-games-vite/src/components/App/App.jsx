@@ -422,7 +422,6 @@ function App() {
             const newCard = data.cards.pop();
             setHand([...hand, newCard]);
             addCardToHand(deck, playerName, newCard);
-            animateCardDeal();
           } else {
             setIsDiscardPileEmpty(true);
             shuffle();
@@ -436,12 +435,13 @@ function App() {
     }
   };
 
-  function animateCardDeal() {
+  function animateCardDeal(left, top) {
     const elm = document.querySelector(".demo__animation-card");
 
     const first = elm.getBoundingClientRect();
 
-    elm.style.setProperty("top", 150 + "px");
+    elm.style.setProperty("top", top + "px");
+    elm.style.setProperty("left", left + "px");
 
     const last = elm.getBoundingClientRect();
 
@@ -605,6 +605,7 @@ function App() {
                     isLoading={isLoading}
                     handleDiscardPileClick={handleDiscardPileClick}
                     isLoggedIn={isLoggedIn}
+                    animateCardDeal={animateCardDeal}
                   />
                 }
               ></Route>
@@ -648,6 +649,7 @@ function App() {
                     discardPile={discardPile}
                     isLoading={isLoading}
                     handleDiscardPileClick={handleDiscardPileClick}
+                    animateCardDeal={animateCardDeal}
                   />
                 }
               ></Route>

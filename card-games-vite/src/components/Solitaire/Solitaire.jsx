@@ -18,6 +18,7 @@ function Solitaire({
   isDiscardPileEmpty,
   isLoading,
   handleDiscardPileClick,
+  animateCardDeal,
 }) {
   function startSolitaireGame() {
     incrementGame();
@@ -60,18 +61,27 @@ function Solitaire({
 
       {!gameActive ? (
         <button onClick={startSolitaireGame} className="playGame">
-          Increment Games Played
+          Start Game
         </button>
       ) : (
-        <button
-          onClick={() => {
-            incrementGameWin();
-            handleGameEnd();
-          }}
-          className="solitaire__win-game"
-        >
-          Increment Games Won
-        </button>
+        <div className="solitaire__game">
+          <div className="game__draw-pile">
+            <p className="game__draw-title">Draw Pile</p>
+            <button
+              type="button"
+              onClick={draw}
+              className={`game__card-btn ${
+                isDrawPileEmpty ? "game__pile_empty" : "game__pile"
+              }`}
+            >
+              <img
+                src={backOfCard}
+                alt="Card Back"
+                className="demo__animation-card"
+              />
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
