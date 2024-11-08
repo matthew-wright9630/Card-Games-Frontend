@@ -59,6 +59,7 @@
   position: relative;
   cursor: pointer;
   transition: 0.3s linear;
+  border-radius: 3%;
 }
 
 .demo__card-btn:hover {
@@ -69,6 +70,7 @@
   background-image: url("https://deckofcardsapi.com/static/img/back.png");
   background-size: contain;
   background-repeat: no-repeat;
+  border-radius: 6%;
 }
 
 .demo__pile_empty {
@@ -92,8 +94,8 @@
   width: 100px;
   height: 135px;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -2px;
+  left: -2px;
 }
 
 .demo__cards {
