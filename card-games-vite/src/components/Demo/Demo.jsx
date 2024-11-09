@@ -129,7 +129,7 @@ function Demo({
                 <img
                   src={backOfCard}
                   alt="Card Back"
-                  className="demo__animation-card"
+                  className="game__animation-card"
                 />
               </button>
             </div>

@@ -19,7 +19,8 @@ function Main({
   isLoading,
   handleDiscardPileClick,
   isLoggedIn,
-  animateCardDeal
+  animateCardDeal,
+  closeGameSite
 }) {
   return (
     <main>
@@ -33,6 +34,7 @@ function Main({
               gameInfo={gameInfo}
               handleCardLike={handleCardLike}
               isLoggedIn={isLoggedIn}
+              closeGameSite={closeGameSite}
             />
           }
         </div>

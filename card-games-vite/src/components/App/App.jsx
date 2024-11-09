@@ -37,6 +37,7 @@ import {
   addCardsToPiles,
   createNewDeck,
   drawCard,
+  drawFromPile,
   listCardsInPile,
   shuffleAllCards,
 } from "../../utils/deckOfCardsApi";
@@ -435,8 +436,29 @@ function App() {
     }
   };
 
+  const pullCardFromDiscard = (deck) => {
+    setIsLoading(true);
+    drawFromPile(deck, "discard", 1)
+      .then((res) => {
+        renderDiscardPile();
+        console.log(res);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
+
+  const pullCardFromPile = (deck, pileName) => {
+    setIsLoading(true);
+    drawFromPile(deck, pileName, 1)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
+
   function animateCardDeal(left, top) {
-    const elm = document.querySelector(".demo__animation-card");
+    const elm = document.querySelector(".game__animation-card");
 
     const first = elm.getBoundingClientRect();
 
@@ -472,6 +494,7 @@ function App() {
     );
     setTimeout(() => {
       elm.style.setProperty("top", 0 + "px");
+      elm.style.setProperty("left", 0 + "px");
     }, 300);
   }
 
@@ -482,7 +505,7 @@ function App() {
   const addCardToHand = (deck, playerName, card) => {
     const name = removeSpacesFromName(playerName);
     addCardsToPiles(deck, name, card.code)
-      .then(() => {
+      .then((data) => {
         listCardsInPile(deck, name).then((deck) => {
           deck.piles[name].cards.map((card) => {
             setHand([...hand, card]);
@@ -490,6 +513,14 @@ function App() {
         });
       })
       .catch((err) => console.error(err));
+  };
+
+  const addCardToPile = (deck, pileName, card) => {
+    const name = removeSpacesFromName(pileName);
+    console.log(card);
+    addCardToPile(deck, name, card.code).then((data) => {
+      console.log(data);
+    });
   };
 
   const handleDiscard = (discardedCard) => {
@@ -516,6 +547,18 @@ function App() {
           .catch((err) => console.error(err));
       }
     );
+  };
+
+  const removeFromDiscard = (removedCard) => {
+    setDiscardPile((cards) => {
+      return cards.filter((card) => {
+        if (card.code !== removedCard.code) {
+          return card;
+        } else {
+          addToDiscard(card);
+        }
+      });
+    });
   };
 
   const openGameSite = (game) => {
@@ -606,6 +649,7 @@ function App() {
                     handleDiscardPileClick={handleDiscardPileClick}
                     isLoggedIn={isLoggedIn}
                     animateCardDeal={animateCardDeal}
+                    closeGameSite={closeGameSite}
                   />
                 }
               ></Route>
@@ -645,11 +689,14 @@ function App() {
                     handleCardLike={handleCardLike}
                     isDrawPileEmpty={isDrawPileEmpty}
                     isDiscardPileEmpty={isDiscardPileEmpty}
-                    handleDiscard={handleDiscard}
+                    addToDiscard={addToDiscard}
                     discardPile={discardPile}
                     isLoading={isLoading}
                     handleDiscardPileClick={handleDiscardPileClick}
                     animateCardDeal={animateCardDeal}
+                    addCardToPile={addCardToPile}
+                    pullCardFromPile={pullCardFromPile}
+                    pullCardFromDiscard={pullCardFromDiscard}
                   />
                 }
               ></Route>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./GameCards.css";
 import { useState } from "react";
 
-function GameCards({ gameConstant, handleCardLike, isLoggedIn, isNotLiked }) {
+function GameCards({ gameConstant, handleCardLike, isLoggedIn, isNotLiked, closeGameSite }) {
   const [cardIsFlipped, setCardIsFlipped] = useState(false);
 
   function handleCardClick() {
@@ -60,6 +60,7 @@ function GameCards({ gameConstant, handleCardLike, isLoggedIn, isNotLiked }) {
         )}
         <Link
           className="game-card__link"
+          onClick={closeGameSite}
           to={`/${gameConstant.name.toLowerCase()}`}
         >
           Play Game

@@ -41,6 +41,8 @@
   backface-visibility: hidden;
   cursor: pointer;
   transition: 0.3s linear;
+  top: 0;
+  left: 0;
 }
 
 .card__face:hover {

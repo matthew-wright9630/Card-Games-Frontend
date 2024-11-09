@@ -81,12 +81,11 @@
   border: none;
 }
 
-.demo__animation-card {
+.game__animation-card {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  
 }
 
 .demo__card-img {
@@ -104,7 +103,7 @@
   flex-wrap: wrap;
   justify-content: center;
   margin: 16px auto;
-  transition: .5s linear;
+  transition: 0.5s linear;
 }
 
 .demo__hand-size {
@@ -112,10 +111,9 @@
   margin-bottom: 16px;
 }
 
-@media screen and (max-width: 550px)  {
+@media screen and (max-width: 550px) {
   .demo__btn {
     font-size: 20px;
-  width: 70px;
+    width: 70px;
   }
-  
 }
