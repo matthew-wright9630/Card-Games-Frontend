@@ -10,7 +10,8 @@
 
 .solitaire__draw-discard-piles {
   display: flex;
-  gap: 100px
+  gap: 100px;
+  margin-bottom: 20px;
 }
 
 .game__draw-title {
@@ -77,11 +78,21 @@
 .solitaire__foundation {
   position: relative;
   height: 135px;
+  width: 100px;
+  border: 1px #000 solid;
 }
 
 .solitaire__pile_empty {
-  background-color: #fff;
+  display: flex;
+  /* background-color: #fff; */
   width: 100px;
   height: 135px;
   border-radius: 6%;
+  color: #000;
+  justify-content: center;
+  align-items: center;
+}
+
+.solitaire__pile_red {
+  color: red
 }
