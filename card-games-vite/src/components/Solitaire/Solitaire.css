@@ -68,6 +68,17 @@
   left: -2px;
 }
 
+.solitaire__foundation-piles {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.solitaire__foundation {
+  position: relative;
+  height: 135px;
+}
+
 .solitaire__pile_empty {
   background-color: #fff;
   width: 100px;

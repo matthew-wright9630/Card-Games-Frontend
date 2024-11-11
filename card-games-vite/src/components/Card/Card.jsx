@@ -2,7 +2,6 @@ import { backOfCard } from "../../utils/constants";
 import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import "./Card.css";
-import { usePreview } from "react-dnd-multi-backend";
 
 function Card({ card, moveCardListItem, index }) {
   const [isCardFlipped, setIsCardFlipped] = useState([]);
@@ -17,7 +16,7 @@ function Card({ card, moveCardListItem, index }) {
 
   const [{ isDragging }, dragRef] = useDrag({
     type: "card",
-    item: { id: card.code, card: card, index },
+    item: { id: card?.code, card: card, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -48,7 +47,7 @@ function Card({ card, moveCardListItem, index }) {
   return (
     <div
       className={`card ${isDragging ? "card_is-dragging" : ""}`}
-      id={`id_${card.code}`}
+      id={`id_${card?.code}`}
       ref={dragDropRef}
     >
       {isDragging}
@@ -66,7 +65,7 @@ function Card({ card, moveCardListItem, index }) {
             }`}
           />
           <div className="card__face card__front">
-            <img src={card.image} alt={card.code} className="card__image" />
+            <img src={card?.image} alt={card?.code} className="card__image" />
           </div>
         </div>
       </div>

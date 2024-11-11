@@ -440,8 +440,11 @@ function App() {
     setIsLoading(true);
     drawFromPile(deck, "discard", 1)
       .then((res) => {
+        updateDiscardPile(deck, res.cards[0]);
+      })
+      .then(() => {
+        console.log(discardPile);
         renderDiscardPile();
-        console.log(res);
       })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
@@ -549,15 +552,14 @@ function App() {
     );
   };
 
-  const removeFromDiscard = (removedCard) => {
-    setDiscardPile((cards) => {
-      return cards.filter((card) => {
-        if (card.code !== removedCard.code) {
+  const updateDiscardPile = (deck, discardedCard) => {
+    listCardsInPile(deck, "discard").then((res) => {
+      console.log(res, discardedCard);
+      setDiscardPile(
+        res.piles.discard.cards?.map((card) => {
           return card;
-        } else {
-          addToDiscard(card);
-        }
-      });
+        })
+      );
     });
   };
 

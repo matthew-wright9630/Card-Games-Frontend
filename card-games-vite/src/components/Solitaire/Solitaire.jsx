@@ -35,6 +35,11 @@ function Solitaire({
   const [isClubPileEmpty, setIsClubPileEmpty] = useState(true);
   const [isDiamondPileEmpty, setIsDiamondPileEmpty] = useState(true);
 
+  const [spadeFoundation, setSpadeFoundation] = useState([]);
+  const [heartFoundation, setHeartFoundation] = useState([]);
+  const [clubFoundation, setClubFoundation] = useState([]);
+  const [diamondFoundation, setDiamondFoundation] = useState([]);
+
   function startSolitaireGame() {
     incrementGame();
     handleGameStart(1);
@@ -67,10 +72,44 @@ function Solitaire({
     addToDiscard(item);
   }
 
-  function addToSpadeFoundation(item) {
-    console.log(item);
+  function getLastDiscardedCard() {
     pullCardFromDiscard(localStorage.getItem("deck_id"));
-    // addCardToPile(localStorage.getItem("deck_id"), "Spade Foundation", item);
+  }
+
+  function addToSpadeFoundation(item) {
+    setSpadeFoundation([...spadeFoundation, item.card]);
+    pullCardFromDiscard(localStorage.getItem("deck_id"));
+
+    if (spadeFoundation.length === 0) {
+      setIsSpadePileEmpty(false);
+    }
+  }
+
+  function addToHeartFoundation(item) {
+    setHeartFoundation([...heartFoundation, item.card]);
+    pullCardFromDiscard(localStorage.getItem("deck_id"));
+
+    if (heartFoundation.length === 0) {
+      setIsHeartPileEmpty(false);
+    }
+  }
+
+  function addToClubFoundation(item) {
+    setClubFoundation([...clubFoundation, item.card]);
+    pullCardFromDiscard(localStorage.getItem("deck_id"));
+
+    if (clubFoundation.length === 0) {
+      setIsClubPileEmpty(false);
+    }
+  }
+
+  function addToDiamondFoundation(item) {
+    setDiamondFoundation([...diamondFoundation, item.card]);
+    pullCardFromDiscard(localStorage.getItem("deck_id"));
+
+    if (diamondFoundation.length === 0) {
+      setIsDiamondPileEmpty(false);
+    }
   }
 
   function getGame() {
@@ -96,9 +135,33 @@ function Solitaire({
     }),
   });
 
-  const [{ isOverSpadeFoundation }, drop] = useDrop({
+  const [{ isOverSpadeFoundation }, dropSpadeFoundation] = useDrop({
     accept: "card",
     drop: (item) => addToSpadeFoundation(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  const [{ isOverHeartFoundation }, dropHeartFoundation] = useDrop({
+    accept: "card",
+    drop: (item) => addToHeartFoundation(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  const [{ isOverClubFoundation }, dropClubFoundation] = useDrop({
+    accept: "card",
+    drop: (item) => addToClubFoundation(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  const [{ isOverDiamondFoundation }, dropDiamondFoundation] = useDrop({
+    accept: "card",
+    drop: (item) => addToDiamondFoundation(item),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
@@ -149,7 +212,7 @@ function Solitaire({
                 />
               </button>
             </div>
-            <div className="game__discard-pile" ref={dropRef}>
+            <div className="game__discard-pile">
               {isOver}
               <p className="game__discard-title">Discard Pile</p>
               <button
@@ -162,27 +225,56 @@ function Solitaire({
                 {isDiscardPileEmpty ? (
                   ""
                 ) : (
-                  // <Card
-                  //   card={discardPile[discardPile.length - 1]}
-                  //   moveCardListItem={moveCardListItem}
-                  // />
-                  <img
-                    className="game__card-img"
-                    src={discardPile[discardPile.length - 1].image}
-                  ></img>
+                  <Card
+                    card={discardPile[discardPile.length - 1]}
+                    moveCardListItem={moveCardListItem}
+                  />
                 )}
               </button>
             </div>
           </div>
           <div className="solitaire__foundation-piles">
-            <div className="solitaire__foundation__spade" ref={drop}>
+            <div className="solitaire__foundation" ref={dropSpadeFoundation}>
               {isOverSpadeFoundation}
               {isSpadePileEmpty ? (
                 <div className="solitaire__pile_empty"></div>
               ) : (
                 <img
                   className="game__card-img"
-                  src={discardPile[discardPile.length - 1].image}
+                  src={spadeFoundation[spadeFoundation.length - 1].image}
+                ></img>
+              )}
+            </div>
+            <div className="solitaire__foundation" ref={dropHeartFoundation}>
+              {isOverHeartFoundation}
+              {isHeartPileEmpty ? (
+                <div className="solitaire__pile_empty"></div>
+              ) : (
+                <img
+                  className="game__card-img"
+                  src={heartFoundation[heartFoundation.length - 1].image}
+                ></img>
+              )}
+            </div>
+            <div className="solitaire__foundation" ref={dropClubFoundation}>
+              {isOverClubFoundation}
+              {isClubPileEmpty ? (
+                <div className="solitaire__pile_empty"></div>
+              ) : (
+                <img
+                  className="game__card-img"
+                  src={clubFoundation[clubFoundation.length - 1].image}
+                ></img>
+              )}
+            </div>
+            <div className="solitaire__foundation" ref={dropDiamondFoundation}>
+              {isOverDiamondFoundation}
+              {isDiamondPileEmpty ? (
+                <div className="solitaire__pile_empty"></div>
+              ) : (
+                <img
+                  className="game__card-img"
+                  src={diamondFoundation[diamondFoundation.length - 1].image}
                 ></img>
               )}
             </div>
