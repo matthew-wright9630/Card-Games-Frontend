@@ -443,19 +443,16 @@ function App() {
         updateDiscardPile(deck, res.cards[0]);
       })
       .then(() => {
-        console.log(discardPile);
         renderDiscardPile();
       })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
 
-  const pullCardFromPile = (deck, pileName) => {
+  const pullCardFromPile = (deck, pileName, numberOfCards) => {
     setIsLoading(true);
-    drawFromPile(deck, pileName, 1)
-      .then((res) => {
-        console.log(res);
-      })
+    drawFromPile(deck, pileName, numberOfCards)
+      .then((res) => {})
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
@@ -518,12 +515,13 @@ function App() {
       .catch((err) => console.error(err));
   };
 
-  const addCardToPile = (deck, pileName, card) => {
+  const addCard = (deck, pileName, card) => {
+    // console.log(card);
     const name = removeSpacesFromName(pileName);
-    console.log(card);
-    addCardToPile(deck, name, card.code).then((data) => {
-      console.log(data);
-    });
+    addCardsToPiles(deck, name, card.code).then((res) => {
+      console.log(res);
+    })
+      .catch((err) => console.error(err));
   };
 
   const handleDiscard = (discardedCard) => {
@@ -552,9 +550,8 @@ function App() {
     );
   };
 
-  const updateDiscardPile = (deck, discardedCard) => {
+  const updateDiscardPile = (deck) => {
     listCardsInPile(deck, "discard").then((res) => {
-      console.log(res, discardedCard);
       setDiscardPile(
         res.piles.discard.cards?.map((card) => {
           return card;
@@ -610,8 +607,6 @@ function App() {
   }, [discardPile]);
 
   const generateCardPreview = ({ itemType, item, style }) => {
-    // console.log("TEST");
-    // <Card />;
     return <img className="card" src={item.card.image} style={style}></img>;
   };
 
@@ -696,9 +691,11 @@ function App() {
                     isLoading={isLoading}
                     handleDiscardPileClick={handleDiscardPileClick}
                     animateCardDeal={animateCardDeal}
-                    addCardToPile={addCardToPile}
+                    addCard={addCard}
                     pullCardFromPile={pullCardFromPile}
                     pullCardFromDiscard={pullCardFromDiscard}
+                    setDiscardPile={setDiscardPile}
+                    updateDiscardPile={updateDiscardPile}
                   />
                 }
               ></Route>

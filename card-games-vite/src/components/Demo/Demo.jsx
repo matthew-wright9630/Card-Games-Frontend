@@ -160,13 +160,15 @@ function Demo({
             <div className="demo__cards">
               {hand?.map((card) => {
                 return (
-                  <Card
-                    key={card.code}
-                    index={hand.indexOf(card)}
-                    card={card}
-                    moveCardListItem={moveCardListItem}
-                    draggable
-                  ></Card>
+                  <div className="demo__card-container">
+                    <Card
+                      key={card.code}
+                      index={hand.indexOf(card)}
+                      card={card}
+                      moveCardListItem={moveCardListItem}
+                      draggable
+                    ></Card>
+                  </div>
                 );
               })}
             </div>

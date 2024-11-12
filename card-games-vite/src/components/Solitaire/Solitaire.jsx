@@ -3,7 +3,11 @@ import { React, useCallback, useContext, useState } from "react";
 import { backOfCard } from "../../utils/constants";
 import { useDrop } from "react-dnd";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { drawCard, drawFromPile } from "../../utils/deckOfCardsApi";
+import {
+  drawCard,
+  drawFromPile,
+  listCardsInPile,
+} from "../../utils/deckOfCardsApi";
 import Card from "../Card/Card";
 import {
   checkCardFoundation,
@@ -28,9 +32,11 @@ function Solitaire({
   isLoading,
   handleDiscardPileClick,
   animateCardDeal,
-  addCardToPile,
+  addCard,
   pullCardFromPile,
   pullCardFromDiscard,
+  setDiscardPile,
+  updateDiscardPile,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -44,8 +50,17 @@ function Solitaire({
   const [clubFoundation, setClubFoundation] = useState([]);
   const [diamondFoundation, setDiamondFoundation] = useState([]);
 
+  const [tabluea1, setTabluea1] = useState([]);
+  const [tabluea2, setTabluea2] = useState([]);
+  const [tabluea3, setTabluea3] = useState([]);
+  const [tabluea4, setTabluea4] = useState([]);
+  const [tabluea5, setTabluea5] = useState([]);
+  const [tabluea6, setTabluea6] = useState([]);
+  const [tabluea7, setTabluea7] = useState([]);
+
   function startSolitaireGame() {
     incrementGame();
+    setupTabluea();
     handleGameStart(1);
   }
 
@@ -68,7 +83,6 @@ function Solitaire({
   }
 
   function clickedDiscardPile() {
-    console.log(discardPile);
     handleDiscardPileClick();
   }
 
@@ -76,28 +90,97 @@ function Solitaire({
     addToDiscard(item);
   }
 
+  function findAndRemoveCardFromPile(cardToDiscard) {
+    console.log(cardToDiscard);
+    pullCardFromPile(localStorage.getItem("deck_id"), cardToDiscard.id);
+    if (cardToDiscard.id === "discard") {
+      updateDiscardPile(localStorage.getItem("deck_id"));
+    } else if (cardToDiscard.id === "Tabluea1") {
+      listCardsInPile(deck, "Tabluea1").then((res) => {
+        setTabluea1(
+          res.piles.Tabluea1.cards?.map((card) => {
+            return card;
+          })
+        );
+      });
+    } else if (cardToDiscard.id === "Tabluea2") {
+      listCardsInPile(deck, "Tabluea2").then((res) => {
+        setTabluea2(
+          res.piles.Tabluea2.cards?.map((card) => {
+            return card;
+          })
+        );
+      });
+    } else if (cardToDiscard.id === "Tabluea3") {
+      listCardsInPile(deck, "Tabluea3").then((res) => {
+        setTabluea3(
+          res.piles.Tabluea3.cards?.map((card) => {
+            return card;
+          })
+        );
+      });
+    } else if (cardToDiscard.id === "Tabluea4") {
+      listCardsInPile(deck, "Tabluea4").then((res) => {
+        setTabluea4(
+          res.piles.Tabluea4.cards?.map((card) => {
+            return card;
+          })
+        );
+      });
+    } else if (cardToDiscard.id === "Tabluea5") {
+      listCardsInPile(deck, "Tabluea5").then((res) => {
+        setTabluea5(
+          res.piles.Tabluea5.cards?.map((card) => {
+            return card;
+          })
+        );
+      });
+    } else if (cardToDiscard.id === "Tabluea6") {
+      listCardsInPile(deck, "Tabluea6").then((res) => {
+        setTabluea6(
+          res.piles.Tabluea6.cards?.map((card) => {
+            return card;
+          })
+        );
+      });
+    } else if (cardToDiscard.id === "Tabluea7") {
+      listCardsInPile(deck, "Tabluea7").then((res) => {
+        setTabluea7(
+          res.piles.Tabluea7.cards?.map((card) => {
+            return card;
+          })
+        );
+      });
+    }
+  }
+
+  function addToPile(pileName, card) {
+    addCard(localStorage.getItem("deck_id"), pileName, card);
+  }
+
   function addToSpadeFoundation(item) {
+    console.log(item);
     if (checkCardFoundation(item.card, "Spade")) {
       if (
         spadeFoundation.length === 0 &&
-        parseInt(item.card.code.substring(0, 1), 10) !== 1
+        item.card.code.substring(0, 1) === "A"
       ) {
-        throw new Error("First card must be an Ace");
-      }
-      if (
+        addToPile("Spade", item.card);
+        setSpadeFoundation([...spadeFoundation, item.card]);
+        findAndRemoveCardFromPile(item);
+        setIsSpadePileEmpty(false);
+      } else if (spadeFoundation.length === 0) {
+        throw new Error("The first card must be the Ace");
+      } else if (
         checkFoundationNumber(
           item.card,
           spadeFoundation[spadeFoundation.length - 1]
         )
       ) {
         setSpadeFoundation([...spadeFoundation, item.card]);
-        pullCardFromDiscard(localStorage.getItem("deck_id"));
-
-        if (spadeFoundation.length === 0) {
-          setIsSpadePileEmpty(false);
-        }
+        findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card number must be 1 more than previous number");
+        throw new Error("Card cannot be added to pile");
       }
     } else {
       throw new Error("Card suit is not a spade.");
@@ -108,24 +191,24 @@ function Solitaire({
     if (checkCardFoundation(item.card, "Heart")) {
       if (
         heartFoundation.length === 0 &&
-        parseInt(item.card.code.substring(0, 1), 10) !== 1
+        item.card.code.substring(0, 1) === "A"
       ) {
-        throw new Error("First card must be an Ace");
-      }
-      if (
+        addToPile("Heart", item.card);
+        setHeartFoundation([...heartFoundation, item.card]);
+        findAndRemoveCardFromPile(item);
+        setIsHeartPileEmpty(false);
+      } else if (heartFoundation.length === 0) {
+        throw new Error("The first card must be the Ace");
+      } else if (
         checkFoundationNumber(
           item.card,
           heartFoundation[heartFoundation.length - 1]
         )
       ) {
         setHeartFoundation([...heartFoundation, item.card]);
-        pullCardFromDiscard(localStorage.getItem("deck_id"));
-
-        if (heartFoundation.length === 0) {
-          setIsHeartPileEmpty(false);
-        }
+        findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card number must be 1 more than previous number");
+        throw new Error("Card cannot be added to pile");
       }
     } else {
       throw new Error("Card suit is not a heart.");
@@ -136,24 +219,24 @@ function Solitaire({
     if (checkCardFoundation(item.card, "Club")) {
       if (
         clubFoundation.length === 0 &&
-        parseInt(item.card.code.substring(0, 1), 10) !== 1
+        item.card.code.substring(0, 1) === "A"
       ) {
-        throw new Error("First card must be an Ace");
-      }
-      if (
+        addToPile("Club", item.card);
+        setClubFoundation([...clubFoundation, item.card]);
+        findAndRemoveCardFromPile(item);
+        setIsClubPileEmpty(false);
+      } else if (clubFoundation.length === 0) {
+        throw new Error("The first card must be the Ace");
+      } else if (
         checkFoundationNumber(
           item.card,
           clubFoundation[clubFoundation.length - 1]
         )
       ) {
         setClubFoundation([...clubFoundation, item.card]);
-        pullCardFromDiscard(localStorage.getItem("deck_id"));
-
-        if (clubFoundation.length === 0) {
-          setIsClubPileEmpty(false);
-        }
+        findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card number must be 1 more than previous number");
+        throw new Error("Card cannot be added to pile");
       }
     } else {
       throw new Error("Card suit is not a club.");
@@ -161,27 +244,28 @@ function Solitaire({
   }
 
   function addToDiamondFoundation(item) {
+    findAndRemoveCardFromPile(item);
     if (checkCardFoundation(item.card, "Diamond")) {
       if (
         diamondFoundation.length === 0 &&
-        parseInt(item.card.code.substring(0, 1), 10) !== 1
+        item.card.code.substring(0, 1) === "A"
       ) {
-        throw new Error("First card must be an Ace");
-      }
-      if (
+        addToPile("Diamond", item.card);
+        setDiamondFoundation([...diamondFoundation, item.card]);
+        findAndRemoveCardFromPile(item);
+        setIsDiamondPileEmpty(false);
+      } else if (diamondFoundation.length === 0) {
+        throw new Error("The first card must be the Ace");
+      } else if (
         checkFoundationNumber(
           item.card,
           diamondFoundation[diamondFoundation.length - 1]
         )
       ) {
         setDiamondFoundation([...diamondFoundation, item.card]);
-        pullCardFromDiscard(localStorage.getItem("deck_id"));
-
-        if (diamondFoundation.length === 0) {
-          setIsDiamondPileEmpty(false);
-        }
+        findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card number must be 1 more than previous number");
+        throw new Error("Card cannot be added to pile");
       }
     } else {
       throw new Error("Card suit is not a diamond.");
@@ -202,14 +286,6 @@ function Solitaire({
     });
     animateCardDeal(200, 0);
   }
-
-  const [{ isOver }, dropRef] = useDrop({
-    accept: "card",
-    drop: (item) => discard(item),
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  });
 
   const [{ isOverSpadeFoundation }, dropSpadeFoundation] = useDrop({
     accept: "card",
@@ -243,6 +319,177 @@ function Solitaire({
     }),
   });
 
+  function setupTabluea() {
+    drawCard(localStorage.getItem("deck_id"), 28)
+      .then((deck) => {
+        console.log(deck.cards[0]);
+        addToTabluea1(deck.cards[0]);
+        for (let i = 1; i < 3; i++) {
+          addToTabluea2(deck.cards[i]);
+        }
+      })
+      // .then((deck) => {
+      //   console.log(deck);
+      //   setTabluea1(
+      //     deck.cards?.map((card) => {
+      //       console.log(card);
+      //       return card;
+      //     })
+      //   );
+      // })
+      // .then(
+      //   drawCard(localStorage.getItem("deck_id"), 2).then((deck) => {
+      //     setTabluea2(
+      //       deck.cards?.map((card) => {
+      //         console.log(card);
+      //         return card;
+      //       })
+      //     );
+      //   })
+      // )
+      // .then(
+      //   drawCard(localStorage.getItem("deck_id"), 3).then((deck) => {
+      //     setTabluea3(
+      //       deck.cards?.map((card) => {
+      //         return card;
+      //       })
+      //     );
+      //   })
+      // )
+      // .then(
+      //   drawCard(localStorage.getItem("deck_id"), 4).then((deck) => {
+      //     setTabluea4(
+      //       deck.cards?.map((card) => {
+      //         return card;
+      //       })
+      //     );
+      //   })
+      // )
+      // .then(
+      //   drawCard(localStorage.getItem("deck_id"), 5).then((deck) => {
+      //     setTabluea5(
+      //       deck.cards?.map((card) => {
+      //         return card;
+      //       })
+      //     );
+      //   })
+      // )
+      // .then(
+      //   drawCard(localStorage.getItem("deck_id"), 6).then((deck) => {
+      //     setTabluea6(
+      //       deck.cards?.map((card) => {
+      //         return card;
+      //       })
+      //     );
+      //   })
+      // )
+      // .then(
+      //   drawCard(localStorage.getItem("deck_id"), 7).then((deck) => {
+      //     setTabluea7(
+      //       deck.cards?.map((card) => {
+      //         return card;
+      //       })
+      //     );
+      //   })
+      // )
+      // .then(
+      //   listCardsInPile(localStorage.getItem("deck_id", "discard")).then(
+      //     (res) => {
+      //       console.log(res);
+      //     }
+      //   )
+      // )
+      .catch((err) => console.error(err));
+  }
+
+  function addToTabluea1(item) {
+    console.log(item);
+    addToPile("Tabluea1", item);
+    setTabluea1([...tabluea1, item]);
+  }
+
+  const [{ isOverT1 }, dropRefT1] = useDrop({
+    accept: "card",
+    drop: (item) => addToTabluea1(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  function addToTabluea2(item) {
+    console.log(item);
+    addToPile("Tabluea2", item);
+    setTabluea2([...tabluea2, item]);
+  }
+
+  const [{ isOverT2 }, dropRefT2] = useDrop({
+    accept: "card",
+    drop: (item) => addToTabluea2(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  function addToTabluea3(item) {
+    console.log(item);
+  }
+
+  const [{ isOverT3 }, dropRefT3] = useDrop({
+    accept: "card",
+    drop: (item) => addToTabluea3(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  function addToTabluea4(item) {
+    console.log(item);
+  }
+
+  const [{ isOverT4 }, dropRefT4] = useDrop({
+    accept: "card",
+    drop: (item) => addToTabluea4(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  function addToTabluea5(item) {
+    console.log(item);
+  }
+
+  const [{ isOverT5 }, dropRefT5] = useDrop({
+    accept: "card",
+    drop: (item) => addToTabluea5(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  function addToTabluea6(item) {
+    console.log(item);
+  }
+
+  const [{ isOverT6 }, dropRefT6] = useDrop({
+    accept: "card",
+    drop: (item) => addToTabluea6(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  function addToTabluea7(item) {
+    console.log(item);
+  }
+
+  const [{ isOverT7 }, dropRefT7] = useDrop({
+    accept: "card",
+    drop: (item) => addToTabluea7(item),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
   const moveCardListItem = useCallback(
     (dragIndex, hoverIndex) => {
       const dragItem = hand[dragIndex];
@@ -257,18 +504,13 @@ function Solitaire({
     [hand]
   );
 
-  const listOfTablueaPiles = [
-    "Tablue 0",
-    "Tablue 1",
-    "Tablue 2",
-    "Tablue 3",
-    "Tablue 4",
-    "Tablue 5",
-    "Tablue 6",
-  ];
+  function test() {
+    console.log(tabluea2);
+  }
 
   return (
     <div className="solitaire">
+      <button onClick={test}>Test</button>
       <h2 className="solitaire__title">Solitaire</h2>
       <p className="solitaire__description-placeholder">
         Thank you for your interest! This page is still under development.
@@ -299,7 +541,6 @@ function Solitaire({
               </button>
             </div>
             <div className="game__discard-pile">
-              {isOver}
               <p className="game__discard-title">Discard Pile</p>
               <button
                 type="button"
@@ -314,65 +555,228 @@ function Solitaire({
                   <Card
                     card={discardPile[discardPile.length - 1]}
                     moveCardListItem={moveCardListItem}
+                    canBeFlipped={false}
+                    id="discard"
                   />
                 )}
               </button>
             </div>
           </div>
-          <div className="solitaire__foundation-piles">
-            <div className="solitaire__foundation" ref={dropSpadeFoundation}>
-              {isOverSpadeFoundation}
-              {isSpadePileEmpty ? (
-                <div className="solitaire__pile_empty">SPADE</div>
-              ) : (
-                <img
-                  className="game__card-img"
-                  src={spadeFoundation[spadeFoundation.length - 1].image}
-                ></img>
-              )}
+          <div className="solitaire__game-area">
+            <div className="solitaire__foundation-piles">
+              <div className="solitaire__pile" ref={dropSpadeFoundation}>
+                {isOverSpadeFoundation}
+                {isSpadePileEmpty ? (
+                  <div className="solitaire__pile_empty">SPADE</div>
+                ) : (
+                  <Card
+                    card={spadeFoundation[spadeFoundation.length - 1]}
+                    moveCardListItem={moveCardListItem}
+                    canBeFlipped={false}
+                    id="Spade"
+                  />
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropHeartFoundation}>
+                {isOverHeartFoundation}
+                {isHeartPileEmpty ? (
+                  <div className="solitaire__pile_empty solitaire__pile_red">
+                    HEART
+                  </div>
+                ) : (
+                  <Card
+                    card={heartFoundation[heartFoundation.length - 1]}
+                    moveCardListItem={moveCardListItem}
+                    canBeFlipped={false}
+                    id="Heart"
+                  />
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropClubFoundation}>
+                {isOverClubFoundation}
+                {isClubPileEmpty ? (
+                  <div className="solitaire__pile_empty">CLUB</div>
+                ) : (
+                  <Card
+                    card={clubFoundation[clubFoundation.length - 1]}
+                    moveCardListItem={moveCardListItem}
+                    canBeFlipped={false}
+                    id="Club"
+                  />
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropDiamondFoundation}>
+                {isOverDiamondFoundation}
+                {isDiamondPileEmpty ? (
+                  <div className="solitaire__pile_empty solitaire__pile_red">
+                    DIAMOND
+                  </div>
+                ) : (
+                  <Card
+                    card={diamondFoundation[diamondFoundation.length - 1]}
+                    moveCardListItem={moveCardListItem}
+                    canBeFlipped={false}
+                    id="Diamond"
+                  />
+                )}
+              </div>
             </div>
-            <div className="solitaire__foundation" ref={dropHeartFoundation}>
-              {isOverHeartFoundation}
-              {isHeartPileEmpty ? (
-                <div className="solitaire__pile_empty solitaire__pile_red">
-                  HEART
-                </div>
-              ) : (
-                <img
-                  className="game__card-img"
-                  src={heartFoundation[heartFoundation.length - 1].image}
-                ></img>
-              )}
+            <div className="solitaire__tableau">
+              <div className="solitaire__pile" ref={dropRefT1}>
+                {isOverT1}
+                {tabluea1.length === 0 ? (
+                  <div className="solitaire__pile_empty">Test</div>
+                ) : (
+                  <div className="solitaire__stack">
+                    {tabluea1.map((card) => {
+                      return (
+                        <div className="solitaire__card">
+                          <Card
+                            card={card}
+                            moveCardListItem={moveCardListItem}
+                            canBeFlipped={false}
+                            id="Tabluea1"
+                            key={card.code}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropRefT2}>
+                {isOverT2}
+                {tabluea2.length === 0 ? (
+                  <div className="solitaire__pile_empty">Test</div>
+                ) : (
+                  <div className="solitaire__stack">
+                    {tabluea2.map((card) => {
+                      return (
+                        <div className="solitaire__card">
+                          <Card
+                            card={card}
+                            moveCardListItem={moveCardListItem}
+                            canBeFlipped={false}
+                            id="Tabluea2"
+                            key={card.code}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropRefT3}>
+                {isOverT3}
+                {tabluea3.length === 0 ? (
+                  <div className="solitaire__pile_empty">Test</div>
+                ) : (
+                  <div className="solitaire__stack">
+                    {tabluea3.map((card) => {
+                      return (
+                        <div className="solitaire__card">
+                          <Card
+                            card={card}
+                            moveCardListItem={moveCardListItem}
+                            canBeFlipped={false}
+                            id="Tabluea3"
+                            key={card.code}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropRefT4}>
+                {isOverT4}
+                {tabluea4.length === 0 ? (
+                  <div className="solitaire__pile_empty">Test</div>
+                ) : (
+                  <div className="solitaire__stack">
+                    {tabluea4.map((card) => {
+                      return (
+                        <div className="solitaire__card">
+                          <Card
+                            card={card}
+                            moveCardListItem={moveCardListItem}
+                            canBeFlipped={false}
+                            id="Tabluea4"
+                            key={card.code}
+                          />
+                        </div>
+                      );
+                    })}{" "}
+                  </div>
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropRefT5}>
+                {isOverT5}
+                {tabluea5.length === 0 ? (
+                  <div className="solitaire__pile_empty">Test</div>
+                ) : (
+                  <div className="solitaire__stack">
+                    {tabluea5.map((card) => {
+                      return (
+                        <div className="solitaire__card">
+                          <Card
+                            card={card}
+                            moveCardListItem={moveCardListItem}
+                            canBeFlipped={false}
+                            id="Tabluea5"
+                            key={card.code}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropRefT6}>
+                {isOverT6}
+                {tabluea6.length === 0 ? (
+                  <div className="solitaire__pile_empty">Test</div>
+                ) : (
+                  <div className="solitaire__stack">
+                    {tabluea6.map((card) => {
+                      return (
+                        <div className="solitaire__card">
+                          <Card
+                            card={card}
+                            moveCardListItem={moveCardListItem}
+                            canBeFlipped={false}
+                            id="Tabluea6"
+                            key={card.code}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="solitaire__pile" ref={dropRefT7}>
+                {isOverT7}
+                {tabluea7.length === 0 ? (
+                  <div className="solitaire__pile_empty">Test</div>
+                ) : (
+                  <div className="solitaire__stack">
+                    {tabluea7.map((card) => {
+                      return (
+                        <div className="solitaire__card">
+                          <Card
+                            card={card}
+                            moveCardListItem={moveCardListItem}
+                            canBeFlipped={false}
+                            id="Tabluea7"
+                            key={card.code}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="solitaire__foundation" ref={dropClubFoundation}>
-              {isOverClubFoundation}
-              {isClubPileEmpty ? (
-                <div className="solitaire__pile_empty">CLUB</div>
-              ) : (
-                <img
-                  className="game__card-img"
-                  src={clubFoundation[clubFoundation.length - 1].image}
-                ></img>
-              )}
-            </div>
-            <div className="solitaire__foundation" ref={dropDiamondFoundation}>
-              {isOverDiamondFoundation}
-              {isDiamondPileEmpty ? (
-                <div className="solitaire__pile_empty solitaire__pile_red">
-                  DIAMOND
-                </div>
-              ) : (
-                <img
-                  className="game__card-img"
-                  src={diamondFoundation[diamondFoundation.length - 1].image}
-                ></img>
-              )}
-            </div>
-          </div>
-          <div className="solitaire__tableau">
-            {listOfTablueaPiles.map(() => {
-              return <div className="solitaire__tableau__piles">TEST</div>;
-            })}
           </div>
         </div>
       )}

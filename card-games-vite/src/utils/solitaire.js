@@ -10,13 +10,61 @@ function checkCardFoundation(card, foundation) {
 }
 
 function checkFoundationNumber(newCard, foundationCard) {
-  if (
-    parseInt(newCard.card.substring(0, 1), 10) ===
-    parseInt(foundationCard.card.substring(0, 1), 10) + 1
-  ) {
-    return true;
+  console.log(newCard, foundationCard);
+  if (newCard.code.substring(0, 1) === 0) {
+    return foundationCard.code.substring(0, 1) === "9";
+  } else if (newCard.code.substring(0, 1) === "J") {
+    return foundationCard.code.substring(0, 1) === "0";
+  } else if (newCard.code.substring(0, 1) === "Q") {
+    return foundationCard.code.substring(0, 1) === "J";
+  } else if (newCard.code.substring(0, 1) === "K") {
+    return foundationCard.code.substring(0, 1) === "Q";
+  } else if (newCard.code.substring(0, 1) === "2") {
+    return foundationCard.code.substring(0, 1) === "A";
   }
-  return false;
+  return (
+    parseInt(newCard.code.substring(0, 1), 10) ===
+    parseInt(foundationCard.code.substring(0, 1), 10) + 1
+  );
 }
 
-export { addCardToSpadeFoundation, checkCardFoundation, checkFoundationNumber };
+function checkTablueaSuit(newCard, tablueaCard) {
+  if (newCard.code.substring(1) === "H" || newCard.code.substring(1) === "D") {
+    return (
+      tablueaCard.code.substring(1) === "C" ||
+      tablueaCard.code.substring(1) === "S"
+    );
+  } else {
+    return (
+      tablueaCard.code.substring(1) === "H" ||
+      tablueaCard.card.substring(1) === "D"
+    );
+  }
+}
+
+function checkTablueaSequence(newCard, tablueaCard) {
+  if (newCard.code.substring(0, 1) === "K") {
+    return;
+  } else if (newCard.code.substring(0, 1) === "Q") {
+    return tablueaCard.code.substring(0, 1) === "K";
+  } else if (newCard.code.substring(0, 1) === "J") {
+    return tablueaCard.code.substring(0, 1) === "Q";
+  } else if (newCard.code.substring(0, 1) === "0") {
+    return tablueaCard.code.substring(0, 1) === "J";
+  } else if (newCard.code.substring(0, 1) === "9") {
+    return tablueaCard.code.substring(0, 1) === "0";
+  } else {
+    return (
+      parseInt(newCard.code.substring(0, 1), 10) ===
+      parseInt(foundationCard.code.substring(0, 1), 10) - 1
+    );
+  }
+}
+
+export {
+  addCardToSpadeFoundation,
+  checkCardFoundation,
+  checkFoundationNumber,
+  checkTablueaSequence,
+  checkTablueaSuit,
+};

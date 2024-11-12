@@ -3,20 +3,28 @@ import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import "./Card.css";
 
-function Card({ card, moveCardListItem, index }) {
+function Card({
+  card,
+  moveCardListItem,
+  index,
+  canBeFlipped = true,
+  id = card.code,
+}) {
   const [isCardFlipped, setIsCardFlipped] = useState([]);
 
   const flipCard = () => {
-    if (isCardFlipped) {
-      setIsCardFlipped(false);
-    } else {
-      setIsCardFlipped(true);
+    if (canBeFlipped) {
+      if (isCardFlipped) {
+        setIsCardFlipped(false);
+      } else {
+        setIsCardFlipped(true);
+      }
     }
   };
 
   const [{ isDragging }, dragRef] = useDrag({
     type: "card",
-    item: { id: card?.code, card: card, index },
+    item: { id: id, card: card, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
