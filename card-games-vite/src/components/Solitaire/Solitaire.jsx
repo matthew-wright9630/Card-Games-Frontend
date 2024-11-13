@@ -4,6 +4,7 @@ import { backOfCard } from "../../utils/constants";
 import { useDrop } from "react-dnd";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import {
+  addCardsToPiles,
   drawCard,
   drawFromPile,
   listCardsInPile,
@@ -50,6 +51,14 @@ function Solitaire({
   const [clubFoundation, setClubFoundation] = useState([]);
   const [diamondFoundation, setDiamondFoundation] = useState([]);
 
+  const [isTabluea1Empty, setIsTabluea1Empty] = useState(true);
+  const [isTabluea2Empty, setIsTabluea2Empty] = useState(true);
+  const [isTabluea3Empty, setIsTabluea3Empty] = useState(true);
+  const [isTabluea4Empty, setIsTabluea4Empty] = useState(true);
+  const [isTabluea5Empty, setIsTabluea5Empty] = useState(true);
+  const [isTabluea6Empty, setIsTabluea6Empty] = useState(true);
+  const [isTabluea7Empty, setIsTabluea7Empty] = useState(true);
+
   const [tabluea1, setTabluea1] = useState([]);
   const [tabluea2, setTabluea2] = useState([]);
   const [tabluea3, setTabluea3] = useState([]);
@@ -59,9 +68,8 @@ function Solitaire({
   const [tabluea7, setTabluea7] = useState([]);
 
   function startSolitaireGame() {
-    incrementGame();
-    setupTabluea();
     handleGameStart(1);
+    incrementGame();
   }
 
   function incrementGame() {
@@ -91,10 +99,10 @@ function Solitaire({
   }
 
   function findAndRemoveCardFromPile(cardToDiscard) {
-    console.log(cardToDiscard);
-    pullCardFromPile(localStorage.getItem("deck_id"), cardToDiscard.id);
+    const deck = localStorage.getItem("deck_id");
+    pullCardFromPile(deck, cardToDiscard.id);
     if (cardToDiscard.id === "discard") {
-      updateDiscardPile(localStorage.getItem("deck_id"));
+      updateDiscardPile(deck);
     } else if (cardToDiscard.id === "Tabluea1") {
       listCardsInPile(deck, "Tabluea1").then((res) => {
         setTabluea1(
@@ -322,90 +330,158 @@ function Solitaire({
   function setupTabluea() {
     drawCard(localStorage.getItem("deck_id"), 28)
       .then((deck) => {
-        console.log(deck.cards[0]);
-        addToTabluea1(deck.cards[0]);
-        for (let i = 1; i < 3; i++) {
-          addToTabluea2(deck.cards[i]);
-        }
+        setTabluea1([...tabluea1, deck.cards[0]]);
+        setTabluea2([...tabluea2, deck.cards[1], deck.cards[2]]);
+        setTabluea3([...tabluea3, deck.cards[3], deck.cards[4], deck.cards[5]]);
+        setTabluea4([
+          ...tabluea4,
+          deck.cards[6],
+          deck.cards[7],
+          deck.cards[8],
+          deck.cards[9],
+        ]);
+        setTabluea5([
+          ...tabluea5,
+          deck.cards[10],
+          deck.cards[11],
+          deck.cards[12],
+          deck.cards[13],
+          deck.cards[14],
+        ]);
+        setTabluea6([
+          ...tabluea6,
+          deck.cards[15],
+          deck.cards[16],
+          deck.cards[17],
+          deck.cards[18],
+          deck.cards[19],
+          deck.cards[20],
+        ]);
+        setTabluea7([
+          ...tabluea7,
+          deck.cards[21],
+          deck.cards[22],
+          deck.cards[23],
+          deck.cards[24],
+          deck.cards[25],
+          deck.cards[26],
+          deck.cards[27],
+        ]);
+
+        //   console.log(deck);
+        //   addCardsToPiles(
+        //     localStorage.getItem("deck_id"),
+        //     "Tabluea1",
+        //     deck.cards[0].code
+        //   )
+        //     .then(() => {
+        //       setTabluea1([...tabluea1, deck.cards[0]]);
+        //     })
+        //     .catch((err) => console.error(err));
+
+        //   addCardsToPiles(
+        //     localStorage.getItem("deck_id"),
+        //     "Tabluea2",
+        //     `${deck.cards[1].code},${deck.cards[2].code}`
+        //   )
+        //     .then(() => {
+        //       setTabluea2([...tabluea2, deck.cards[1], deck.cards[2]]);
+        //     })
+        //     .catch((err) => console.error(err));
+
+        //   addCardsToPiles(
+        //     localStorage.getItem("deck_id"),
+        //     "Tabluea3",
+        //     `${deck.cards[3].code},${deck.cards[4].code},${deck.cards[5].code}`
+        //   )
+        //     .then(() => {
+        //       setTabluea3([
+        //         ...tabluea3,
+        //         deck.cards[3],
+        //         deck.cards[4],
+        //         deck.cards[5],
+        //       ]);
+        //     })
+        //     .catch((err) => console.error(err));
+
+        //   addCardsToPiles(
+        //     localStorage.getItem("deck_id"),
+        //     "Tabluea4",
+        //     `${deck.cards[6].code},${deck.cards[7].code},${deck.cards[8].code},${deck.cards[9].code}`
+        //   )
+        //     .then(() => {
+        //       setTabluea4([
+        //         ...tabluea4,
+        //         deck.cards[6],
+        //         deck.cards[7],
+        //         deck.cards[8],
+        //         deck.cards[9],
+        //       ]);
+        //     })
+        //     .catch((err) => console.error(err));
+
+        //   addCardsToPiles(
+        //     localStorage.getItem("deck_id"),
+        //     "Tabluea5",
+        //     `${deck.cards[10].code},${deck.cards[11].code},${deck.cards[12].code},${deck.cards[13].code},${deck.cards[14].code}`
+        //   )
+        //     .then(() => {
+        //       setTabluea5([
+        //         ...tabluea5,
+        //         deck.cards[10],
+        //         deck.cards[11],
+        //         deck.cards[12],
+        //         deck.cards[13],
+        //         deck.cards[14],
+        //       ]);
+        //     })
+        //     .catch((err) => console.error(err));
+
+        //   addCardsToPiles(
+        //     localStorage.getItem("deck_id"),
+        //     "Tabluea6",
+        //     `${deck.cards[15].code},${deck.cards[16].code},${deck.cards[17].code},${deck.cards[18].code},${deck.cards[19].code},${deck.cards[20].code}`
+        //   )
+        //     .then(() => {
+        //       setTabluea6([
+        //         ...tabluea6,
+        //         deck.cards[15],
+        //         deck.cards[16],
+        //         deck.cards[17],
+        //         deck.cards[18],
+        //         deck.cards[19],
+        //         deck.cards[20],
+        //       ]);
+        //     })
+        //     .catch((err) => console.error(err));
+
+        //   addCardsToPiles(
+        //     localStorage.getItem("deck_id"),
+        //     "Tabluea7",
+        //     `${deck.cards[21].code},${deck.cards[22].code},${deck.cards[23].code},${deck.cards[24].code},${deck.cards[25].code},${deck.cards[26].code},${deck.cards[27].code}`
+        //   )
+        //     .then(() => {
+        //       setTabluea7([
+        //         ...tabluea7,
+        //         deck.cards[21],
+        //         deck.cards[22],
+        //         deck.cards[23],
+        //         deck.cards[24],
+        //         deck.cards[25],
+        //         deck.cards[26],
+        //         deck.cards[27],
+        //       ]);
+        //     })
+        //     .catch((err) => console.error(err));
       })
-      // .then((deck) => {
-      //   console.log(deck);
-      //   setTabluea1(
-      //     deck.cards?.map((card) => {
-      //       console.log(card);
-      //       return card;
-      //     })
-      //   );
-      // })
-      // .then(
-      //   drawCard(localStorage.getItem("deck_id"), 2).then((deck) => {
-      //     setTabluea2(
-      //       deck.cards?.map((card) => {
-      //         console.log(card);
-      //         return card;
-      //       })
-      //     );
-      //   })
-      // )
-      // .then(
-      //   drawCard(localStorage.getItem("deck_id"), 3).then((deck) => {
-      //     setTabluea3(
-      //       deck.cards?.map((card) => {
-      //         return card;
-      //       })
-      //     );
-      //   })
-      // )
-      // .then(
-      //   drawCard(localStorage.getItem("deck_id"), 4).then((deck) => {
-      //     setTabluea4(
-      //       deck.cards?.map((card) => {
-      //         return card;
-      //       })
-      //     );
-      //   })
-      // )
-      // .then(
-      //   drawCard(localStorage.getItem("deck_id"), 5).then((deck) => {
-      //     setTabluea5(
-      //       deck.cards?.map((card) => {
-      //         return card;
-      //       })
-      //     );
-      //   })
-      // )
-      // .then(
-      //   drawCard(localStorage.getItem("deck_id"), 6).then((deck) => {
-      //     setTabluea6(
-      //       deck.cards?.map((card) => {
-      //         return card;
-      //       })
-      //     );
-      //   })
-      // )
-      // .then(
-      //   drawCard(localStorage.getItem("deck_id"), 7).then((deck) => {
-      //     setTabluea7(
-      //       deck.cards?.map((card) => {
-      //         return card;
-      //       })
-      //     );
-      //   })
-      // )
-      // .then(
-      //   listCardsInPile(localStorage.getItem("deck_id", "discard")).then(
-      //     (res) => {
-      //       console.log(res);
-      //     }
-      //   )
-      // )
       .catch((err) => console.error(err));
   }
 
   function addToTabluea1(item) {
+    if (item.id === "Tabluea1") {
+      return;
+    }
     console.log(item);
-    addToPile("Tabluea1", item);
-    setTabluea1([...tabluea1, item]);
   }
 
   const [{ isOverT1 }, dropRefT1] = useDrop({
@@ -417,9 +493,10 @@ function Solitaire({
   });
 
   function addToTabluea2(item) {
+    if (item.id === "Tabluea2") {
+      return;
+    }
     console.log(item);
-    addToPile("Tabluea2", item);
-    setTabluea2([...tabluea2, item]);
   }
 
   const [{ isOverT2 }, dropRefT2] = useDrop({
@@ -431,6 +508,9 @@ function Solitaire({
   });
 
   function addToTabluea3(item) {
+    if (item.id === "Tabluea3") {
+      return;
+    }
     console.log(item);
   }
 
@@ -443,6 +523,9 @@ function Solitaire({
   });
 
   function addToTabluea4(item) {
+    if (item.id === "Tabluea4") {
+      return;
+    }
     console.log(item);
   }
 
@@ -455,6 +538,9 @@ function Solitaire({
   });
 
   function addToTabluea5(item) {
+    if (item.id === "Tabluea5") {
+      return;
+    }
     console.log(item);
   }
 
@@ -467,6 +553,9 @@ function Solitaire({
   });
 
   function addToTabluea6(item) {
+    if (item.id === "Tabluea6") {
+      return;
+    }
     console.log(item);
   }
 
@@ -479,6 +568,9 @@ function Solitaire({
   });
 
   function addToTabluea7(item) {
+    if (item.id === "Tabluea7") {
+      return;
+    }
     console.log(item);
   }
 
@@ -506,11 +598,17 @@ function Solitaire({
 
   function test() {
     console.log(tabluea2);
+    console.log(spadeFoundation);
+  }
+
+  function setupTest() {
+    setupTabluea();
   }
 
   return (
     <div className="solitaire">
       <button onClick={test}>Test</button>
+      <button onClick={setupTest}>Setup Tabluea</button>
       <h2 className="solitaire__title">Solitaire</h2>
       <p className="solitaire__description-placeholder">
         Thank you for your interest! This page is still under development.

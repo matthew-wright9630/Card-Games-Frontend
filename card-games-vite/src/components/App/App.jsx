@@ -519,7 +519,7 @@ function App() {
     // console.log(card);
     const name = removeSpacesFromName(pileName);
     addCardsToPiles(deck, name, card.code).then((res) => {
-      console.log(res);
+      // console.log(res);
     })
       .catch((err) => console.error(err));
   };
