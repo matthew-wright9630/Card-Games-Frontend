@@ -98,67 +98,102 @@ function Solitaire({
     addToDiscard(item);
   }
 
+  function checkCardIsLast(item) {
+    if (item.id === "discard") {
+      return item.card === discardPile[discardPile.length - 1];
+    }
+    if (item.id === "Tabluea1") {
+      return item.card === tabluea1[tabluea1.length - 1];
+    }
+    if (item.id === "Tabluea2") {
+      return item.card === tabluea2[tabluea2.length - 1];
+    }
+    if (item.id === "tabluea3") {
+      return item.card === tabluea3[tabluea3.length - 1];
+    }
+    if (item.id === "tabluea4") {
+      return item.card === tabluea4[tabluea4.length - 1];
+    }
+    if (item.id === "tabluea5") {
+      return item.card === tabluea5[tabluea5.length - 1];
+    }
+    if (item.id === "tabluea6") {
+      return item.card === tabluea6[tabluea6.length - 1];
+    }
+    if (item.id === "tabluea7") {
+      return item.card === tabluea7[tabluea7.length - 1];
+    }
+  }
+
   function findAndRemoveCardFromPile(cardToDiscard) {
-    const deck = localStorage.getItem("deck_id");
-    pullCardFromPile(deck, cardToDiscard.id);
+    const newArray = [];
     if (cardToDiscard.id === "discard") {
-      updateDiscardPile(deck);
-    } else if (cardToDiscard.id === "Tabluea1") {
-      listCardsInPile(deck, "Tabluea1").then((res) => {
-        setTabluea1(
-          res.piles.Tabluea1.cards?.map((card) => {
-            return card;
-          })
-        );
+      discardPile.map((card) => {
+        if (card.code !== cardToDiscard.card.code) {
+          newArray.push(card);
+        }
       });
-    } else if (cardToDiscard.id === "Tabluea2") {
-      listCardsInPile(deck, "Tabluea2").then((res) => {
-        setTabluea2(
-          res.piles.Tabluea2.cards?.map((card) => {
-            return card;
-          })
-        );
+      setDiscardPile(newArray);
+    }
+    if (cardToDiscard.id === "Tabluea1") {
+      tabluea1.map((card) => {
+        if (card.code !== cardToDiscard.card.code) {
+          newArray.push(card);
+        }
       });
-    } else if (cardToDiscard.id === "Tabluea3") {
-      listCardsInPile(deck, "Tabluea3").then((res) => {
-        setTabluea3(
-          res.piles.Tabluea3.cards?.map((card) => {
-            return card;
-          })
-        );
+      setTabluea1(newArray);
+    }
+    if (cardToDiscard.id === "Tabluea2") {
+      for (let i = 0; i < tabluea2.length - 1; i++) {
+        if (tabluea2[i].code === cardToDiscard.card.code) {
+          break;
+        } else {
+          newArray.push(tabluea2[i]);
+        }
+      }
+      setTabluea2(newArray);
+    }
+    if (cardToDiscard.id === "Tabluea3") {
+      tabluea3.map((card) => {
+        if (card.code !== cardToDiscard.card.code) {
+          newArray.push(card);
+        }
       });
-    } else if (cardToDiscard.id === "Tabluea4") {
-      listCardsInPile(deck, "Tabluea4").then((res) => {
-        setTabluea4(
-          res.piles.Tabluea4.cards?.map((card) => {
-            return card;
-          })
-        );
+      setTabluea3(newArray);
+    }
+    if (cardToDiscard.id === "Tabluea4") {
+      for (let i = 0; i < tabluea4.length - 1; i++) {
+        if (tabluea4[i].code === cardToDiscard.card.code) {
+          break;
+        } else {
+          newArray.push(tabluea4[i]);
+        }
+      }
+      setTabluea4(newArray);
+    }
+    if (cardToDiscard.id === "Tabluea5") {
+      tabluea5.map((card) => {
+        if (card.code !== cardToDiscard.card.code) {
+          newArray.push(card);
+        }
       });
-    } else if (cardToDiscard.id === "Tabluea5") {
-      listCardsInPile(deck, "Tabluea5").then((res) => {
-        setTabluea5(
-          res.piles.Tabluea5.cards?.map((card) => {
-            return card;
-          })
-        );
+      setTabluea5(newArray);
+    }
+    if (cardToDiscard.id === "Tabluea6") {
+      tabluea6.map((card) => {
+        if (card.code !== cardToDiscard.card.code) {
+          newArray.push(card);
+        }
       });
-    } else if (cardToDiscard.id === "Tabluea6") {
-      listCardsInPile(deck, "Tabluea6").then((res) => {
-        setTabluea6(
-          res.piles.Tabluea6.cards?.map((card) => {
-            return card;
-          })
-        );
+      setTabluea6(newArray);
+    }
+    if (cardToDiscard.id === "Tabluea7") {
+      tabluea7.map((card) => {
+        if (card.code !== cardToDiscard.card.code) {
+          newArray.push(card);
+        }
       });
-    } else if (cardToDiscard.id === "Tabluea7") {
-      listCardsInPile(deck, "Tabluea7").then((res) => {
-        setTabluea7(
-          res.piles.Tabluea7.cards?.map((card) => {
-            return card;
-          })
-        );
-      });
+      setTabluea7(newArray);
     }
   }
 
@@ -167,7 +202,13 @@ function Solitaire({
   }
 
   function addToSpadeFoundation(item) {
+    if (item.id === "Spade") {
+      return;
+    }
     console.log(item);
+    if (!checkCardIsLast(item)) {
+      throw new Error("Card must be last to be added to foundation");
+    }
     if (checkCardFoundation(item.card, "Spade")) {
       if (
         spadeFoundation.length === 0 &&
@@ -196,6 +237,12 @@ function Solitaire({
   }
 
   function addToHeartFoundation(item) {
+    if (item.id === "Heart") {
+      return;
+    }
+    if (!checkCardIsLast(item)) {
+      throw new Error("Card must be last to be added to foundation");
+    }
     if (checkCardFoundation(item.card, "Heart")) {
       if (
         heartFoundation.length === 0 &&
@@ -222,8 +269,13 @@ function Solitaire({
       throw new Error("Card suit is not a heart.");
     }
   }
-
   function addToClubFoundation(item) {
+    if (item.id === "Club") {
+      return;
+    }
+    if (!checkCardIsLast(item)) {
+      throw new Error("Card must be last to be added to foundation");
+    }
     if (checkCardFoundation(item.card, "Club")) {
       if (
         clubFoundation.length === 0 &&
@@ -252,6 +304,12 @@ function Solitaire({
   }
 
   function addToDiamondFoundation(item) {
+    if (item.id === "Diamond") {
+      return;
+    }
+    if (!checkCardIsLast(item)) {
+      throw new Error("Card must be last to be added to foundation");
+    }
     findAndRemoveCardFromPile(item);
     if (checkCardFoundation(item.card, "Diamond")) {
       if (
@@ -720,7 +778,7 @@ function Solitaire({
               </div>
             </div>
             <div className="solitaire__tableau">
-              <div className="solitaire__pile" ref={dropRefT1}>
+              <div className="solitaire__tabluea-pile" ref={dropRefT1}>
                 {isOverT1}
                 {tabluea1.length === 0 ? (
                   <div className="solitaire__pile_empty">Test</div>
@@ -742,7 +800,7 @@ function Solitaire({
                   </div>
                 )}
               </div>
-              <div className="solitaire__pile" ref={dropRefT2}>
+              <div className="solitaire__tabluea-pile" ref={dropRefT2}>
                 {isOverT2}
                 {tabluea2.length === 0 ? (
                   <div className="solitaire__pile_empty">Test</div>
@@ -764,7 +822,7 @@ function Solitaire({
                   </div>
                 )}
               </div>
-              <div className="solitaire__pile" ref={dropRefT3}>
+              <div className="solitaire__tabluea-pile" ref={dropRefT3}>
                 {isOverT3}
                 {tabluea3.length === 0 ? (
                   <div className="solitaire__pile_empty">Test</div>
@@ -786,7 +844,7 @@ function Solitaire({
                   </div>
                 )}
               </div>
-              <div className="solitaire__pile" ref={dropRefT4}>
+              <div className="solitaire__tabluea-pile" ref={dropRefT4}>
                 {isOverT4}
                 {tabluea4.length === 0 ? (
                   <div className="solitaire__pile_empty">Test</div>
@@ -808,7 +866,7 @@ function Solitaire({
                   </div>
                 )}
               </div>
-              <div className="solitaire__pile" ref={dropRefT5}>
+              <div className="solitaire__tabluea-pile" ref={dropRefT5}>
                 {isOverT5}
                 {tabluea5.length === 0 ? (
                   <div className="solitaire__pile_empty">Test</div>
@@ -830,7 +888,7 @@ function Solitaire({
                   </div>
                 )}
               </div>
-              <div className="solitaire__pile" ref={dropRefT6}>
+              <div className="solitaire__tabluea-pile" ref={dropRefT6}>
                 {isOverT6}
                 {tabluea6.length === 0 ? (
                   <div className="solitaire__pile_empty">Test</div>
@@ -852,7 +910,7 @@ function Solitaire({
                   </div>
                 )}
               </div>
-              <div className="solitaire__pile" ref={dropRefT7}>
+              <div className="solitaire__tabluea-pile" ref={dropRefT7}>
                 {isOverT7}
                 {tabluea7.length === 0 ? (
                   <div className="solitaire__pile_empty">Test</div>
