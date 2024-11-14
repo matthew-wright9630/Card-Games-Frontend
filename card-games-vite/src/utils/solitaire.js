@@ -36,7 +36,7 @@ function checkTablueaSuit(newCard, tablueaCard) {
   } else {
     return (
       tablueaCard.code.substring(1) === "H" ||
-      tablueaCard.card.substring(1) === "D"
+      tablueaCard.code.substring(1) === "D"
     );
   }
 }
@@ -55,15 +55,21 @@ function checkTablueaSequence(newCard, tablueaCard) {
   } else {
     return (
       parseInt(newCard.code.substring(0, 1), 10) ===
-      parseInt(foundationCard.code.substring(0, 1), 10) - 1
+      parseInt(tablueaCard.code.substring(0, 1), 10) - 1
     );
   }
+}
+
+function checkTablueaCardValid(newCard, tablueaCard) {
+  return (
+    checkTablueaSequence(newCard, tablueaCard) &&
+    checkTablueaSuit(newCard, tablueaCard)
+  );
 }
 
 export {
   addCardToSpadeFoundation,
   checkCardFoundation,
   checkFoundationNumber,
-  checkTablueaSequence,
-  checkTablueaSuit,
+  checkTablueaCardValid,
 };

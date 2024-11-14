@@ -13,6 +13,7 @@ import Card from "../Card/Card";
 import {
   checkCardFoundation,
   checkFoundationNumber,
+  checkTablueaCardValid,
 } from "../../utils/solitaire";
 
 function Solitaire({
@@ -50,14 +51,6 @@ function Solitaire({
   const [heartFoundation, setHeartFoundation] = useState([]);
   const [clubFoundation, setClubFoundation] = useState([]);
   const [diamondFoundation, setDiamondFoundation] = useState([]);
-
-  const [isTabluea1Empty, setIsTabluea1Empty] = useState(true);
-  const [isTabluea2Empty, setIsTabluea2Empty] = useState(true);
-  const [isTabluea3Empty, setIsTabluea3Empty] = useState(true);
-  const [isTabluea4Empty, setIsTabluea4Empty] = useState(true);
-  const [isTabluea5Empty, setIsTabluea5Empty] = useState(true);
-  const [isTabluea6Empty, setIsTabluea6Empty] = useState(true);
-  const [isTabluea7Empty, setIsTabluea7Empty] = useState(true);
 
   const [tabluea1, setTabluea1] = useState([]);
   const [tabluea2, setTabluea2] = useState([]);
@@ -127,6 +120,8 @@ function Solitaire({
 
   function findAndRemoveCardFromPile(cardToDiscard) {
     const newArray = [];
+    const returnArray = [];
+    let cardIsFound = false;
     if (cardToDiscard.id === "discard") {
       discardPile.map((card) => {
         if (card.code !== cardToDiscard.card.code) {
@@ -136,65 +131,104 @@ function Solitaire({
       setDiscardPile(newArray);
     }
     if (cardToDiscard.id === "Tabluea1") {
-      tabluea1.map((card) => {
-        if (card.code !== cardToDiscard.card.code) {
-          newArray.push(card);
+      for (let i = 0; i < tabluea1.length; i++) {
+        if (cardToDiscard.card.code === tabluea1[i].code) {
+          cardIsFound = true;
         }
-      });
+        if (cardIsFound) {
+          returnArray.push(tabluea1[i]);
+        } else {
+          newArray.push(tabluea1[i]);
+        }
+      }
       setTabluea1(newArray);
+      return returnArray;
     }
     if (cardToDiscard.id === "Tabluea2") {
-      for (let i = 0; i < tabluea2.length - 1; i++) {
-        if (tabluea2[i].code === cardToDiscard.card.code) {
-          break;
+      for (let i = 0; i < tabluea2.length; i++) {
+        if (cardToDiscard.card.code === tabluea2[i].code) {
+          cardIsFound = true;
+        }
+        if (cardIsFound) {
+          returnArray.push(tabluea2[i]);
         } else {
           newArray.push(tabluea2[i]);
         }
       }
       setTabluea2(newArray);
+      return returnArray;
     }
     if (cardToDiscard.id === "Tabluea3") {
-      tabluea3.map((card) => {
-        if (card.code !== cardToDiscard.card.code) {
-          newArray.push(card);
+      for (let i = 0; i < tabluea3.length; i++) {
+        if (cardToDiscard.card.code === tabluea3[i].code) {
+          cardIsFound = true;
         }
-      });
+        if (cardIsFound) {
+          returnArray.push(tabluea3[i]);
+        } else {
+          newArray.push(tabluea3[i]);
+        }
+      }
       setTabluea3(newArray);
+      return returnArray;
     }
     if (cardToDiscard.id === "Tabluea4") {
-      for (let i = 0; i < tabluea4.length - 1; i++) {
-        if (tabluea4[i].code === cardToDiscard.card.code) {
-          break;
+      for (let i = 0; i < tabluea4.length; i++) {
+        if (cardToDiscard.card.code === tabluea4[i].code) {
+          cardIsFound = true;
+        }
+        if (cardIsFound) {
+          returnArray.push(tabluea4[i]);
         } else {
           newArray.push(tabluea4[i]);
         }
       }
       setTabluea4(newArray);
+      return returnArray;
     }
     if (cardToDiscard.id === "Tabluea5") {
-      tabluea5.map((card) => {
-        if (card.code !== cardToDiscard.card.code) {
-          newArray.push(card);
+      for (let i = 0; i < tabluea5.length; i++) {
+        if (cardToDiscard.card.code === tabluea5[i].code) {
+          cardIsFound = true;
         }
-      });
+        if (cardIsFound) {
+          returnArray.push(tabluea5[i]);
+        } else {
+          newArray.push(tabluea5[i]);
+        }
+      }
       setTabluea5(newArray);
+      return returnArray;
     }
     if (cardToDiscard.id === "Tabluea6") {
-      tabluea6.map((card) => {
-        if (card.code !== cardToDiscard.card.code) {
-          newArray.push(card);
+      for (let i = 0; i < tabluea6.length; i++) {
+        if (cardToDiscard.card.code === tabluea6[i].code) {
+          cardIsFound = true;
         }
-      });
+        if (cardIsFound) {
+          returnArray.push(tabluea6[i]);
+        } else {
+          newArray.push(tabluea6[i]);
+        }
+      }
       setTabluea6(newArray);
+      return returnArray;
     }
     if (cardToDiscard.id === "Tabluea7") {
-      tabluea7.map((card) => {
-        if (card.code !== cardToDiscard.card.code) {
-          newArray.push(card);
+      for (let i = 0; i < tabluea7.length; i++) {
+        if (cardToDiscard.card.code === tabluea7[i].code) {
+          cardIsFound = true;
         }
-      });
+        if (cardIsFound) {
+          returnArray.push(tabluea7[i]);
+        } else {
+          newArray.push(tabluea7[i]);
+        }
+      }
       setTabluea7(newArray);
+      return returnArray;
     }
+    return returnArray;
   }
 
   function addToPile(pileName, card) {
@@ -205,7 +239,6 @@ function Solitaire({
     if (item.id === "Spade") {
       return;
     }
-    console.log(item);
     if (!checkCardIsLast(item)) {
       throw new Error("Card must be last to be added to foundation");
     }
@@ -425,112 +458,6 @@ function Solitaire({
           deck.cards[26],
           deck.cards[27],
         ]);
-
-        //   console.log(deck);
-        //   addCardsToPiles(
-        //     localStorage.getItem("deck_id"),
-        //     "Tabluea1",
-        //     deck.cards[0].code
-        //   )
-        //     .then(() => {
-        //       setTabluea1([...tabluea1, deck.cards[0]]);
-        //     })
-        //     .catch((err) => console.error(err));
-
-        //   addCardsToPiles(
-        //     localStorage.getItem("deck_id"),
-        //     "Tabluea2",
-        //     `${deck.cards[1].code},${deck.cards[2].code}`
-        //   )
-        //     .then(() => {
-        //       setTabluea2([...tabluea2, deck.cards[1], deck.cards[2]]);
-        //     })
-        //     .catch((err) => console.error(err));
-
-        //   addCardsToPiles(
-        //     localStorage.getItem("deck_id"),
-        //     "Tabluea3",
-        //     `${deck.cards[3].code},${deck.cards[4].code},${deck.cards[5].code}`
-        //   )
-        //     .then(() => {
-        //       setTabluea3([
-        //         ...tabluea3,
-        //         deck.cards[3],
-        //         deck.cards[4],
-        //         deck.cards[5],
-        //       ]);
-        //     })
-        //     .catch((err) => console.error(err));
-
-        //   addCardsToPiles(
-        //     localStorage.getItem("deck_id"),
-        //     "Tabluea4",
-        //     `${deck.cards[6].code},${deck.cards[7].code},${deck.cards[8].code},${deck.cards[9].code}`
-        //   )
-        //     .then(() => {
-        //       setTabluea4([
-        //         ...tabluea4,
-        //         deck.cards[6],
-        //         deck.cards[7],
-        //         deck.cards[8],
-        //         deck.cards[9],
-        //       ]);
-        //     })
-        //     .catch((err) => console.error(err));
-
-        //   addCardsToPiles(
-        //     localStorage.getItem("deck_id"),
-        //     "Tabluea5",
-        //     `${deck.cards[10].code},${deck.cards[11].code},${deck.cards[12].code},${deck.cards[13].code},${deck.cards[14].code}`
-        //   )
-        //     .then(() => {
-        //       setTabluea5([
-        //         ...tabluea5,
-        //         deck.cards[10],
-        //         deck.cards[11],
-        //         deck.cards[12],
-        //         deck.cards[13],
-        //         deck.cards[14],
-        //       ]);
-        //     })
-        //     .catch((err) => console.error(err));
-
-        //   addCardsToPiles(
-        //     localStorage.getItem("deck_id"),
-        //     "Tabluea6",
-        //     `${deck.cards[15].code},${deck.cards[16].code},${deck.cards[17].code},${deck.cards[18].code},${deck.cards[19].code},${deck.cards[20].code}`
-        //   )
-        //     .then(() => {
-        //       setTabluea6([
-        //         ...tabluea6,
-        //         deck.cards[15],
-        //         deck.cards[16],
-        //         deck.cards[17],
-        //         deck.cards[18],
-        //         deck.cards[19],
-        //         deck.cards[20],
-        //       ]);
-        //     })
-        //     .catch((err) => console.error(err));
-
-        //   addCardsToPiles(
-        //     localStorage.getItem("deck_id"),
-        //     "Tabluea7",
-        //     `${deck.cards[21].code},${deck.cards[22].code},${deck.cards[23].code},${deck.cards[24].code},${deck.cards[25].code},${deck.cards[26].code},${deck.cards[27].code}`
-        //   )
-        //     .then(() => {
-        //       setTabluea7([
-        //         ...tabluea7,
-        //         deck.cards[21],
-        //         deck.cards[22],
-        //         deck.cards[23],
-        //         deck.cards[24],
-        //         deck.cards[25],
-        //         deck.cards[26],
-        //         deck.cards[27],
-        //       ]);
-        //     })
-        //     .catch((err) => console.error(err));
       })
       .catch((err) => console.error(err));
   }
@@ -539,7 +466,17 @@ function Solitaire({
     if (item.id === "Tabluea1") {
       return;
     }
-    console.log(item);
+
+    if (tabluea1.length === 0 && item.card.code.substring(0, 1) === "K") {
+      setTabluea1([...tabluea1, item.card]);
+      findAndRemoveCardFromPile(item);
+    } else if (
+      checkTablueaCardValid(item.card, tabluea1[tabluea1.length - 1])
+    ) {
+      setTabluea1([...tabluea1, ...findAndRemoveCardFromPile(item)]);
+    } else {
+      throw new Error("Card is not valid");
+    }
   }
 
   const [{ isOverT1 }, dropRefT1] = useDrop({
@@ -554,7 +491,16 @@ function Solitaire({
     if (item.id === "Tabluea2") {
       return;
     }
-    console.log(item);
+    if (tabluea2.length === 0 && item.card.code.substring(0, 1) === "K") {
+      setTabluea2([...tabluea2, item.card]);
+      findAndRemoveCardFromPile(item);
+    } else if (
+      checkTablueaCardValid(item.card, tabluea2[tabluea2.length - 1])
+    ) {
+      setTabluea2([...tabluea2, ...findAndRemoveCardFromPile(item)]);
+    } else {
+      throw new Error("Card is not valid");
+    }
   }
 
   const [{ isOverT2 }, dropRefT2] = useDrop({
@@ -569,7 +515,16 @@ function Solitaire({
     if (item.id === "Tabluea3") {
       return;
     }
-    console.log(item);
+    if (tabluea3.length === 0 && item.card.code.substring(0, 1) === "K") {
+      setTabluea3([...tabluea3, item.card]);
+      findAndRemoveCardFromPile(item);
+    } else if (
+      checkTablueaCardValid(item.card, tabluea3[tabluea3.length - 1])
+    ) {
+      setTabluea3([...tabluea3, ...findAndRemoveCardFromPile(item)]);
+    } else {
+      throw new Error("Card is not valid");
+    }
   }
 
   const [{ isOverT3 }, dropRefT3] = useDrop({
@@ -584,7 +539,16 @@ function Solitaire({
     if (item.id === "Tabluea4") {
       return;
     }
-    console.log(item);
+    if (tabluea4.length === 0 && item.card.code.substring(0, 1) === "K") {
+      setTabluea4([...tabluea4, item.card]);
+      findAndRemoveCardFromPile(item);
+    } else if (
+      checkTablueaCardValid(item.card, tabluea4[tabluea2.length - 1])
+    ) {
+      setTabluea4([...tabluea4, ...findAndRemoveCardFromPile(item)]);
+    } else {
+      throw new Error("Card is not valid");
+    }
   }
 
   const [{ isOverT4 }, dropRefT4] = useDrop({
@@ -599,7 +563,16 @@ function Solitaire({
     if (item.id === "Tabluea5") {
       return;
     }
-    console.log(item);
+    if (tabluea5.length === 0 && item.card.code.substring(0, 1) === "K") {
+      setTabluea5([...tabluea5, item.card]);
+      findAndRemoveCardFromPile(item);
+    } else if (
+      checkTablueaCardValid(item.card, tabluea5[tabluea5.length - 1])
+    ) {
+      setTabluea5([...tabluea5, ...findAndRemoveCardFromPile(item)]);
+    } else {
+      throw new Error("Card is not valid");
+    }
   }
 
   const [{ isOverT5 }, dropRefT5] = useDrop({
@@ -614,7 +587,16 @@ function Solitaire({
     if (item.id === "Tabluea6") {
       return;
     }
-    console.log(item);
+    if (tabluea6.length === 0 && item.card.code.substring(0, 1) === "K") {
+      setTabluea6([...tabluea6, item.card]);
+      findAndRemoveCardFromPile(item);
+    } else if (
+      checkTablueaCardValid(item.card, tabluea6[tabluea6.length - 1])
+    ) {
+      setTabluea6([...tabluea6, ...findAndRemoveCardFromPile(item)]);
+    } else {
+      throw new Error("Card is not valid");
+    }
   }
 
   const [{ isOverT6 }, dropRefT6] = useDrop({
@@ -629,7 +611,16 @@ function Solitaire({
     if (item.id === "Tabluea7") {
       return;
     }
-    console.log(item);
+    if (tabluea7.length === 0 && item.card.code.substring(0, 1) === "K") {
+      setTabluea7([...tabluea7, item.card]);
+      findAndRemoveCardFromPile(item);
+    } else if (
+      checkTablueaCardValid(item.card, tabluea7[tabluea7.length - 1])
+    ) {
+      setTabluea7([...tabluea7, ...findAndRemoveCardFromPile(item)]);
+    } else {
+      throw new Error("Card is not valid");
+    }
   }
 
   const [{ isOverT7 }, dropRefT7] = useDrop({
