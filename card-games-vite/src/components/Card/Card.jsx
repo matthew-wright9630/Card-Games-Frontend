@@ -9,11 +9,14 @@ function Card({
   index,
   canBeFlipped = true,
   id = card.code,
+  isHidden,
+  pileLength = 0,
 }) {
   const [isCardFlipped, setIsCardFlipped] = useState([]);
+  const [cardIsHidden, setCardIsHidden] = useState(false);
 
   const flipCard = () => {
-    if (canBeFlipped) {
+    if (pileLength === index) {
       if (isCardFlipped) {
         setIsCardFlipped(false);
       } else {
@@ -56,14 +59,14 @@ function Card({
     <div
       className={`card ${isDragging ? "card_is-dragging" : ""}`}
       id={`id_${card?.code}`}
-      ref={dragDropRef}
+      ref={isHidden ? useRef("") : dragDropRef}
     >
       {isDragging}
-      <div onClick={flipCard} className="card__box">
+      <div onClick={flipCard} className={`card__box`}>
         <div
           className={`card__container ${
             isCardFlipped ? "" : "card__container_flipped"
-          }`}
+          } ${isHidden ? "card__container_flipped" : ""}`}
         >
           <img
             src={backOfCard}

@@ -1,5 +1,5 @@
 import "./Solitaire.css";
-import { React, useCallback, useContext, useState } from "react";
+import { React, useCallback, useContext, useEffect, useState } from "react";
 import { backOfCard } from "../../utils/constants";
 import { useDrop } from "react-dnd";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
@@ -92,6 +92,11 @@ function Solitaire({
   }
 
   function checkCardIsLast(item) {
+    // console.log(
+    //   item.card.code,
+    //   tabluea3[tabluea3.length - 1].code,
+    //   item.card.code === tabluea3[tabluea3.length - 1].code
+    // );
     if (item.id === "discard") {
       return item.card === discardPile[discardPile.length - 1];
     }
@@ -101,25 +106,30 @@ function Solitaire({
     if (item.id === "Tabluea2") {
       return item.card === tabluea2[tabluea2.length - 1];
     }
-    if (item.id === "tabluea3") {
-      return item.card === tabluea3[tabluea3.length - 1];
+    if (item.id === "Tabluea3") {
+      return item.card.code === tabluea3[tabluea3.length - 1].code;
     }
-    if (item.id === "tabluea4") {
+    if (item.id === "Tabluea4") {
       return item.card === tabluea4[tabluea4.length - 1];
     }
-    if (item.id === "tabluea5") {
+    if (item.id === "Tabluea5") {
       return item.card === tabluea5[tabluea5.length - 1];
     }
-    if (item.id === "tabluea6") {
+    if (item.id === "Tabluea6") {
       return item.card === tabluea6[tabluea6.length - 1];
     }
-    if (item.id === "tabluea7") {
+    if (item.id === "Tabluea7") {
       return item.card === tabluea7[tabluea7.length - 1];
     }
   }
 
+  function checkAndFlipLastCard(array) {
+    return array;
+  }
+
   function findAndRemoveCardFromPile(cardToDiscard) {
     const newArray = [];
+    // const previousArray = { newArray: [], id: cardToDiscard.id };
     const returnArray = [];
     let cardIsFound = false;
     if (cardToDiscard.id === "discard") {
@@ -133,8 +143,15 @@ function Solitaire({
           newArray.push(discardPile[i]);
         }
       }
-      setDiscardPile(newArray);
-      return returnArray;
+      setDiscardPile(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     if (cardToDiscard.id === "Tabluea1") {
       for (let i = 0; i < tabluea1.length; i++) {
@@ -147,8 +164,15 @@ function Solitaire({
           newArray.push(tabluea1[i]);
         }
       }
-      setTabluea1(newArray);
-      return returnArray;
+      setTabluea1(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     if (cardToDiscard.id === "Tabluea2") {
       for (let i = 0; i < tabluea2.length; i++) {
@@ -161,8 +185,15 @@ function Solitaire({
           newArray.push(tabluea2[i]);
         }
       }
-      setTabluea2(newArray);
-      return returnArray;
+      setTabluea2(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     if (cardToDiscard.id === "Tabluea3") {
       for (let i = 0; i < tabluea3.length; i++) {
@@ -175,8 +206,15 @@ function Solitaire({
           newArray.push(tabluea3[i]);
         }
       }
-      setTabluea3(newArray);
-      return returnArray;
+      setTabluea3(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     if (cardToDiscard.id === "Tabluea4") {
       for (let i = 0; i < tabluea4.length; i++) {
@@ -189,8 +227,15 @@ function Solitaire({
           newArray.push(tabluea4[i]);
         }
       }
-      setTabluea4(newArray);
-      return returnArray;
+      setTabluea4(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     if (cardToDiscard.id === "Tabluea5") {
       for (let i = 0; i < tabluea5.length; i++) {
@@ -203,8 +248,15 @@ function Solitaire({
           newArray.push(tabluea5[i]);
         }
       }
-      setTabluea5(newArray);
-      return returnArray;
+      setTabluea5(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     if (cardToDiscard.id === "Tabluea6") {
       for (let i = 0; i < tabluea6.length; i++) {
@@ -217,8 +269,15 @@ function Solitaire({
           newArray.push(tabluea6[i]);
         }
       }
-      setTabluea6(newArray);
-      return returnArray;
+      setTabluea6(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     if (cardToDiscard.id === "Tabluea7") {
       for (let i = 0; i < tabluea7.length; i++) {
@@ -231,8 +290,15 @@ function Solitaire({
           newArray.push(tabluea7[i]);
         }
       }
-      setTabluea7(newArray);
-      return returnArray;
+      setTabluea7(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+            console.log(card);
+          }
+          return card;
+        })
+      );
     }
     return returnArray;
   }
@@ -427,6 +493,21 @@ function Solitaire({
   function setupTabluea() {
     drawCard(localStorage.getItem("deck_id"), 28)
       .then((deck) => {
+        for (let i = 0; i < 28; i++) {
+          if (
+            i === 0 ||
+            i === 2 ||
+            i === 5 ||
+            i === 9 ||
+            i === 14 ||
+            i === 20 ||
+            i === 27
+          ) {
+            deck.cards[i].isHidden = false;
+          } else {
+            deck.cards[i].isHidden = true;
+          }
+        }
         setTabluea1([...tabluea1, deck.cards[0]]);
         setTabluea2([...tabluea2, deck.cards[1], deck.cards[2]]);
         setTabluea3([...tabluea3, deck.cards[3], deck.cards[4], deck.cards[5]]);
@@ -549,7 +630,7 @@ function Solitaire({
       setTabluea4([...tabluea4, item.card]);
       findAndRemoveCardFromPile(item);
     } else if (
-      checkTablueaCardValid(item.card, tabluea4[tabluea2.length - 1])
+      checkTablueaCardValid(item.card, tabluea4[tabluea4.length - 1])
     ) {
       setTabluea4([...tabluea4, ...findAndRemoveCardFromPile(item)]);
     } else {
@@ -596,6 +677,7 @@ function Solitaire({
     if (tabluea6.length === 0 && item.card.code.substring(0, 1) === "K") {
       setTabluea6([...tabluea6, item.card]);
       findAndRemoveCardFromPile(item);
+      setTabluea1(tabluea2);
     } else if (
       checkTablueaCardValid(item.card, tabluea6[tabluea6.length - 1])
     ) {
@@ -651,9 +733,18 @@ function Solitaire({
     [hand]
   );
 
-  function test() {
-    console.log(tabluea2);
-    console.log(spadeFoundation);
+  function test(array = []) {
+    console.log(tabluea2[tabluea2.length - 1]);
+    setTabluea2(
+      array.map((card) => {
+        console.log(card, array[array.length - 1].code);
+        if (card.code === array[array.length - 1].code) {
+          card.isHidden = false;
+          console.log(card);
+        }
+        return card;
+      })
+    );
   }
 
   function setupTest() {
@@ -782,17 +873,27 @@ function Solitaire({
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea1.map((card) => {
-                      return (
-                        <div className="solitaire__card">
-                          <Card
-                            card={card}
-                            moveCardListItem={moveCardListItem}
-                            canBeFlipped={false}
-                            id="Tabluea1"
-                            key={card.code}
-                          />
-                        </div>
-                      );
+                      if (card.isHidden) {
+                        return (
+                          <img
+                            src={backOfCard}
+                            className="solitaire__card"
+                          ></img>
+                        );
+                      } else {
+                        return (
+                          <div className="solitaire__card">
+                            <Card
+                              card={card}
+                              moveCardListItem={moveCardListItem}
+                              canBeFlipped={false}
+                              id="Tabluea1"
+                              key={card.code}
+                              // isHidden={card.isHidden}
+                            />
+                          </div>
+                        );
+                      }
                     })}
                   </div>
                 )}
@@ -804,17 +905,27 @@ function Solitaire({
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea2.map((card) => {
-                      return (
-                        <div className="solitaire__card">
-                          <Card
-                            card={card}
-                            moveCardListItem={moveCardListItem}
-                            canBeFlipped={false}
-                            id="Tabluea2"
-                            key={card.code}
-                          />
-                        </div>
-                      );
+                      if (card.isHidden) {
+                        return (
+                          <img
+                            src={backOfCard}
+                            className="solitaire__card"
+                          ></img>
+                        );
+                      } else {
+                        return (
+                          <div className="solitaire__card">
+                            <Card
+                              card={card}
+                              moveCardListItem={moveCardListItem}
+                              canBeFlipped={false}
+                              id="Tabluea2"
+                              key={card.code}
+                              // isHidden={card.isHidden}
+                            />
+                          </div>
+                        );
+                      }
                     })}
                   </div>
                 )}
@@ -826,17 +937,27 @@ function Solitaire({
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea3.map((card) => {
-                      return (
-                        <div className="solitaire__card">
-                          <Card
-                            card={card}
-                            moveCardListItem={moveCardListItem}
-                            canBeFlipped={false}
-                            id="Tabluea3"
-                            key={card.code}
-                          />
-                        </div>
-                      );
+                      if (card.isHidden) {
+                        return (
+                          <img
+                            src={backOfCard}
+                            className="solitaire__card"
+                          ></img>
+                        );
+                      } else {
+                        return (
+                          <div className="solitaire__card">
+                            <Card
+                              card={card}
+                              moveCardListItem={moveCardListItem}
+                              canBeFlipped={false}
+                              id="Tabluea3"
+                              key={card.code}
+                              // isHidden={card.isHidden}
+                            />
+                          </div>
+                        );
+                      }
                     })}
                   </div>
                 )}
@@ -848,18 +969,28 @@ function Solitaire({
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea4.map((card) => {
-                      return (
-                        <div className="solitaire__card">
-                          <Card
-                            card={card}
-                            moveCardListItem={moveCardListItem}
-                            canBeFlipped={false}
-                            id="Tabluea4"
-                            key={card.code}
-                          />
-                        </div>
-                      );
-                    })}{" "}
+                      if (card.isHidden) {
+                        return (
+                          <img
+                            src={backOfCard}
+                            className="solitaire__card"
+                          ></img>
+                        );
+                      } else {
+                        return (
+                          <div className="solitaire__card">
+                            <Card
+                              card={card}
+                              moveCardListItem={moveCardListItem}
+                              canBeFlipped={false}
+                              id="Tabluea4"
+                              key={card.code}
+                              // isHidden={card.isHidden}
+                            />
+                          </div>
+                        );
+                      }
+                    })}
                   </div>
                 )}
               </div>
@@ -870,17 +1001,27 @@ function Solitaire({
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea5.map((card) => {
-                      return (
-                        <div className="solitaire__card">
-                          <Card
-                            card={card}
-                            moveCardListItem={moveCardListItem}
-                            canBeFlipped={false}
-                            id="Tabluea5"
-                            key={card.code}
-                          />
-                        </div>
-                      );
+                      if (card.isHidden) {
+                        return (
+                          <img
+                            src={backOfCard}
+                            className="solitaire__card"
+                          ></img>
+                        );
+                      } else {
+                        return (
+                          <div className="solitaire__card">
+                            <Card
+                              card={card}
+                              moveCardListItem={moveCardListItem}
+                              canBeFlipped={false}
+                              id="Tabluea5"
+                              key={card.code}
+                              // isHidden={card.isHidden}
+                            />
+                          </div>
+                        );
+                      }
                     })}
                   </div>
                 )}
@@ -892,17 +1033,27 @@ function Solitaire({
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea6.map((card) => {
-                      return (
-                        <div className="solitaire__card">
-                          <Card
-                            card={card}
-                            moveCardListItem={moveCardListItem}
-                            canBeFlipped={false}
-                            id="Tabluea6"
-                            key={card.code}
-                          />
-                        </div>
-                      );
+                      if (card.isHidden) {
+                        return (
+                          <img
+                            src={backOfCard}
+                            className="solitaire__card"
+                          ></img>
+                        );
+                      } else {
+                        return (
+                          <div className="solitaire__card">
+                            <Card
+                              card={card}
+                              moveCardListItem={moveCardListItem}
+                              canBeFlipped={false}
+                              id="Tabluea6"
+                              key={card.code}
+                              // isHidden={card.isHidden}
+                            />
+                          </div>
+                        );
+                      }
                     })}
                   </div>
                 )}
@@ -914,17 +1065,27 @@ function Solitaire({
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea7.map((card) => {
-                      return (
-                        <div className="solitaire__card">
-                          <Card
-                            card={card}
-                            moveCardListItem={moveCardListItem}
-                            canBeFlipped={false}
-                            id="Tabluea7"
-                            key={card.code}
-                          />
-                        </div>
-                      );
+                      if (card.isHidden) {
+                        return (
+                          <img
+                            src={backOfCard}
+                            className="solitaire__card"
+                          ></img>
+                        );
+                      } else {
+                        return (
+                          <div className="solitaire__card">
+                            <Card
+                              card={card}
+                              moveCardListItem={moveCardListItem}
+                              canBeFlipped={false}
+                              id="Tabluea7"
+                              key={card.code}
+                              // isHidden={card.isHidden}
+                            />
+                          </div>
+                        );
+                      }
                     })}
                   </div>
                 )}
