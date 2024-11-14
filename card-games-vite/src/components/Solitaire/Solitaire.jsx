@@ -123,12 +123,18 @@ function Solitaire({
     const returnArray = [];
     let cardIsFound = false;
     if (cardToDiscard.id === "discard") {
-      discardPile.map((card) => {
-        if (card.code !== cardToDiscard.card.code) {
-          newArray.push(card);
+      for (let i = 0; i < discardPile.length; i++) {
+        if (cardToDiscard.card.code === discardPile[i].code) {
+          cardIsFound = true;
         }
-      });
+        if (cardIsFound) {
+          returnArray.push(discardPile[i]);
+        } else {
+          newArray.push(discardPile[i]);
+        }
+      }
       setDiscardPile(newArray);
+      return returnArray;
     }
     if (cardToDiscard.id === "Tabluea1") {
       for (let i = 0; i < tabluea1.length; i++) {
