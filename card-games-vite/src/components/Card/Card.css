@@ -46,7 +46,7 @@
 }
 
 .card__face:hover {
-  opacity: 0.7;
+  /* opacity: 0.7; */
 }
 
 .card__back {

@@ -2,6 +2,7 @@ import "./Solitaire.css";
 import { React, useCallback, useContext, useEffect, useState } from "react";
 import { backOfCard } from "../../utils/constants";
 import { useDrop } from "react-dnd";
+import Confetti from "react-confetti";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import {
   addCardsToPiles,
@@ -35,6 +36,8 @@ function Solitaire({
   addCard,
   setDiscardPile,
   setIsDrawPileEmpty,
+  pullCardFromPile,
+  closeGameSite,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -53,9 +56,17 @@ function Solitaire({
 
   const [areCardsDealt, setAreCardsDealt] = useState(false);
 
+  const [gameWon, setGameWon] = useState(false);
+
   function startSolitaireGame() {
+    setGameWon(false);
     handleGameStart(1);
-    incrementGame();
+  }
+
+  function endSolitaireGame() {
+    setAreCardsDealt(false);
+    resetTabluea();
+    closeGameSite();
   }
 
   function incrementGame() {
@@ -83,6 +94,33 @@ function Solitaire({
   function discard(item) {
     addToDiscard(item);
     setDiscardPile([...discardPile, item]);
+  }
+
+  function getGame() {
+    return getCurrentGame({
+      name: "Solitaire",
+      description: `Solitaire is a single player game where cards need to be sorted
+                        from Ace to King in each suit.`,
+    });
+  }
+
+  function draw() {
+    drawCard(localStorage.getItem("deck_id"), 1).then((deck) => {
+      if (deck.success) {
+        discard(deck.cards[0]);
+        if (deck.remaining === 0) {
+          setIsDrawPileEmpty(true);
+        }
+        animateCardDeal(200, 0);
+      } else {
+        returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
+          .then((deck) => {
+            setDiscardPile([]);
+            setIsDrawPileEmpty(false);
+          })
+          .catch((err) => console.error(err));
+      }
+    });
   }
 
   function checkCardIsLast(item) {
@@ -114,7 +152,6 @@ function Solitaire({
 
   function findAndRemoveCardFromPile(cardToDiscard) {
     const newArray = [];
-    // const previousArray = { newArray: [], id: cardToDiscard.id };
     const returnArray = [];
     let cardIsFound = false;
     if (cardToDiscard.id === "discard") {
@@ -124,6 +161,7 @@ function Solitaire({
         }
         if (cardIsFound) {
           returnArray.push(discardPile[i]);
+          pullCardFromPile(localStorage.getItem("deck_id"), "discard", 1);
         } else {
           newArray.push(discardPile[i]);
         }
@@ -132,7 +170,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -153,7 +190,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -174,7 +210,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -195,7 +230,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -216,7 +250,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -237,7 +270,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -258,7 +290,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -279,7 +310,6 @@ function Solitaire({
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
             card.isHidden = false;
-            console.log(card);
           }
           return card;
         })
@@ -425,33 +455,6 @@ function Solitaire({
     }
   }
 
-  function getGame() {
-    return getCurrentGame({
-      name: "Solitaire",
-      description: `Solitaire is a single player game where cards need to be sorted
-                        from Ace to King in each suit.`,
-    });
-  }
-
-  function draw() {
-    drawCard(localStorage.getItem("deck_id"), 1).then((deck) => {
-      if (deck.success) {
-        discard(deck.cards[0]);
-        if (deck.remaining === 0) {
-          setIsDrawPileEmpty(true);
-        }
-        animateCardDeal(200, 0);
-      } else {
-        returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
-          .then((deck) => {
-            setDiscardPile([]);
-            setIsDrawPileEmpty(false);
-          })
-          .catch((err) => console.error(err));
-      }
-    });
-  }
-
   const [{ isOverSpadeFoundation }, dropSpadeFoundation] = useDrop({
     accept: "card",
     drop: (item) => addToSpadeFoundation(item),
@@ -539,9 +542,11 @@ function Solitaire({
           deck.cards[26],
           deck.cards[27],
         ]);
+
+        incrementGame();
       })
       .catch((err) => console.error(err));
-      setAreCardsDealt(true);
+    setAreCardsDealt(true);
   }
 
   function addToTabluea1(item) {
@@ -550,8 +555,7 @@ function Solitaire({
     }
 
     if (tabluea1.length === 0 && item.card.code.substring(0, 1) === "K") {
-      setTabluea1([...tabluea1, item.card]);
-      findAndRemoveCardFromPile(item);
+      setTabluea1([...tabluea1, ...findAndRemoveCardFromPile(item)]);
     } else if (
       checkTablueaCardValid(item.card, tabluea1[tabluea1.length - 1])
     ) {
@@ -574,8 +578,7 @@ function Solitaire({
       return;
     }
     if (tabluea2.length === 0 && item.card.code.substring(0, 1) === "K") {
-      setTabluea2([...tabluea2, item.card]);
-      findAndRemoveCardFromPile(item);
+      setTabluea2([...tabluea2, ...findAndRemoveCardFromPile(item)]);
     } else if (
       checkTablueaCardValid(item.card, tabluea2[tabluea2.length - 1])
     ) {
@@ -598,8 +601,7 @@ function Solitaire({
       return;
     }
     if (tabluea3.length === 0 && item.card.code.substring(0, 1) === "K") {
-      setTabluea3([...tabluea3, item.card]);
-      findAndRemoveCardFromPile(item);
+      setTabluea3([...tabluea3, ...findAndRemoveCardFromPile(item)]);
     } else if (
       checkTablueaCardValid(item.card, tabluea3[tabluea3.length - 1])
     ) {
@@ -622,8 +624,7 @@ function Solitaire({
       return;
     }
     if (tabluea4.length === 0 && item.card.code.substring(0, 1) === "K") {
-      setTabluea4([...tabluea4, item.card]);
-      findAndRemoveCardFromPile(item);
+      setTabluea4([...tabluea4, ...findAndRemoveCardFromPile(item)]);
     } else if (
       checkTablueaCardValid(item.card, tabluea4[tabluea4.length - 1])
     ) {
@@ -646,8 +647,7 @@ function Solitaire({
       return;
     }
     if (tabluea5.length === 0 && item.card.code.substring(0, 1) === "K") {
-      setTabluea5([...tabluea5, item.card]);
-      findAndRemoveCardFromPile(item);
+      setTabluea5([...tabluea5, ...findAndRemoveCardFromPile(item)]);
     } else if (
       checkTablueaCardValid(item.card, tabluea5[tabluea5.length - 1])
     ) {
@@ -670,9 +670,7 @@ function Solitaire({
       return;
     }
     if (tabluea6.length === 0 && item.card.code.substring(0, 1) === "K") {
-      setTabluea6([...tabluea6, item.card]);
-      findAndRemoveCardFromPile(item);
-      setTabluea1(tabluea2);
+      setTabluea6([...tabluea6, ...findAndRemoveCardFromPile(item)]);
     } else if (
       checkTablueaCardValid(item.card, tabluea6[tabluea6.length - 1])
     ) {
@@ -695,8 +693,7 @@ function Solitaire({
       return;
     }
     if (tabluea7.length === 0 && item.card.code.substring(0, 1) === "K") {
-      setTabluea7([...tabluea7, item.card]);
-      findAndRemoveCardFromPile(item);
+      setTabluea7([...tabluea7, ...findAndRemoveCardFromPile(item)]);
     } else if (
       checkTablueaCardValid(item.card, tabluea7[tabluea7.length - 1])
     ) {
@@ -714,6 +711,20 @@ function Solitaire({
     }),
   });
 
+  function resetTabluea() {
+    setTabluea1([]);
+    setTabluea2([]);
+    setTabluea3([]);
+    setTabluea4([]);
+    setTabluea5([]);
+    setTabluea6([]);
+    setTabluea7([]);
+    setSpadeFoundation([]);
+    setHeartFoundation([]);
+    setClubFoundation([]);
+    setDiamondFoundation([]);
+  }
+
   const moveCardListItem = useCallback(
     (dragIndex, hoverIndex) => {
       const dragItem = hand[dragIndex];
@@ -728,24 +739,20 @@ function Solitaire({
     [hand]
   );
 
-  function test(array = []) {
-    console.log(tabluea2[tabluea2.length - 1]);
-    setTabluea2(
-      array.map((card) => {
-        console.log(card, array[array.length - 1].code);
-        if (card.code === array[array.length - 1].code) {
-          card.isHidden = false;
-          console.log(card);
-        }
-        return card;
-      })
-      
-    );
-  }
+  useEffect(() => {
+    if (
+      spadeFoundation.length === 13 &&
+      diamondFoundation.length === 13 &&
+      heartFoundation.length === 13 &&
+      clubFoundation.length === 13
+    ) {
+      setGameWon(true);
+    }
+  }, [spadeFoundation, diamondFoundation, clubFoundation, heartFoundation]);
 
   return (
     <div className="solitaire">
-      <button onClick={test}>Test</button>
+      {gameWon ? <Confetti /> : ""}
       <h2 className="solitaire__title">Solitaire</h2>
       {/* <p className="solitaire__description-placeholder">
         Thank you for your interest! This page is still under development.
@@ -753,61 +760,67 @@ function Solitaire({
       </p> */}
 
       {!gameActive ? (
-        <button onClick={startSolitaireGame} className="playGame">
+        <button onClick={startSolitaireGame} className="game__btn">
           Start Game
         </button>
       ) : (
         <div className="solitaire__game">
           {areCardsDealt ? (
-            ""
+            <div className="solitaire__draw-discard-piles">
+              <div className="game__draw-pile">
+                <p className="game__draw-title">Draw Pile</p>
+                <button
+                  type="button"
+                  onClick={draw}
+                  className={`game__card-btn ${
+                    isDrawPileEmpty ? "game__pile_empty" : "game__pile"
+                  }`}
+                >
+                  {isDrawPileEmpty ? (
+                    ""
+                  ) : (
+                    <img
+                      src={backOfCard}
+                      alt="Card Back"
+                      className="game__animation-card"
+                    />
+                  )}
+                </button>
+              </div>
+              <div className="game__discard-pile">
+                <p className="game__discard-title">Discard Pile</p>
+                <button
+                  type="button"
+                  onClick={clickedDiscardPile}
+                  className={`game__card-btn ${
+                    discardPile.length === 0 ? "game__pile_empty" : ""
+                  }`}
+                >
+                  {discardPile.length === 0 ? (
+                    ""
+                  ) : (
+                    <Card
+                      card={discardPile[discardPile.length - 1]}
+                      moveCardListItem={moveCardListItem}
+                      canBeFlipped={false}
+                      id="discard"
+                    />
+                  )}
+                </button>
+              </div>
+              <button
+                className="game__btn"
+                type="button"
+                onClick={() => endSolitaireGame(false)}
+              >
+                End Game
+              </button>
+            </div>
           ) : (
             <button onClick={setupTabluea} className="solitaire__deal-btn">
               Deal the cards!
             </button>
           )}
-          <div className="solitaire__draw-discard-piles">
-            <div className="game__draw-pile">
-              <p className="game__draw-title">Draw Pile</p>
-              <button
-                type="button"
-                onClick={draw}
-                className={`game__card-btn ${
-                  isDrawPileEmpty ? "game__pile_empty" : "game__pile"
-                }`}
-              >
-                {isDrawPileEmpty ? (
-                  ""
-                ) : (
-                  <img
-                    src={backOfCard}
-                    alt="Card Back"
-                    className="game__animation-card"
-                  />
-                )}
-              </button>
-            </div>
-            <div className="game__discard-pile">
-              <p className="game__discard-title">Discard Pile</p>
-              <button
-                type="button"
-                onClick={clickedDiscardPile}
-                className={`game__card-btn ${
-                  discardPile.length === 0 ? "game__pile_empty" : ""
-                }`}
-              >
-                {discardPile.length === 0 ? (
-                  ""
-                ) : (
-                  <Card
-                    card={discardPile[discardPile.length - 1]}
-                    moveCardListItem={moveCardListItem}
-                    canBeFlipped={false}
-                    id="discard"
-                  />
-                )}
-              </button>
-            </div>
-          </div>
           <div className="solitaire__game-area">
             <div className="solitaire__foundation-piles">
               <div className="solitaire__pile" ref={dropSpadeFoundation}>
@@ -871,13 +884,14 @@ function Solitaire({
               <div className="solitaire__tabluea-pile" ref={dropRefT1}>
                 {isOverT1}
                 {tabluea1.length === 0 ? (
-                  <div className="solitaire__pile_empty">Test</div>
+                  <div className="solitaire__pile_empty"></div>
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea1.map((card) => {
                       if (card.isHidden) {
                         return (
                           <img
+                            key={card}
                             src={backOfCard}
                             className="solitaire__card"
                           ></img>
@@ -890,7 +904,7 @@ function Solitaire({
                               moveCardListItem={moveCardListItem}
                               canBeFlipped={false}
                               id="Tabluea1"
-                              key={card.code}
+                              key={card}
                               // isHidden={card.isHidden}
                             />
                           </div>
@@ -903,7 +917,7 @@ function Solitaire({
               <div className="solitaire__tabluea-pile" ref={dropRefT2}>
                 {isOverT2}
                 {tabluea2.length === 0 ? (
-                  <div className="solitaire__pile_empty">Test</div>
+                  <div className="solitaire__pile_empty"></div>
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea2.map((card) => {
@@ -935,7 +949,7 @@ function Solitaire({
               <div className="solitaire__tabluea-pile" ref={dropRefT3}>
                 {isOverT3}
                 {tabluea3.length === 0 ? (
-                  <div className="solitaire__pile_empty">Test</div>
+                  <div className="solitaire__pile_empty"></div>
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea3.map((card) => {
@@ -967,7 +981,7 @@ function Solitaire({
               <div className="solitaire__tabluea-pile" ref={dropRefT4}>
                 {isOverT4}
                 {tabluea4.length === 0 ? (
-                  <div className="solitaire__pile_empty">Test</div>
+                  <div className="solitaire__pile_empty"></div>
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea4.map((card) => {
@@ -999,7 +1013,7 @@ function Solitaire({
               <div className="solitaire__tabluea-pile" ref={dropRefT5}>
                 {isOverT5}
                 {tabluea5.length === 0 ? (
-                  <div className="solitaire__pile_empty">Test</div>
+                  <div className="solitaire__pile_empty"></div>
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea5.map((card) => {
@@ -1031,7 +1045,7 @@ function Solitaire({
               <div className="solitaire__tabluea-pile" ref={dropRefT6}>
                 {isOverT6}
                 {tabluea6.length === 0 ? (
-                  <div className="solitaire__pile_empty">Test</div>
+                  <div className="solitaire__pile_empty"></div>
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea6.map((card) => {
@@ -1063,7 +1077,7 @@ function Solitaire({
               <div className="solitaire__tabluea-pile" ref={dropRefT7}>
                 {isOverT7}
                 {tabluea7.length === 0 ? (
-                  <div className="solitaire__pile_empty">Test</div>
+                  <div className="solitaire__pile_empty"></div>
                 ) : (
                   <div className="solitaire__stack">
                     {tabluea7.map((card) => {

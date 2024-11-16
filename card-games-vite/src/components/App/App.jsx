@@ -452,7 +452,9 @@ function App() {
   const pullCardFromPile = (deck, pileName, numberOfCards) => {
     setIsLoading(true);
     drawFromPile(deck, pileName, numberOfCards)
-      .then((res) => {})
+      .then((res) => {
+        console.log(res);
+      })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
@@ -700,6 +702,7 @@ function App() {
                     setDiscardPile={setDiscardPile}
                     updateDiscardPile={updateDiscardPile}
                     setIsDrawPileEmpty={setIsDrawPileEmpty}
+                    closeGameSite={closeGameSite}
                   />
                 }
               ></Route>

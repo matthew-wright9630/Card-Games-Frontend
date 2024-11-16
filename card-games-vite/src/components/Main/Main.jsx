@@ -1,7 +1,6 @@
 import GamesList from "../GamesList/GamesList";
 import Demo from "../Demo/Demo";
 import "./Main.css";
-import Preloader from "../Preloader/Preloader";
 
 function Main({
   gameInfo,
