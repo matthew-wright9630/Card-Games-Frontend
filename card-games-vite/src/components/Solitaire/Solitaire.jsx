@@ -324,6 +324,90 @@ function Solitaire({
         })
       );
     }
+    if (cardToDiscard.id === "Spade") {
+      for (let i = 0; i < spadeFoundation.length; i++) {
+        if (cardToDiscard.card.code === spadeFoundation[i].code) {
+          cardIsFound = true;
+        }
+        if (cardIsFound) {
+          returnArray.push(spadeFoundation[i]);
+          pullCardFromPile(localStorage.getItem("deck_id"), "Spade", 1);
+        } else {
+          newArray.push(spadeFoundation[i]);
+        }
+      }
+      setSpadeFoundation(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+          }
+          return card;
+        })
+      );
+    }
+    if (cardToDiscard.id === "Heart") {
+      for (let i = 0; i < heartFoundation.length; i++) {
+        if (cardToDiscard.card.code === heartFoundation[i].code) {
+          cardIsFound = true;
+        }
+        if (cardIsFound) {
+          returnArray.push(heartFoundation[i]);
+          pullCardFromPile(localStorage.getItem("deck_id"), "Heart", 1);
+        } else {
+          newArray.push(heartFoundation[i]);
+        }
+      }
+      setHeartFoundation(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+          }
+          return card;
+        })
+      );
+    }
+    if (cardToDiscard.id === "Club") {
+      for (let i = 0; i < clubFoundation.length; i++) {
+        if (cardToDiscard.card.code === clubFoundation[i].code) {
+          cardIsFound = true;
+        }
+        if (cardIsFound) {
+          returnArray.push(clubFoundation[i]);
+          pullCardFromPile(localStorage.getItem("deck_id"), "Club", 1);
+        } else {
+          newArray.push(clubFoundation[i]);
+        }
+      }
+      setClubFoundation(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+          }
+          return card;
+        })
+      );
+    }
+    if (cardToDiscard.id === "Diamond") {
+      for (let i = 0; i < diamondFoundation.length; i++) {
+        if (cardToDiscard.card.code === diamondFoundation[i].code) {
+          cardIsFound = true;
+        }
+        if (cardIsFound) {
+          returnArray.push(diamondFoundation[i]);
+          pullCardFromPile(localStorage.getItem("deck_id"), "Diamond", 1);
+        } else {
+          newArray.push(diamondFoundation[i]);
+        }
+      }
+      setDiamondFoundation(
+        newArray.map((card) => {
+          if (card.code === newArray[newArray.length - 1].code) {
+            card.isHidden = false;
+          }
+          return card;
+        })
+      );
+    }
     return returnArray;
   }
 
@@ -354,6 +438,7 @@ function Solitaire({
           spadeFoundation[spadeFoundation.length - 1]
         )
       ) {
+        addToPile("Spade", item.card);
         setSpadeFoundation([...spadeFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
@@ -387,6 +472,7 @@ function Solitaire({
           heartFoundation[heartFoundation.length - 1]
         )
       ) {
+        addToPile("Heart", item.card);
         setHeartFoundation([...heartFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
@@ -420,6 +506,7 @@ function Solitaire({
           clubFoundation[clubFoundation.length - 1]
         )
       ) {
+        addToPile("Club", item.card);
         setClubFoundation([...clubFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
@@ -454,6 +541,7 @@ function Solitaire({
           diamondFoundation[diamondFoundation.length - 1]
         )
       ) {
+        addToPile("Diamond", item.card);
         setDiamondFoundation([...diamondFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
