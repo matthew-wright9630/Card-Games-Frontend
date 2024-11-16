@@ -10,13 +10,11 @@ function Card({
   canBeFlipped = true,
   id = card.code,
   isHidden,
-  pileLength = 0,
 }) {
   const [isCardFlipped, setIsCardFlipped] = useState([]);
-  const [cardIsHidden, setCardIsHidden] = useState(false);
 
   const flipCard = () => {
-    if (pileLength === index) {
+    if (canBeFlipped) {
       if (isCardFlipped) {
         setIsCardFlipped(false);
       } else {

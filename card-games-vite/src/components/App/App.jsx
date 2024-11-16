@@ -518,9 +518,10 @@ function App() {
   const addCard = (deck, pileName, card) => {
     // console.log(card);
     const name = removeSpacesFromName(pileName);
-    addCardsToPiles(deck, name, card.code).then((res) => {
-      // console.log(res);
-    })
+    addCardsToPiles(deck, name, card.code)
+      .then((res) => {
+        // console.log(res);
+      })
       .catch((err) => console.error(err));
   };
 
@@ -537,17 +538,19 @@ function App() {
   };
 
   const addToDiscard = (card) => {
-    addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code).then(
-      () => {
-        listCardsInPile(localStorage.getItem("deck_id"), "discard")
-          .then((deck) => {
-            deck.piles.discard.cards.map((card) => {
-              setDiscardPile([...discardPile, card]);
-            });
-          })
-          .catch((err) => console.error(err));
-      }
-    );
+    setIsLoading(true);
+    addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code)
+      .then(() => {
+        // listCardsInPile(localStorage.getItem("deck_id"), "discard").then(
+        //   (deck) => {
+        //     deck.piles.discard.cards.map((card) => {
+        //       setDiscardPile([...discardPile, card]);
+        //     });
+        //   }
+        // );
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
   };
 
   const updateDiscardPile = (deck) => {
@@ -696,6 +699,7 @@ function App() {
                     pullCardFromDiscard={pullCardFromDiscard}
                     setDiscardPile={setDiscardPile}
                     updateDiscardPile={updateDiscardPile}
+                    setIsDrawPileEmpty={setIsDrawPileEmpty}
                   />
                 }
               ></Route>

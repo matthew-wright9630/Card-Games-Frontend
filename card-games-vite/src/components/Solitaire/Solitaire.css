@@ -8,6 +8,11 @@
   text-align: center;
 }
 
+.solitaire__deal-btn {
+   display: flex;
+   margin: 0 auto;
+}
+
 .solitaire__draw-discard-piles {
   display: flex;
   gap: 115px;

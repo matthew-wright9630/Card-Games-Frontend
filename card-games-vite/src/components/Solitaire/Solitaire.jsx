@@ -8,6 +8,8 @@ import {
   drawCard,
   drawFromPile,
   listCardsInPile,
+  returnCardsFromPile,
+  shufflePilesTogether,
 } from "../../utils/deckOfCardsApi";
 import Card from "../Card/Card";
 import {
@@ -20,32 +22,21 @@ function Solitaire({
   handleGameIncrement,
   gameActive,
   handleGameStart,
-  handleGameEnd,
   incrementGameWon,
   isLoggedIn,
   getCurrentGame,
-  pullCard,
   hand,
   setHand,
   isDrawPileEmpty,
   addToDiscard,
   discardPile,
-  isDiscardPileEmpty,
-  isLoading,
   handleDiscardPileClick,
   animateCardDeal,
   addCard,
-  pullCardFromPile,
-  pullCardFromDiscard,
   setDiscardPile,
-  updateDiscardPile,
+  setIsDrawPileEmpty,
 }) {
   const currentUser = useContext(CurrentUserContext);
-
-  const [isSpadePileEmpty, setIsSpadePileEmpty] = useState(true);
-  const [isHeartPileEmpty, setIsHeartPileEmpty] = useState(true);
-  const [isClubPileEmpty, setIsClubPileEmpty] = useState(true);
-  const [isDiamondPileEmpty, setIsDiamondPileEmpty] = useState(true);
 
   const [spadeFoundation, setSpadeFoundation] = useState([]);
   const [heartFoundation, setHeartFoundation] = useState([]);
@@ -59,6 +50,8 @@ function Solitaire({
   const [tabluea5, setTabluea5] = useState([]);
   const [tabluea6, setTabluea6] = useState([]);
   const [tabluea7, setTabluea7] = useState([]);
+
+  const [areCardsDealt, setAreCardsDealt] = useState(false);
 
   function startSolitaireGame() {
     handleGameStart(1);
@@ -89,14 +82,10 @@ function Solitaire({
 
   function discard(item) {
     addToDiscard(item);
+    setDiscardPile([...discardPile, item]);
   }
 
   function checkCardIsLast(item) {
-    // console.log(
-    //   item.card.code,
-    //   tabluea3[tabluea3.length - 1].code,
-    //   item.card.code === tabluea3[tabluea3.length - 1].code
-    // );
     if (item.id === "discard") {
       return item.card === discardPile[discardPile.length - 1];
     }
@@ -121,10 +110,6 @@ function Solitaire({
     if (item.id === "Tabluea7") {
       return item.card === tabluea7[tabluea7.length - 1];
     }
-  }
-
-  function checkAndFlipLastCard(array) {
-    return array;
   }
 
   function findAndRemoveCardFromPile(cardToDiscard) {
@@ -322,7 +307,6 @@ function Solitaire({
         addToPile("Spade", item.card);
         setSpadeFoundation([...spadeFoundation, item.card]);
         findAndRemoveCardFromPile(item);
-        setIsSpadePileEmpty(false);
       } else if (spadeFoundation.length === 0) {
         throw new Error("The first card must be the Ace");
       } else if (
@@ -356,7 +340,6 @@ function Solitaire({
         addToPile("Heart", item.card);
         setHeartFoundation([...heartFoundation, item.card]);
         findAndRemoveCardFromPile(item);
-        setIsHeartPileEmpty(false);
       } else if (heartFoundation.length === 0) {
         throw new Error("The first card must be the Ace");
       } else if (
@@ -374,6 +357,7 @@ function Solitaire({
       throw new Error("Card suit is not a heart.");
     }
   }
+
   function addToClubFoundation(item) {
     if (item.id === "Club") {
       return;
@@ -389,7 +373,6 @@ function Solitaire({
         addToPile("Club", item.card);
         setClubFoundation([...clubFoundation, item.card]);
         findAndRemoveCardFromPile(item);
-        setIsClubPileEmpty(false);
       } else if (clubFoundation.length === 0) {
         throw new Error("The first card must be the Ace");
       } else if (
@@ -424,7 +407,6 @@ function Solitaire({
         addToPile("Diamond", item.card);
         setDiamondFoundation([...diamondFoundation, item.card]);
         findAndRemoveCardFromPile(item);
-        setIsDiamondPileEmpty(false);
       } else if (diamondFoundation.length === 0) {
         throw new Error("The first card must be the Ace");
       } else if (
@@ -453,9 +435,21 @@ function Solitaire({
 
   function draw() {
     drawCard(localStorage.getItem("deck_id"), 1).then((deck) => {
-      discard(deck.cards[0]);
+      if (deck.success) {
+        discard(deck.cards[0]);
+        if (deck.remaining === 0) {
+          setIsDrawPileEmpty(true);
+        }
+        animateCardDeal(200, 0);
+      } else {
+        returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
+          .then((deck) => {
+            setDiscardPile([]);
+            setIsDrawPileEmpty(false);
+          })
+          .catch((err) => console.error(err));
+      }
     });
-    animateCardDeal(200, 0);
   }
 
   const [{ isOverSpadeFoundation }, dropSpadeFoundation] = useDrop({
@@ -547,6 +541,7 @@ function Solitaire({
         ]);
       })
       .catch((err) => console.error(err));
+      setAreCardsDealt(true);
   }
 
   function addToTabluea1(item) {
@@ -744,22 +739,18 @@ function Solitaire({
         }
         return card;
       })
+      
     );
-  }
-
-  function setupTest() {
-    setupTabluea();
   }
 
   return (
     <div className="solitaire">
       <button onClick={test}>Test</button>
-      <button onClick={setupTest}>Setup Tabluea</button>
       <h2 className="solitaire__title">Solitaire</h2>
-      <p className="solitaire__description-placeholder">
+      {/* <p className="solitaire__description-placeholder">
         Thank you for your interest! This page is still under development.
         Please come back another time!
-      </p>
+      </p> */}
 
       {!gameActive ? (
         <button onClick={startSolitaireGame} className="playGame">
@@ -767,6 +758,13 @@ function Solitaire({
         </button>
       ) : (
         <div className="solitaire__game">
+          {areCardsDealt ? (
+            ""
+          ) : (
+            <button onClick={setupTabluea} className="solitaire__deal-btn">
+              Deal the cards!
+            </button>
+          )}
           <div className="solitaire__draw-discard-piles">
             <div className="game__draw-pile">
               <p className="game__draw-title">Draw Pile</p>
@@ -777,11 +775,15 @@ function Solitaire({
                   isDrawPileEmpty ? "game__pile_empty" : "game__pile"
                 }`}
               >
-                <img
-                  src={backOfCard}
-                  alt="Card Back"
-                  className="game__animation-card"
-                />
+                {isDrawPileEmpty ? (
+                  ""
+                ) : (
+                  <img
+                    src={backOfCard}
+                    alt="Card Back"
+                    className="game__animation-card"
+                  />
+                )}
               </button>
             </div>
             <div className="game__discard-pile">
@@ -790,10 +792,10 @@ function Solitaire({
                 type="button"
                 onClick={clickedDiscardPile}
                 className={`game__card-btn ${
-                  isDiscardPileEmpty ? "game__pile_empty" : ""
+                  discardPile.length === 0 ? "game__pile_empty" : ""
                 }`}
               >
-                {isDiscardPileEmpty ? (
+                {discardPile.length === 0 ? (
                   ""
                 ) : (
                   <Card
@@ -810,7 +812,7 @@ function Solitaire({
             <div className="solitaire__foundation-piles">
               <div className="solitaire__pile" ref={dropSpadeFoundation}>
                 {isOverSpadeFoundation}
-                {isSpadePileEmpty ? (
+                {spadeFoundation.length === 0 ? (
                   <div className="solitaire__pile_empty">SPADE</div>
                 ) : (
                   <Card
@@ -823,7 +825,7 @@ function Solitaire({
               </div>
               <div className="solitaire__pile" ref={dropHeartFoundation}>
                 {isOverHeartFoundation}
-                {isHeartPileEmpty ? (
+                {heartFoundation.length === 0 ? (
                   <div className="solitaire__pile_empty solitaire__pile_red">
                     HEART
                   </div>
@@ -838,7 +840,7 @@ function Solitaire({
               </div>
               <div className="solitaire__pile" ref={dropClubFoundation}>
                 {isOverClubFoundation}
-                {isClubPileEmpty ? (
+                {clubFoundation.length === 0 ? (
                   <div className="solitaire__pile_empty">CLUB</div>
                 ) : (
                   <Card
@@ -851,7 +853,7 @@ function Solitaire({
               </div>
               <div className="solitaire__pile" ref={dropDiamondFoundation}>
                 {isOverDiamondFoundation}
-                {isDiamondPileEmpty ? (
+                {diamondFoundation.length === 0 ? (
                   <div className="solitaire__pile_empty solitaire__pile_red">
                     DIAMOND
                   </div>
