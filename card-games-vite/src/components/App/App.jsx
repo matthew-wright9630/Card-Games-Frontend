@@ -543,13 +543,13 @@ function App() {
     setIsLoading(true);
     addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code)
       .then(() => {
-        // listCardsInPile(localStorage.getItem("deck_id"), "discard").then(
-        //   (deck) => {
-        //     deck.piles.discard.cards.map((card) => {
-        //       setDiscardPile([...discardPile, card]);
-        //     });
-        //   }
-        // );
+        listCardsInPile(localStorage.getItem("deck_id"), "discard").then(
+          (deck) => {
+            deck.piles.discard.cards.map((card) => {
+              setDiscardPile([...discardPile, card]);
+            });
+          }
+        );
       })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
@@ -703,6 +703,7 @@ function App() {
                     updateDiscardPile={updateDiscardPile}
                     setIsDrawPileEmpty={setIsDrawPileEmpty}
                     closeGameSite={closeGameSite}
+                    setIsLoading={setIsLoading}
                   />
                 }
               ></Route>

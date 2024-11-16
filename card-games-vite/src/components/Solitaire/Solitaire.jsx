@@ -29,7 +29,6 @@ function Solitaire({
   hand,
   setHand,
   isDrawPileEmpty,
-  addToDiscard,
   discardPile,
   handleDiscardPileClick,
   animateCardDeal,
@@ -38,6 +37,8 @@ function Solitaire({
   setIsDrawPileEmpty,
   pullCardFromPile,
   closeGameSite,
+  isLoading,
+  setIsLoading,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -92,7 +93,11 @@ function Solitaire({
   }
 
   function discard(item) {
-    addToDiscard(item);
+    setIsLoading(true);
+    addCardsToPiles(localStorage.getItem("deck_id"), "discard", item.code)
+      .then()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
     setDiscardPile([...discardPile, item]);
   }
 
@@ -105,22 +110,26 @@ function Solitaire({
   }
 
   function draw() {
-    drawCard(localStorage.getItem("deck_id"), 1).then((deck) => {
-      if (deck.success) {
-        discard(deck.cards[0]);
-        if (deck.remaining === 0) {
-          setIsDrawPileEmpty(true);
+    setIsLoading(true);
+    drawCard(localStorage.getItem("deck_id"), 1)
+      .then((deck) => {
+        if (deck.success) {
+          discard(deck.cards[0]);
+          if (deck.remaining === 0) {
+            setIsDrawPileEmpty(true);
+          }
+          animateCardDeal(200, 0);
+        } else {
+          returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
+            .then(() => {
+              setDiscardPile([]);
+              setIsDrawPileEmpty(false);
+            })
+            .catch((err) => console.error(err));
         }
-        animateCardDeal(200, 0);
-      } else {
-        returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
-          .then((deck) => {
-            setDiscardPile([]);
-            setIsDrawPileEmpty(false);
-          })
-          .catch((err) => console.error(err));
-      }
-    });
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
   }
 
   function checkCardIsLast(item) {
@@ -488,6 +497,7 @@ function Solitaire({
   });
 
   function setupTabluea() {
+    setIsLoading(true);
     drawCard(localStorage.getItem("deck_id"), 28)
       .then((deck) => {
         for (let i = 0; i < 28; i++) {
@@ -545,7 +555,9 @@ function Solitaire({
 
         incrementGame();
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+
     setAreCardsDealt(true);
   }
 
