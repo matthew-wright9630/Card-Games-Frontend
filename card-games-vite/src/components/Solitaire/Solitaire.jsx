@@ -59,6 +59,9 @@ function Solitaire({
 
   const [gameWon, setGameWon] = useState(false);
 
+  const [tabletView, setTabletView] = useState(false);
+  const [mobileView, setMobileView] = useState(false);
+
   function startSolitaireGame() {
     setGameWon(false);
     handleGameStart(1);
@@ -118,7 +121,13 @@ function Solitaire({
           if (deck.remaining === 0) {
             setIsDrawPileEmpty(true);
           }
-          animateCardDeal(200, 0);
+          if (window.innerWidth <= 550) {
+            animateCardDeal(90, 0);
+          } else if (window.innerWidth <= 795) {
+            animateCardDeal(130, 0);
+          } else {
+            animateCardDeal(185, 0);
+          }
         } else {
           returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
             .then(() => {
@@ -908,13 +917,64 @@ function Solitaire({
                   )}
                 </button>
               </div>
-              <button
-                className="game__btn"
-                type="button"
-                onClick={() => endSolitaireGame(false)}
-              >
-                End Game
-              </button>
+              <div className="solitaire__foundation-piles">
+                <div className="solitaire__pile" ref={dropSpadeFoundation}>
+                  {isOverSpadeFoundation}
+                  {spadeFoundation.length === 0 ? (
+                    <div className="solitaire__pile_empty">SPADE</div>
+                  ) : (
+                    <Card
+                      card={spadeFoundation[spadeFoundation.length - 1]}
+                      moveCardListItem={moveCardListItem}
+                      canBeFlipped={false}
+                      id="Spade"
+                    />
+                  )}
+                </div>
+                <div className="solitaire__pile" ref={dropHeartFoundation}>
+                  {isOverHeartFoundation}
+                  {heartFoundation.length === 0 ? (
+                    <div className="solitaire__pile_empty solitaire__pile_red">
+                      HEART
+                    </div>
+                  ) : (
+                    <Card
+                      card={heartFoundation[heartFoundation.length - 1]}
+                      moveCardListItem={moveCardListItem}
+                      canBeFlipped={false}
+                      id="Heart"
+                    />
+                  )}
+                </div>
+                <div className="solitaire__pile" ref={dropClubFoundation}>
+                  {isOverClubFoundation}
+                  {clubFoundation.length === 0 ? (
+                    <div className="solitaire__pile_empty">CLUB</div>
+                  ) : (
+                    <Card
+                      card={clubFoundation[clubFoundation.length - 1]}
+                      moveCardListItem={moveCardListItem}
+                      canBeFlipped={false}
+                      id="Club"
+                    />
+                  )}
+                </div>
+                <div className="solitaire__pile" ref={dropDiamondFoundation}>
+                  {isOverDiamondFoundation}
+                  {diamondFoundation.length === 0 ? (
+                    <div className="solitaire__pile_empty solitaire__pile_red">
+                      DIAMOND
+                    </div>
+                  ) : (
+                    <Card
+                      card={diamondFoundation[diamondFoundation.length - 1]}
+                      moveCardListItem={moveCardListItem}
+                      canBeFlipped={false}
+                      id="Diamond"
+                    />
+                  )}
+                </div>
+              </div>
             </div>
           ) : (
             <button onClick={setupTabluea} className="solitaire__deal-btn">
@@ -922,64 +982,6 @@ function Solitaire({
             </button>
           )}
           <div className="solitaire__game-area">
-            <div className="solitaire__foundation-piles">
-              <div className="solitaire__pile" ref={dropSpadeFoundation}>
-                {isOverSpadeFoundation}
-                {spadeFoundation.length === 0 ? (
-                  <div className="solitaire__pile_empty">SPADE</div>
-                ) : (
-                  <Card
-                    card={spadeFoundation[spadeFoundation.length - 1]}
-                    moveCardListItem={moveCardListItem}
-                    canBeFlipped={false}
-                    id="Spade"
-                  />
-                )}
-              </div>
-              <div className="solitaire__pile" ref={dropHeartFoundation}>
-                {isOverHeartFoundation}
-                {heartFoundation.length === 0 ? (
-                  <div className="solitaire__pile_empty solitaire__pile_red">
-                    HEART
-                  </div>
-                ) : (
-                  <Card
-                    card={heartFoundation[heartFoundation.length - 1]}
-                    moveCardListItem={moveCardListItem}
-                    canBeFlipped={false}
-                    id="Heart"
-                  />
-                )}
-              </div>
-              <div className="solitaire__pile" ref={dropClubFoundation}>
-                {isOverClubFoundation}
-                {clubFoundation.length === 0 ? (
-                  <div className="solitaire__pile_empty">CLUB</div>
-                ) : (
-                  <Card
-                    card={clubFoundation[clubFoundation.length - 1]}
-                    moveCardListItem={moveCardListItem}
-                    canBeFlipped={false}
-                    id="Club"
-                  />
-                )}
-              </div>
-              <div className="solitaire__pile" ref={dropDiamondFoundation}>
-                {isOverDiamondFoundation}
-                {diamondFoundation.length === 0 ? (
-                  <div className="solitaire__pile_empty solitaire__pile_red">
-                    DIAMOND
-                  </div>
-                ) : (
-                  <Card
-                    card={diamondFoundation[diamondFoundation.length - 1]}
-                    moveCardListItem={moveCardListItem}
-                    canBeFlipped={false}
-                    id="Diamond"
-                  />
-                )}
-              </div>
-            </div>
             <div className="solitaire__tableau">
               <div className="solitaire__tabluea-pile" ref={dropRefT1}>
                 {isOverT1}
@@ -1005,7 +1007,6 @@ function Solitaire({
                               canBeFlipped={false}
                               id="Tabluea1"
                               key={card}
-                              // isHidden={card.isHidden}
                             />
                           </div>
                         );
@@ -1037,7 +1038,6 @@ function Solitaire({
                               canBeFlipped={false}
                               id="Tabluea2"
                               key={card.code}
-                              // isHidden={card.isHidden}
                             />
                           </div>
                         );
@@ -1069,7 +1069,6 @@ function Solitaire({
                               canBeFlipped={false}
                               id="Tabluea3"
                               key={card.code}
-                              // isHidden={card.isHidden}
                             />
                           </div>
                         );
@@ -1101,7 +1100,6 @@ function Solitaire({
                               canBeFlipped={false}
                               id="Tabluea4"
                               key={card.code}
-                              // isHidden={card.isHidden}
                             />
                           </div>
                         );
@@ -1133,7 +1131,6 @@ function Solitaire({
                               canBeFlipped={false}
                               id="Tabluea5"
                               key={card.code}
-                              // isHidden={card.isHidden}
                             />
                           </div>
                         );
@@ -1165,7 +1162,6 @@ function Solitaire({
                               canBeFlipped={false}
                               id="Tabluea6"
                               key={card.code}
-                              // isHidden={card.isHidden}
                             />
                           </div>
                         );
@@ -1197,7 +1193,6 @@ function Solitaire({
                               canBeFlipped={false}
                               id="Tabluea7"
                               key={card.code}
-                              // isHidden={card.isHidden}
                             />
                           </div>
                         );
@@ -1210,6 +1205,14 @@ function Solitaire({
           </div>
         </div>
       )}
+
+      {/* <button
+                className="game__btn"
+                type="button"
+                onClick={() => endSolitaireGame(false)}
+              >
+                End Game
+              </button> */}
     </div>
   );
 }

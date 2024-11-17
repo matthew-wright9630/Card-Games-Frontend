@@ -612,6 +612,14 @@ function App() {
   }, [discardPile]);
 
   const generateCardPreview = ({ itemType, item, style }) => {
+    style.height = 105;
+    if (window.innerWidth <= 550) {
+      style.width = 35;
+    } else if (window.innerWidth <= 795) {
+      style.width = 65;
+    } else {
+      style.width = 80;
+    }
     return <img className="card" src={item.card.image} style={style}></img>;
   };
 
