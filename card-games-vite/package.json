@@ -7,7 +7,7 @@
     "dev": "vite --open",
     "build": "vite build",
     "predeploy": "npm run build",
-    "deploy": "npm run build && scp -r ./dist/* billygoat9630@mwcardgames.fairuse.org:/home/billygoat9630/frontend",
+    "deploy": "npm run build && scp -r ./dist/* billygoat9630@mwcardgames.csproject.org:/home/billygoat9630/frontend",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -37,5 +37,5 @@
     "react-error-overlay": "^6.0.9",
     "vite": "^5.3.1"
   },
-  "homepage": "https://mwcardgames.fairuse.org"
+  "homepage": "https://mwcardgames.csproject.org"
 }
