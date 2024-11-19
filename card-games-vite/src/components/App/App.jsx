@@ -58,6 +58,7 @@ function App() {
   const [currentGame, setCurrentGame] = useState({});
   const [selectedItem, setSelectedItem] = useState({});
   const [serverError, setServerError] = useState({});
+  const [errorMessage, setErrorMessage] = useState("No Errors");
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -452,9 +453,7 @@ function App() {
   const pullCardFromPile = (deck, pileName, numberOfCards) => {
     setIsLoading(true);
     drawFromPile(deck, pileName, numberOfCards)
-      .then((res) => {
-        // console.log(res);
-      })
+      .then(() => {})
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
@@ -518,12 +517,9 @@ function App() {
   };
 
   const addCard = (deck, pileName, card) => {
-    // console.log(card);
     const name = removeSpacesFromName(pileName);
     addCardsToPiles(deck, name, card.code)
-      .then((res) => {
-        // console.log(res);
-      })
+      .then(() => {})
       .catch((err) => console.error(err));
   };
 
@@ -611,6 +607,13 @@ function App() {
     renderDiscardPile();
   }, [discardPile]);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setErrorMessage("No Errors");
+    }, 3000);
+    return () => clearTimeout(timeoutId);
+  }, [errorMessage]);
+
   const generateCardPreview = ({ itemType, item, style }) => {
     style.height = 105;
     if (window.innerWidth <= 550) {
@@ -626,7 +629,6 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        {/* <DndProvider backend={HTML5Backend}> */}
         <DndProvider options={HTML5toTouch}>
           <Preview generator={generateCardPreview} />
           <div className="page__content">
@@ -712,6 +714,8 @@ function App() {
                     setIsDrawPileEmpty={setIsDrawPileEmpty}
                     closeGameSite={closeGameSite}
                     setIsLoading={setIsLoading}
+                    setErrorMessage={setErrorMessage}
+                    errorMessage={errorMessage}
                   />
                 }
               ></Route>

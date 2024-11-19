@@ -24,7 +24,7 @@
 }
 
 .solitaire__deal-btn:hover {
-  opacity: .4;
+  opacity: 0.4;
 }
 
 .solitaire__draw-discard-piles {
@@ -73,7 +73,7 @@
 }
 
 .game__btn:hover {
-  opacity: .3;
+  opacity: 0.3;
 }
 
 .game__card-btn {
@@ -116,8 +116,20 @@
 }
 
 .solitaire__game-area {
+  position: relative;
   display: flex;
   gap: 20px;
+}
+
+.solitaire__error {
+  color: #000;
+  font-size: 20px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.solitaire__error_hidden {
+  visibility: hidden;
 }
 
 .solitaire__foundation-piles {
@@ -176,14 +188,14 @@
 
 @media screen and (max-width: 795px) {
   .solitaire__draw-discard-piles {
-    gap: 40px
+    gap: 40px;
   }
 
   .game__card-btn {
     width: 65px;
     height: 105px;
   }
-  
+
   .solitaire__game-area {
     flex-direction: column;
   }
@@ -213,13 +225,13 @@
 
 @media screen and (max-width: 550px) {
   .solitaire__draw-discard-piles {
-    gap: 10px
+    gap: 10px;
   }
 
   .game__draw-title {
     font-size: 16px;
   }
-  
+
   .game__discard-title {
     font-size: 16px;
   }
@@ -228,7 +240,7 @@
     width: 35px;
     height: 105px;
   }
-  
+
   .solitaire__game-area {
     flex-direction: column;
   }
@@ -240,7 +252,7 @@
 
   .solitaire__card {
     width: 35px;
-    height: 60px
+    height: 60px;
   }
 
   .solitaire__pile {

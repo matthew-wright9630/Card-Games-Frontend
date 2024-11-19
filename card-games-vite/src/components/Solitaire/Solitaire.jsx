@@ -37,8 +37,9 @@ function Solitaire({
   setIsDrawPileEmpty,
   pullCardFromPile,
   closeGameSite,
-  isLoading,
   setIsLoading,
+  setErrorMessage,
+  errorMessage,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -58,9 +59,6 @@ function Solitaire({
   const [areCardsDealt, setAreCardsDealt] = useState(false);
 
   const [gameWon, setGameWon] = useState(false);
-
-  const [tabletView, setTabletView] = useState(false);
-  const [mobileView, setMobileView] = useState(false);
 
   function startSolitaireGame() {
     setGameWon(false);
@@ -429,7 +427,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      throw new Error("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last to be added to foundation");
     }
     if (checkCardFoundation(item.card, "Spade")) {
       if (
@@ -440,7 +438,7 @@ function Solitaire({
         setSpadeFoundation([...spadeFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (spadeFoundation.length === 0) {
-        throw new Error("The first card must be the Ace");
+        setErrorMessage("The first card must be the Ace");
       } else if (
         checkFoundationNumber(
           item.card,
@@ -451,10 +449,10 @@ function Solitaire({
         setSpadeFoundation([...spadeFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card cannot be added to pile");
+        setErrorMessage("Card cannot be added to pile");
       }
     } else {
-      throw new Error("Card suit is not a spade.");
+      setErrorMessage("Card suit is not a spade.");
     }
   }
 
@@ -463,7 +461,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      throw new Error("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last to be added to foundation");
     }
     if (checkCardFoundation(item.card, "Heart")) {
       if (
@@ -474,7 +472,7 @@ function Solitaire({
         setHeartFoundation([...heartFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (heartFoundation.length === 0) {
-        throw new Error("The first card must be the Ace");
+        setErrorMessage("The first card must be the Ace");
       } else if (
         checkFoundationNumber(
           item.card,
@@ -485,10 +483,10 @@ function Solitaire({
         setHeartFoundation([...heartFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card cannot be added to pile");
+        setErrorMessage("Card cannot be added to pile");
       }
     } else {
-      throw new Error("Card suit is not a heart.");
+      setErrorMessage("Card suit is not a heart.");
     }
   }
 
@@ -497,7 +495,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      throw new Error("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last to be added to foundation");
     }
     if (checkCardFoundation(item.card, "Club")) {
       if (
@@ -508,7 +506,7 @@ function Solitaire({
         setClubFoundation([...clubFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (clubFoundation.length === 0) {
-        throw new Error("The first card must be the Ace");
+        setErrorMessage("The first card must be the Ace");
       } else if (
         checkFoundationNumber(
           item.card,
@@ -519,10 +517,10 @@ function Solitaire({
         setClubFoundation([...clubFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card cannot be added to pile");
+        setErrorMessage("Card cannot be added to pile");
       }
     } else {
-      throw new Error("Card suit is not a club.");
+      setErrorMessage("Card suit is not a club.");
     }
   }
 
@@ -531,7 +529,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      throw new Error("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last to be added to foundation");
     }
     findAndRemoveCardFromPile(item);
     if (checkCardFoundation(item.card, "Diamond")) {
@@ -543,7 +541,7 @@ function Solitaire({
         setDiamondFoundation([...diamondFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (diamondFoundation.length === 0) {
-        throw new Error("The first card must be the Ace");
+        setErrorMessage("The first card must be the Ace");
       } else if (
         checkFoundationNumber(
           item.card,
@@ -554,10 +552,10 @@ function Solitaire({
         setDiamondFoundation([...diamondFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
-        throw new Error("Card cannot be added to pile");
+        setErrorMessage("Card cannot be added to pile");
       }
     } else {
-      throw new Error("Card suit is not a diamond.");
+      setErrorMessage("Card suit is not a diamond.");
     }
   }
 
@@ -670,7 +668,7 @@ function Solitaire({
     ) {
       setTabluea1([...tabluea1, ...findAndRemoveCardFromPile(item)]);
     } else {
-      throw new Error("Card is not valid");
+      setErrorMessage("Card placement is not valid");
     }
   }
 
@@ -693,7 +691,7 @@ function Solitaire({
     ) {
       setTabluea2([...tabluea2, ...findAndRemoveCardFromPile(item)]);
     } else {
-      throw new Error("Card is not valid");
+      setErrorMessage("Card placement is not valid");
     }
   }
 
@@ -716,7 +714,7 @@ function Solitaire({
     ) {
       setTabluea3([...tabluea3, ...findAndRemoveCardFromPile(item)]);
     } else {
-      throw new Error("Card is not valid");
+      setErrorMessage("Card placement is not valid");
     }
   }
 
@@ -739,7 +737,7 @@ function Solitaire({
     ) {
       setTabluea4([...tabluea4, ...findAndRemoveCardFromPile(item)]);
     } else {
-      throw new Error("Card is not valid");
+      setErrorMessage("Card placement is not valid");
     }
   }
 
@@ -762,7 +760,7 @@ function Solitaire({
     ) {
       setTabluea5([...tabluea5, ...findAndRemoveCardFromPile(item)]);
     } else {
-      throw new Error("Card is not valid");
+      setErrorMessage("Card placement is not valid");
     }
   }
 
@@ -785,7 +783,7 @@ function Solitaire({
     ) {
       setTabluea6([...tabluea6, ...findAndRemoveCardFromPile(item)]);
     } else {
-      throw new Error("Card is not valid");
+      setErrorMessage("Card placement is not valid");
     }
   }
 
@@ -808,7 +806,7 @@ function Solitaire({
     ) {
       setTabluea7([...tabluea7, ...findAndRemoveCardFromPile(item)]);
     } else {
-      throw new Error("Card is not valid");
+      setErrorMessage("Card placement is not valid");
     }
   }
 
@@ -981,6 +979,7 @@ function Solitaire({
               Deal the cards!
             </button>
           )}
+            {<p className={`solitaire__error ${errorMessage === "No Errors" ? "solitaire__error_hidden" : "solitaire__error_visible"}`}>{errorMessage}</p>}
           <div className="solitaire__game-area">
             <div className="solitaire__tableau">
               <div className="solitaire__tabluea-pile" ref={dropRefT1}>
