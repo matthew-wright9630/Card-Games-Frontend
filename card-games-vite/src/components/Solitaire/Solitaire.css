@@ -202,7 +202,7 @@
 
   .solitaire__tableau {
     grid-template-columns: repeat(auto-fit, 65px);
-    height: 500px;
+    height: 300px;
   }
 
   .solitaire__card {
@@ -238,7 +238,7 @@
 
   .game__card-btn {
     width: 35px;
-    height: 105px;
+    height: 60px;
   }
 
   .solitaire__game-area {
@@ -247,22 +247,23 @@
 
   .solitaire__tableau {
     grid-template-columns: repeat(auto-fit, 35px);
-    height: 500px;
+    height: 300px;
   }
 
   .solitaire__card {
     width: 35px;
     height: 60px;
+    margin-bottom: -40px;
   }
 
   .solitaire__pile {
     width: 35px;
-    height: 105px;
+    height: 60px;
   }
 
   .solitaire__pile_empty {
     width: 35px;
-    height: 105px;
+    height: 60px;
     font-size: 8px;
   }
 }
