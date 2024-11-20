@@ -531,7 +531,6 @@ function Solitaire({
     if (!checkCardIsLast(item)) {
       setErrorMessage("Card must be last to be added to foundation");
     }
-    findAndRemoveCardFromPile(item);
     if (checkCardFoundation(item.card, "Diamond")) {
       if (
         diamondFoundation.length === 0 &&
@@ -979,9 +978,19 @@ function Solitaire({
               Deal the cards!
             </button>
           )}
-            {<p className={`solitaire__error ${errorMessage === "No Errors" ? "solitaire__error_hidden" : "solitaire__error_visible"}`}>{errorMessage}</p>}
+          {
+            <p
+              className={`solitaire__error ${
+                errorMessage === "No Errors"
+                  ? "solitaire__error_hidden"
+                  : "solitaire__error_visible"
+              }`}
+            >
+              {errorMessage}
+            </p>
+          }
           <div className="solitaire__game-area">
-            <div className="solitaire__tableau">
+            <div className="solitaire__tableau" id="solitaire__tabluea">
               <div className="solitaire__tabluea-pile" ref={dropRefT1}>
                 {isOverT1}
                 {tabluea1.length === 0 ? (

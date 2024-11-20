@@ -165,7 +165,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, 85px);
   justify-content: space-between;
-  height: 500px;
+  height: 800px;
 }
 
 .solitaire__tabluea-pile {
@@ -202,7 +202,7 @@
 
   .solitaire__tableau {
     grid-template-columns: repeat(auto-fit, 65px);
-    height: 300px;
+    height: 600px;
   }
 
   .solitaire__card {
@@ -247,7 +247,7 @@
 
   .solitaire__tableau {
     grid-template-columns: repeat(auto-fit, 35px);
-    height: 300px;
+    height: 500px;
   }
 
   .solitaire__card {
