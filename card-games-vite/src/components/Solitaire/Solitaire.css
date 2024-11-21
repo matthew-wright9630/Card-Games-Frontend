@@ -34,31 +34,53 @@
   align-items: center;
 }
 
-.game__draw-title {
+.solitaire__draw-title {
   text-align: center;
   font-size: 18px;
 }
 
-.game__draw-pile {
+.solitaire__draw-pile {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.game__discard-pile {
+.solitaire__discard-pile {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.game__discard-title {
+.solitaire__discard-title {
   text-align: center;
   font-size: 18px;
 }
 
-.game__btn {
+.solitaire__discard-pile-three {
+  height: 100%;
+  width: 100%;
+  /* display: grid;
+  grid-template-columns: repeat(3, 1fr); */
+}
+
+.solitaire__card-discard {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.solitaire__card-discard_second {
+  left: -20px;
+}
+
+.solitaire__card-discard_first {
+  left: -30px;
+}
+
+.solitaire__btn {
   display: flex;
   justify-content: center;
   padding: 0;
@@ -72,11 +94,11 @@
   transition: 0.3s linear;
 }
 
-.game__btn:hover {
+.solitaire__btn:hover {
   opacity: 0.3;
 }
 
-.game__card-btn {
+.solitaire__card-btn {
   padding: 0;
   width: 85px;
   height: 115px;
@@ -86,11 +108,11 @@
   border-radius: 3%;
 }
 
-.game__card-btn:hover {
+.solitaire__card-btn:hover {
   opacity: 0.6;
 }
 
-.game__pile {
+.solitaire__pile {
   background-image: url("https://deckofcardsapi.com/static/img/back.png");
   background-size: contain;
   background-repeat: no-repeat;
@@ -98,7 +120,7 @@
   border-radius: 6%;
 }
 
-.game__pile_empty {
+.solitaire__pile_empty {
   background-image: url("../../assets//Cross.svg");
   background-size: contain;
   background-repeat: no-repeat;
@@ -107,7 +129,7 @@
   border: none;
 }
 
-.game__animation-card {
+.solitaire__animation-card {
   position: absolute;
   top: 0;
   left: 0;
@@ -145,9 +167,9 @@
   border: 1px #000 solid;
 }
 
-.solitaire__pile_empty {
+.solitaire__foundation-pile_empty {
   display: flex;
-  /* background-color: #fff; */
+  background-color: #35654d;
   width: 85px;
   height: 115px;
   border-radius: 6%;
@@ -191,7 +213,7 @@
     gap: 40px;
   }
 
-  .game__card-btn {
+  .solitaire__card-btn {
     width: 65px;
     height: 105px;
   }
@@ -228,15 +250,15 @@
     gap: 10px;
   }
 
-  .game__draw-title {
+  .solitaire__draw-title {
     font-size: 16px;
   }
 
-  .game__discard-title {
+  .solitaire__discard-title {
     font-size: 16px;
   }
 
-  .game__card-btn {
+  .solitaire__card-btn {
     width: 35px;
     height: 60px;
   }

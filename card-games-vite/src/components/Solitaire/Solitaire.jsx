@@ -43,6 +43,9 @@ function Solitaire({
 }) {
   const currentUser = useContext(CurrentUserContext);
 
+  const [isGameDrawThree, setIsGameDrawThree] = useState(false);
+  const [numberOfCards, setNumberOfCards] = useState(1);
+
   const [spadeFoundation, setSpadeFoundation] = useState([]);
   const [heartFoundation, setHeartFoundation] = useState([]);
   const [clubFoundation, setClubFoundation] = useState([]);
@@ -60,9 +63,20 @@ function Solitaire({
 
   const [gameWon, setGameWon] = useState(false);
 
-  function startSolitaireGame() {
+  function startSolitaireGame(number) {
     setGameWon(false);
     handleGameStart(1);
+    setNumberOfCards(number);
+  }
+
+  function startSolitaireDrawOne() {
+    startSolitaireGame(1);
+    setIsGameDrawThree(false);
+  }
+
+  function startSolitaireDrawThree() {
+    startSolitaireGame(3);
+    setIsGameDrawThree(true);
   }
 
   function endSolitaireGame() {
@@ -91,6 +105,7 @@ function Solitaire({
 
   function clickedDiscardPile() {
     handleDiscardPileClick();
+    console.log(discardPile);
   }
 
   function discard(item) {
@@ -99,7 +114,6 @@ function Solitaire({
       .then()
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
-    setDiscardPile([...discardPile, item]);
   }
 
   function getGame() {
@@ -112,10 +126,13 @@ function Solitaire({
 
   function draw() {
     setIsLoading(true);
-    drawCard(localStorage.getItem("deck_id"), 1)
+    drawCard(localStorage.getItem("deck_id"), numberOfCards)
       .then((deck) => {
         if (deck.success) {
-          discard(deck.cards[0]);
+          setDiscardPile([...discardPile, ...deck.cards]);
+          deck.cards.map((card) => {
+            discard(card);
+          });
           if (deck.remaining === 0) {
             setIsDrawPileEmpty(true);
           }
@@ -866,20 +883,27 @@ function Solitaire({
       </p> */}
 
       {!gameActive ? (
-        <button onClick={startSolitaireGame} className="game__btn">
-          Start Game
-        </button>
+        <div className="solitaire__start">
+          <button onClick={startSolitaireDrawOne} className="solitaire__btn">
+            Start Game (draw 1 per card)
+          </button>
+          <button onClick={startSolitaireDrawThree} className="solitaire__btn">
+            Start Game (draw 3 per card)
+          </button>
+        </div>
       ) : (
         <div className="solitaire__game">
           {areCardsDealt ? (
             <div className="solitaire__draw-discard-piles">
-              <div className="game__draw-pile">
-                <p className="game__draw-title">Draw Pile</p>
+              <div className="solitaire__draw-pile">
+                <p className="solitaire__draw-title">Draw Pile</p>
                 <button
                   type="button"
                   onClick={draw}
-                  className={`game__card-btn ${
-                    isDrawPileEmpty ? "game__pile_empty" : "game__pile"
+                  className={`solitaire__card-btn ${
+                    isDrawPileEmpty
+                      ? "solitaire__pile_empty"
+                      : "solitaire__pile"
                   }`}
                 >
                   {isDrawPileEmpty ? (
@@ -888,22 +912,43 @@ function Solitaire({
                     <img
                       src={backOfCard}
                       alt="Card Back"
-                      className="game__animation-card"
+                      className="solitaire__animation-card"
                     />
                   )}
                 </button>
               </div>
-              <div className="game__discard-pile">
-                <p className="game__discard-title">Discard Pile</p>
+              <div className="solitaire__discard-pile">
+                <p className="solitaire__discard-title">Discard Pile</p>
                 <button
                   type="button"
                   onClick={clickedDiscardPile}
-                  className={`game__card-btn ${
-                    discardPile.length === 0 ? "game__pile_empty" : ""
+                  className={`solitaire__card-btn ${
+                    discardPile.length === 0 ? "solitaire__pile_empty" : ""
                   }`}
                 >
                   {discardPile.length === 0 ? (
                     ""
+                  ) : isGameDrawThree ? (
+                    <div className="solitaire__discard-pile-three">
+                      <img
+                        src={discardPile[discardPile.length - 3].image}
+                        alt={discardPile[discardPile.length - 3].code}
+                        className="solitaire__card-discard solitaire__card-discard_first"
+                      />
+                      <img
+                        src={discardPile[discardPile.length - 2].image}
+                        alt={discardPile[discardPile.length - 2].code}
+                        className="solitaire__card-discard solitaire__card-discard_second"
+                      />
+                      <div className="solitaire__card solitaire__card-discard">
+                        <Card
+                          card={discardPile[discardPile.length - 1]}
+                          moveCardListItem={moveCardListItem}
+                          canBeFlipped={false}
+                          id="discard"
+                        />
+                      </div>
+                    </div>
                   ) : (
                     <Card
                       card={discardPile[discardPile.length - 1]}
@@ -918,7 +963,9 @@ function Solitaire({
                 <div className="solitaire__pile" ref={dropSpadeFoundation}>
                   {isOverSpadeFoundation}
                   {spadeFoundation.length === 0 ? (
-                    <div className="solitaire__pile_empty">SPADE</div>
+                    <div className="solitaire__foundation-pile_empty">
+                      SPADE
+                    </div>
                   ) : (
                     <Card
                       card={spadeFoundation[spadeFoundation.length - 1]}
@@ -931,7 +978,7 @@ function Solitaire({
                 <div className="solitaire__pile" ref={dropHeartFoundation}>
                   {isOverHeartFoundation}
                   {heartFoundation.length === 0 ? (
-                    <div className="solitaire__pile_empty solitaire__pile_red">
+                    <div className="solitaire__foundation-pile_empty solitaire__pile_red">
                       HEART
                     </div>
                   ) : (
@@ -946,7 +993,7 @@ function Solitaire({
                 <div className="solitaire__pile" ref={dropClubFoundation}>
                   {isOverClubFoundation}
                   {clubFoundation.length === 0 ? (
-                    <div className="solitaire__pile_empty">CLUB</div>
+                    <div className="solitaire__foundation-pile_empty">CLUB</div>
                   ) : (
                     <Card
                       card={clubFoundation[clubFoundation.length - 1]}
@@ -959,7 +1006,7 @@ function Solitaire({
                 <div className="solitaire__pile" ref={dropDiamondFoundation}>
                   {isOverDiamondFoundation}
                   {diamondFoundation.length === 0 ? (
-                    <div className="solitaire__pile_empty solitaire__pile_red">
+                    <div className="solitaire__foundation-pile_empty solitaire__pile_red">
                       DIAMOND
                     </div>
                   ) : (
@@ -1215,7 +1262,7 @@ function Solitaire({
       )}
 
       {/* <button
-                className="game__btn"
+                className="solitaire__btn"
                 type="button"
                 onClick={() => endSolitaireGame(false)}
               >
