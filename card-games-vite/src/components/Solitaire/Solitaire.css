@@ -61,23 +61,22 @@
 .solitaire__discard-pile-three {
   height: 100%;
   width: 100%;
-  /* display: grid;
-  grid-template-columns: repeat(3, 1fr); */
 }
 
 .solitaire__card-discard {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 85px;
+  height: 115px;
   top: 0;
+  left: 15px;
 }
 
 .solitaire__card-discard_second {
-  left: -20px;
+  left: 0;
 }
 
 .solitaire__card-discard_first {
-  left: -30px;
+  left: -15px;
 }
 
 .solitaire__btn {
@@ -92,6 +91,11 @@
   color: #f3f3f3;
   cursor: pointer;
   transition: 0.3s linear;
+}
+
+.solitaire__btn_reset {
+  color: #000;
+  margin: 50px 0;
 }
 
 .solitaire__btn:hover {
@@ -129,7 +133,7 @@
   border: none;
 }
 
-.solitaire__animation-card {
+.game__animation-card {
   position: absolute;
   top: 0;
   left: 0;
@@ -215,7 +219,12 @@
 
   .solitaire__card-btn {
     width: 65px;
-    height: 105px;
+    height: 80px;
+  }
+
+  .solitaire__card-discard {
+    width: 65px;
+    height: 80px;
   }
 
   .solitaire__game-area {
@@ -233,14 +242,20 @@
     margin-bottom: -50px;
   }
 
+  .solitaire__foundation-pile_empty {
+    width: 65px;
+    height: 80px;
+    font-size: 12px;
+  }
+
   .solitaire__pile {
     width: 65px;
-    height: 105px;
+    height: 80px;
   }
 
   .solitaire__pile_empty {
     width: 65px;
-    height: 105px;
+    height: 80px;
     font-size: 12px;
   }
 }
@@ -262,6 +277,11 @@
     width: 35px;
     height: 60px;
   }
+  
+  .solitaire__card-discard {
+    width: 35px;
+    height: 60px;
+  }
 
   .solitaire__game-area {
     flex-direction: column;
@@ -276,6 +296,12 @@
     width: 35px;
     height: 60px;
     margin-bottom: -40px;
+  }
+
+  .solitaire__foundation-pile_empty {
+    width: 35px;
+    height: 60px;
+    font-size: 8px;
   }
 
   .solitaire__pile {

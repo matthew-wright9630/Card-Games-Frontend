@@ -109,11 +109,23 @@ function Solitaire({
   }
 
   function discard(item) {
+    console.log(item.code);
     setIsLoading(true);
-    addCardsToPiles(localStorage.getItem("deck_id"), "discard", item.code)
-      .then()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
+    if (item.length === 3) {
+      addCardsToPiles(
+        localStorage.getItem("deck_id"),
+        "discard",
+        `${item[0].code},${item[1].code},${item[2].code},`
+      )
+        .then()
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
+    } else {
+      addCardsToPiles(localStorage.getItem("deck_id"), "discard", item[0].code)
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
+    }
   }
 
   function getGame() {
@@ -130,14 +142,14 @@ function Solitaire({
       .then((deck) => {
         if (deck.success) {
           setDiscardPile([...discardPile, ...deck.cards]);
-          deck.cards.map((card) => {
-            discard(card);
-          });
+          const drawnCards = [...deck.cards];
+          discard(drawnCards);
+
           if (deck.remaining === 0) {
             setIsDrawPileEmpty(true);
           }
           if (window.innerWidth <= 550) {
-            animateCardDeal(90, 0);
+            animateCardDeal(60, 0);
           } else if (window.innerWidth <= 795) {
             animateCardDeal(130, 0);
           } else {
@@ -870,6 +882,9 @@ function Solitaire({
       clubFoundation.length === 13
     ) {
       setGameWon(true);
+      if (currentUser) {
+        incrementGameWin();
+      }
     }
   }, [spadeFoundation, diamondFoundation, clubFoundation, heartFoundation]);
 
@@ -893,6 +908,7 @@ function Solitaire({
         </div>
       ) : (
         <div className="solitaire__game">
+          <button onClick={endSolitaireGame} className="solitaire__btn solitaire__btn_reset">Reset Game</button>
           {areCardsDealt ? (
             <div className="solitaire__draw-discard-piles">
               <div className="solitaire__draw-pile">
@@ -912,7 +928,7 @@ function Solitaire({
                     <img
                       src={backOfCard}
                       alt="Card Back"
-                      className="solitaire__animation-card"
+                      className="game__animation-card"
                     />
                   )}
                 </button>
