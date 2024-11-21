@@ -105,11 +105,9 @@ function Solitaire({
 
   function clickedDiscardPile() {
     handleDiscardPileClick();
-    console.log(discardPile);
   }
 
   function discard(item) {
-    console.log(item.code);
     setIsLoading(true);
     if (item.length === 3) {
       addCardsToPiles(
@@ -122,7 +120,7 @@ function Solitaire({
         .finally(() => setIsLoading(false));
     } else {
       addCardsToPiles(localStorage.getItem("deck_id"), "discard", item[0].code)
-        .then((res) => console.log(res))
+        .then()
         .catch((err) => console.error(err))
         .finally(() => setIsLoading(false));
     }
