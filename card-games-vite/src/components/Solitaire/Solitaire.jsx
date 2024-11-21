@@ -906,7 +906,12 @@ function Solitaire({
         </div>
       ) : (
         <div className="solitaire__game">
-          <button onClick={endSolitaireGame} className="solitaire__btn solitaire__btn_reset">Reset Game</button>
+          <button
+            onClick={endSolitaireGame}
+            className="solitaire__btn solitaire__btn_reset"
+          >
+            Reset Game
+          </button>
           {areCardsDealt ? (
             <div className="solitaire__draw-discard-piles">
               <div className="solitaire__draw-pile">
@@ -944,16 +949,20 @@ function Solitaire({
                     ""
                   ) : isGameDrawThree ? (
                     <div className="solitaire__discard-pile-three">
-                      <img
-                        src={discardPile[discardPile.length - 3].image}
-                        alt={discardPile[discardPile.length - 3].code}
-                        className="solitaire__card-discard solitaire__card-discard_first"
-                      />
-                      <img
-                        src={discardPile[discardPile.length - 2].image}
-                        alt={discardPile[discardPile.length - 2].code}
-                        className="solitaire__card-discard solitaire__card-discard_second"
-                      />
+                      {discardPile.length >= 3 && (
+                        <img
+                          className="solitaire__card-discard solitaire__card-discard_first"
+                          src={discardPile[discardPile.length - 3].image}
+                          alt={discardPile[discardPile.length - 3].code}
+                        />
+                      )}
+                      {discardPile.length >= 2 && (
+                        <img
+                          className="solitaire__card-discard solitaire__card-discard_second"
+                          src={discardPile[discardPile.length - 2].image}
+                          alt={discardPile[discardPile.length - 2].code}
+                        />
+                      )}
                       <div className="solitaire__card solitaire__card-discard">
                         <Card
                           card={discardPile[discardPile.length - 1]}
