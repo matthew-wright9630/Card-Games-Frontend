@@ -8,7 +8,7 @@ function checkCardFoundation(card, foundation) {
 }
 
 function checkFoundationNumber(newCard, foundationCard) {
-  if (newCard.code.substring(0, 1) === 0) {
+  if (newCard.code.substring(0, 1) === "0") {
     return foundationCard.code.substring(0, 1) === "9";
   } else if (newCard.code.substring(0, 1) === "J") {
     return foundationCard.code.substring(0, 1) === "0";

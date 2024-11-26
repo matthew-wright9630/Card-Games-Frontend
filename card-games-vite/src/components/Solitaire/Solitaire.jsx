@@ -109,7 +109,7 @@ function Solitaire({
 
   function discard(item) {
     setIsLoading(true);
-    if (item.length === 3) {
+    if (item.length !== 1) {
       addCardsToPiles(
         localStorage.getItem("deck_id"),
         "discard",
@@ -154,12 +154,20 @@ function Solitaire({
             animateCardDeal(185, 0);
           }
         } else {
-          returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
-            .then(() => {
-              setDiscardPile([]);
-              setIsDrawPileEmpty(false);
-            })
-            .catch((err) => console.error(err));
+          if (deck.cards.length !== 0) {
+            setDiscardPile([...discardPile, ...deck.cards]);
+            const drawnCards = [...deck.cards];
+            discard(drawnCards);
+            setIsDrawPileEmpty(true);
+          } else {
+            returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
+              .then((res) => {
+                console.log(res);
+                setDiscardPile([]);
+                setIsDrawPileEmpty(false);
+              })
+              .catch((err) => console.error(err));
+          }
         }
       })
       .catch((err) => console.error(err))
