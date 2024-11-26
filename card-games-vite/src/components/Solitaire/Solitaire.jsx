@@ -162,7 +162,6 @@ function Solitaire({
           } else {
             returnCardsFromPile(localStorage.getItem("deck_id"), "discard")
               .then((res) => {
-                console.log(res);
                 setDiscardPile([]);
                 setIsDrawPileEmpty(false);
               })
@@ -212,11 +211,12 @@ function Solitaire({
         }
         if (cardIsFound) {
           returnArray.push(discardPile[i]);
-          pullCardFromPile(localStorage.getItem("deck_id"), "discard", 1);
         } else {
           newArray.push(discardPile[i]);
         }
       }
+      console.log("This should only be called once");
+      pullCardFromPile(localStorage.getItem("deck_id"), "discard", 1);
       setDiscardPile(
         newArray.map((card) => {
           if (card.code === newArray[newArray.length - 1].code) {
@@ -453,10 +453,6 @@ function Solitaire({
     return returnArray;
   }
 
-  function addToPile(pileName, card) {
-    addCard(localStorage.getItem("deck_id"), pileName, card);
-  }
-
   function addToSpadeFoundation(item) {
     if (item.id === "Spade") {
       return;
@@ -469,7 +465,6 @@ function Solitaire({
         spadeFoundation.length === 0 &&
         item.card.code.substring(0, 1) === "A"
       ) {
-        addToPile("Spade", item.card);
         setSpadeFoundation([...spadeFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (spadeFoundation.length === 0) {
@@ -480,7 +475,6 @@ function Solitaire({
           spadeFoundation[spadeFoundation.length - 1]
         )
       ) {
-        addToPile("Spade", item.card);
         setSpadeFoundation([...spadeFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
@@ -503,7 +497,6 @@ function Solitaire({
         heartFoundation.length === 0 &&
         item.card.code.substring(0, 1) === "A"
       ) {
-        addToPile("Heart", item.card);
         setHeartFoundation([...heartFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (heartFoundation.length === 0) {
@@ -514,7 +507,6 @@ function Solitaire({
           heartFoundation[heartFoundation.length - 1]
         )
       ) {
-        addToPile("Heart", item.card);
         setHeartFoundation([...heartFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
@@ -537,7 +529,6 @@ function Solitaire({
         clubFoundation.length === 0 &&
         item.card.code.substring(0, 1) === "A"
       ) {
-        addToPile("Club", item.card);
         setClubFoundation([...clubFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (clubFoundation.length === 0) {
@@ -548,7 +539,6 @@ function Solitaire({
           clubFoundation[clubFoundation.length - 1]
         )
       ) {
-        addToPile("Club", item.card);
         setClubFoundation([...clubFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
@@ -571,7 +561,6 @@ function Solitaire({
         diamondFoundation.length === 0 &&
         item.card.code.substring(0, 1) === "A"
       ) {
-        addToPile("Diamond", item.card);
         setDiamondFoundation([...diamondFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else if (diamondFoundation.length === 0) {
@@ -582,7 +571,6 @@ function Solitaire({
           diamondFoundation[diamondFoundation.length - 1]
         )
       ) {
-        addToPile("Diamond", item.card);
         setDiamondFoundation([...diamondFoundation, item.card]);
         findAndRemoveCardFromPile(item);
       } else {
@@ -866,6 +854,13 @@ function Solitaire({
     setDiamondFoundation([]);
   }
 
+  function test() {
+    console.log(discardPile);
+    listCardsInPile(localStorage.getItem("deck_id"), "discard").then((res) => {
+      console.log(res);
+    });
+  }
+
   const moveCardListItem = useCallback(
     (dragIndex, hoverIndex) => {
       const dragItem = hand[dragIndex];
@@ -902,6 +897,7 @@ function Solitaire({
         Thank you for your interest! This page is still under development.
         Please come back another time!
       </p> */}
+      <button onClick={test}>Test</button>
 
       {!gameActive ? (
         <div className="solitaire__start">

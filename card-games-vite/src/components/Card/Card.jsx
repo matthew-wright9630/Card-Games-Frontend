@@ -21,7 +21,6 @@ function Card({
         setIsCardFlipped(true);
       }
     }
-    console.log(card);
   };
 
   const [{ isDragging }, dragRef] = useDrag({

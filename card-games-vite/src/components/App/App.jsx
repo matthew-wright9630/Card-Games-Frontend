@@ -453,7 +453,9 @@ function App() {
   const pullCardFromPile = (deck, pileName, numberOfCards) => {
     setIsLoading(true);
     drawFromPile(deck, pileName, numberOfCards)
-      .then(() => {})
+      .then((res) => {
+        console.log(res);
+      })
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
