@@ -215,7 +215,6 @@ function Solitaire({
           newArray.push(discardPile[i]);
         }
       }
-      console.log("This should only be called once");
       pullCardFromPile(localStorage.getItem("deck_id"), "discard", 1);
       setDiscardPile(
         newArray.map((card) => {
@@ -854,13 +853,6 @@ function Solitaire({
     setDiamondFoundation([]);
   }
 
-  function test() {
-    console.log(discardPile);
-    listCardsInPile(localStorage.getItem("deck_id"), "discard").then((res) => {
-      console.log(res);
-    });
-  }
-
   const moveCardListItem = useCallback(
     (dragIndex, hoverIndex) => {
       const dragItem = hand[dragIndex];
@@ -897,7 +889,6 @@ function Solitaire({
         Thank you for your interest! This page is still under development.
         Please come back another time!
       </p> */}
-      <button onClick={test}>Test</button>
 
       {!gameActive ? (
         <div className="solitaire__start">
