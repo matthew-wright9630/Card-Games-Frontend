@@ -109,12 +109,22 @@ function Solitaire({
   }
 
   function discard(item) {
+    console.log(item);
     setIsLoading(true);
-    if (item.length !== 1) {
+    if (item.length === 3) {
       addCardsToPiles(
         localStorage.getItem("deck_id"),
         "discard",
         `${item[0].code},${item[1].code},${item[2].code},`
+      )
+        .then()
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
+    } else if (item.length === 2) {
+      addCardsToPiles(
+        localStorage.getItem("deck_id"),
+        "discard",
+        `${item[0].code},${item[1].code},`
       )
         .then()
         .catch((err) => console.error(err))
@@ -156,6 +166,7 @@ function Solitaire({
           }
         } else {
           if (deck.cards.length !== 0) {
+            console.log(...deck.cards);
             setDiscardPile([...discardPile, ...deck.cards]);
             const drawnCards = [...deck.cards];
             discard(drawnCards);
