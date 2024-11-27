@@ -135,6 +135,9 @@
   background-color: #35654d;
   background-position-y: center;
   border: none;
+  width: 80px;
+  height: 85px;
+  margin: 0 auto;
 }
 
 .game__animation-card {
@@ -206,7 +209,6 @@
 .solitaire__stack {
   display: grid;
   grid-template-columns: 1fr;
-  /* margin: 40px 0; */
 }
 
 .solitaire__card {
@@ -258,7 +260,7 @@
   }
 
   .solitaire__pile_empty {
-    width: 65px;
+    width: 60px;
     height: 80px;
     font-size: 12px;
   }
@@ -314,7 +316,7 @@
   }
 
   .solitaire__pile_empty {
-    width: 35px;
+    width: 30px;
     height: 60px;
     font-size: 8px;
   }

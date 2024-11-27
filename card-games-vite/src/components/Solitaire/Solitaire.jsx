@@ -2,6 +2,7 @@ import "./Solitaire.css";
 import { React, useCallback, useContext, useEffect, useState } from "react";
 import { backOfCard } from "../../utils/constants";
 import { useDrop } from "react-dnd";
+import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import {
@@ -881,9 +882,11 @@ function Solitaire({
     }
   }, [spadeFoundation, diamondFoundation, clubFoundation, heartFoundation]);
 
+  const { width, height } = useWindowSize();
+
   return (
     <div className="solitaire">
-      {gameWon ? <Confetti /> : ""}
+      {gameWon ? <Confetti width={width - 20} height={height + 500} /> : ""}
       <h2 className="solitaire__title">Solitaire</h2>
       {/* <p className="solitaire__description-placeholder">
         Thank you for your interest! This page is still under development.
