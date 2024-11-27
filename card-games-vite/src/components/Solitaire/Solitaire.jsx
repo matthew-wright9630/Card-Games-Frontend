@@ -109,7 +109,6 @@ function Solitaire({
   }
 
   function discard(item) {
-    console.log(item);
     setIsLoading(true);
     if (item.length === 3) {
       addCardsToPiles(
@@ -166,7 +165,6 @@ function Solitaire({
           }
         } else {
           if (deck.cards.length !== 0) {
-            console.log(...deck.cards);
             setDiscardPile([...discardPile, ...deck.cards]);
             const drawnCards = [...deck.cards];
             discard(drawnCards);
