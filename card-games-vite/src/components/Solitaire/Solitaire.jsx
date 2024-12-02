@@ -467,7 +467,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last in pile to be added to the foundation");
       return;
     }
     if (checkCardFoundation(item.card, "Spade")) {
@@ -500,7 +500,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last in pile to be added to the foundation");
       return;
     }
     if (checkCardFoundation(item.card, "Heart")) {
@@ -533,7 +533,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last in pile to be added to the foundation");
       return;
     }
     if (checkCardFoundation(item.card, "Club")) {
@@ -566,7 +566,7 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last to be added to foundation");
+      setErrorMessage("Card must be last in pile to be added to the foundation");
       return;
     }
     if (checkCardFoundation(item.card, "Diamond")) {
@@ -626,7 +626,7 @@ function Solitaire({
     }),
   });
 
-  function setupTabluea() {
+  function setupTabluea() { 
     setIsLoading(true);
     drawCard(localStorage.getItem("deck_id"), 28)
       .then((deck) => {
@@ -642,7 +642,7 @@ function Solitaire({
           ) {
             deck.cards[i].isHidden = false;
           } else {
-            deck.cards[i].isHidden = true;
+            // deck.cards[i].isHidden = true;
           }
         }
         setTabluea1([...tabluea1, deck.cards[0]]);

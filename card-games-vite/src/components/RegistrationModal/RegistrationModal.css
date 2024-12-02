@@ -1,14 +1,12 @@
 .modal__login-btn {
   position: absolute;
-  bottom: 7px;
+  bottom: 0;
   left: 130px;
-  width: 100px;
-  height: 20px;
+  width: 124px;
+  height: 36px;
   border-radius: 4px;
-  background-color: #fff;
-  border: none;
-  color: rgba(0, 0, 0, 0.7);
-  size: 16px;
+  background-color: #000;
+  color: #fff;
   cursor: pointer;
   opacity: 1;
   transition: 0.3s linear;
@@ -16,4 +14,14 @@
 
 .modal__login-btn:hover {
   opacity: 0.5;
+}
+
+@media screen and (max-width: 550px) {
+  .modal__login-btn {
+    background-color: #575656;
+    border: #575656 1px solid;
+    bottom: 50px;
+    left: 0;
+    width: 100%;
+  }
 }

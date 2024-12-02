@@ -65,7 +65,7 @@ function LoginModal({
       <button
         type="button"
         onClick={handleRegistrationClick}
-        className="modal__login-btn"
+        className="modal__signup-btn modal__submit-button"
       >
         or sign up
       </button>

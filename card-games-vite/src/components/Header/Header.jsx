@@ -7,6 +7,7 @@ import homeIcon from "../../assets/home.svg";
 function Header({
   handleLoginClick,
   handleRegistrationClick,
+  handleFeedbackClick,
   isLoggedIn,
   handleLogout,
   closeGameSite,

@@ -13,9 +13,6 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmati
 import DiscardModal from "../DiscardModal/DiscardModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import About from "../About/About";
-// import { DndProvider } from "react-dnd";
-// import { HTML5Backend } from "react-dnd-html5-backend";
-// import { TouchBackend } from "react-dnd-touch-backend";
 import { DndProvider, Preview, usePreview } from "react-dnd-multi-backend";
 import { HTML5toTouch } from "rdndmb-html5-to-touch";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
@@ -32,7 +29,7 @@ import {
   deleteGameInfo,
 } from "../../utils/api";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import {
   addCardsToPiles,
   createNewDeck,
@@ -41,7 +38,7 @@ import {
   listCardsInPile,
   shuffleAllCards,
 } from "../../utils/deckOfCardsApi";
-import Card from "../Card/Card";
+import FeedbackModal from "../FeedbackModal/FeedbackModal";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -79,6 +76,10 @@ function App() {
     setSelectedItem(item);
   };
 
+  const handleFeedbackClick = () => {
+    setActiveModal("feedback-modal");
+  };
+
   const handleCloseModal = () => {
     setActiveModal("");
     setServerError({});
@@ -90,6 +91,7 @@ function App() {
   const isDiscardModalOpen = activeModal === "discard-modal";
   const isDeleteConfirmationModalOpen =
     activeModal === "delete-confirmation-modal";
+  const isFeedbackModalOpen = activeModal === "feedback-modal";
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
@@ -453,8 +455,7 @@ function App() {
   const pullCardFromPile = (deck, pileName, numberOfCards) => {
     setIsLoading(true);
     drawFromPile(deck, pileName, numberOfCards)
-      .then((res) => {
-      })
+      .then((res) => {})
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   };
@@ -611,7 +612,7 @@ function App() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setErrorMessage("No Errors");
-    }, 3000);
+    }, 4000);
     return () => clearTimeout(timeoutId);
   }, [errorMessage]);
 
@@ -638,6 +639,7 @@ function App() {
             <Header
               handleLoginClick={handleLoginClick}
               handleRegistrationClick={handleRegistrationClick}
+              handleFeedbackClick={handleFeedbackClick}
               isLoggedIn={isLoggedIn}
               handleLogout={handleLogout}
               closeGameSite={closeGameSite}
@@ -760,6 +762,14 @@ function App() {
               handleRegistration={handleRegistration}
               isLoading={isLoading}
               handleLoginClick={handleLoginClick}
+              serverError={serverError}
+            />
+            <FeedbackModal
+              isOpen={isLoginModalOpen}
+              onCloseModal={handleCloseModal}
+              handleLogin={handleLogin}
+              isLoading={isLoading}
+              handleRegistrationClick={handleRegistrationClick}
               serverError={serverError}
             />
             <DiscardModal

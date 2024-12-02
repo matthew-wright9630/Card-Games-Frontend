@@ -40,6 +40,8 @@ function checkTablueaSuit(newCard, tablueaCard) {
 }
 
 function checkTablueaSequence(newCard, tablueaCard) {
+  if (!tablueaCard)
+    return newCard.code.substring(0, 1) === "K";
   if (newCard.code.substring(0, 1) === "K") {
     return;
   } else if (newCard.code.substring(0, 1) === "Q") {
