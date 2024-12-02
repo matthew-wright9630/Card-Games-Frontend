@@ -468,6 +468,7 @@ function Solitaire({
     }
     if (!checkCardIsLast(item)) {
       setErrorMessage("Card must be last to be added to foundation");
+      return;
     }
     if (checkCardFoundation(item.card, "Spade")) {
       if (
@@ -500,6 +501,7 @@ function Solitaire({
     }
     if (!checkCardIsLast(item)) {
       setErrorMessage("Card must be last to be added to foundation");
+      return;
     }
     if (checkCardFoundation(item.card, "Heart")) {
       if (
@@ -532,6 +534,7 @@ function Solitaire({
     }
     if (!checkCardIsLast(item)) {
       setErrorMessage("Card must be last to be added to foundation");
+      return;
     }
     if (checkCardFoundation(item.card, "Club")) {
       if (
@@ -564,6 +567,7 @@ function Solitaire({
     }
     if (!checkCardIsLast(item)) {
       setErrorMessage("Card must be last to be added to foundation");
+      return;
     }
     if (checkCardFoundation(item.card, "Diamond")) {
       if (
