@@ -5,6 +5,8 @@
 This website can be used to play various card games. The website will display the available card games, and users will be able to register, login, and like their preferred card games for easier access.
 When a user is logged in, they are able to view their profile. The profile will show their liked games and their game history. Users are able to delete their game history and their account
 
+Solitaire has now been implemented. Both a 1 and 3 card draw version are added. When a game is won, a confetti effect is displayed. If a user is logged in when starting a game, it will record how many games have been won or lost.
+
 ## Technologies Used
 
 HTML, CSS, and JavaScript were used to create the website, and Vite was used for the project template. The project was split into different components using React.
@@ -19,6 +21,9 @@ React can be downloaded using npm.
 npm install react-router-dom@6
 
 The local server can be found at the [Github - Backend] link below. Once both are ready and all dependencies downloaded, the local website will be found at http://localhost:3000/
+
+The following need to be installed to correctly run the project locally:
+react, react-dnd-multi-backend, rdndmb-html5-to-touch, react-confetti, react-dnd, react-use
 
 ## Future Improvements
 

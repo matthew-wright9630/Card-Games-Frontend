@@ -639,7 +639,6 @@ function App() {
             <Header
               handleLoginClick={handleLoginClick}
               handleRegistrationClick={handleRegistrationClick}
-              handleFeedbackClick={handleFeedbackClick}
               isLoggedIn={isLoggedIn}
               handleLogout={handleLogout}
               closeGameSite={closeGameSite}
@@ -692,31 +691,20 @@ function App() {
                 path="/solitaire"
                 element={
                   <Solitaire
-                    currentGame={currentGame}
                     handleGameIncrement={handleGameIncrement}
                     incrementGameWon={incrementGameWon}
                     gameActive={gameActive}
                     handleGameStart={handleGameStart}
-                    handleGameEnd={handleGameEnd}
                     isLoggedIn={isLoggedIn}
                     getCurrentGame={getCurrentGame}
-                    pullCard={pullCard}
                     hand={hand}
                     setHand={setHand}
-                    handleCardLike={handleCardLike}
                     isDrawPileEmpty={isDrawPileEmpty}
-                    isDiscardPileEmpty={isDiscardPileEmpty}
-                    addToDiscard={addToDiscard}
                     discardPile={discardPile}
-                    isLoading={isLoading}
                     handleDiscardPileClick={handleDiscardPileClick}
                     animateCardDeal={animateCardDeal}
-                    addCard={addCard}
                     pullCardFromPile={pullCardFromPile}
-                    pullCardFromDiscard={pullCardFromDiscard}
                     setDiscardPile={setDiscardPile}
-                    updateDiscardPile={updateDiscardPile}
-                    setIsDrawPileEmpty={setIsDrawPileEmpty}
                     closeGameSite={closeGameSite}
                     setIsLoading={setIsLoading}
                     setErrorMessage={setErrorMessage}
@@ -740,7 +728,7 @@ function App() {
                 }
               ></Route>
             </Routes>
-            <Footer />
+            <Footer handleFeedbackClick={handleFeedbackClick} />
             <LoginModal
               isOpen={isLoginModalOpen}
               onCloseModal={handleCloseModal}

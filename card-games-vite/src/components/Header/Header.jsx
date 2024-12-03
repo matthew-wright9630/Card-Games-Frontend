@@ -7,7 +7,6 @@ import homeIcon from "../../assets/home.svg";
 function Header({
   handleLoginClick,
   handleRegistrationClick,
-  handleFeedbackClick,
   isLoggedIn,
   handleLogout,
   closeGameSite,
@@ -58,7 +57,6 @@ function Header({
             >
               Log In
             </button>
-            <button onClick={handleFeedbackClick} type="button" className="header__button header__feedback">Feedback</button>
           </div>
         )}
       </div>

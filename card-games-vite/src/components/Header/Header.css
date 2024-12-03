@@ -88,6 +88,7 @@ header {
   color: #f3f3f3;
   cursor: pointer;
   transition: 0.3s linear;
+  border: 1px #000 solid
 }
 
 .header__button:hover {

@@ -89,21 +89,34 @@ function FeedbackModal({
           autoComplete="email"
         />
       </label>
-        {feedbackRequestType === "bug"
-          ? "Please add a description of the bug."
-          : ""}
-        {feedbackRequestType === "recommendation"
-          ? "Here you can share your recommendation! If possible, I'll try to incorporate it when I have time"
-          : ""}
-      <label className="modal__label">
-        <textarea
-          rows={5}
-          onChange={handleChange}
-          type="text"
-          className="modal__input"
-          required={true}
-        />
-      </label>
+      {feedbackRequestType === "bug" ? (
+        <label className="modal__label">
+          Please add a description of the bug.
+        </label>
+      ) : (
+        ""
+      )}
+      {feedbackRequestType === "recommendation" ? (
+        <label className="modal__label">
+          Thank you for your recommendation! If possible, I'll try to
+          incorporate it when I have time
+        </label>
+      ) : (
+        ""
+      )}
+      {feedbackRequestType !== "" ? (
+        <label className="modal__label">
+          <textarea
+            rows={5}
+            onChange={handleChange}
+            type="text"
+            className="modal__input"
+            required={true}
+          />
+        </label>
+      ) : (
+        ""
+      )}
       {feedbackRequestType === "bug" ? (
         <label className="modal__label">
           If able, please attach a screenshot of the bug

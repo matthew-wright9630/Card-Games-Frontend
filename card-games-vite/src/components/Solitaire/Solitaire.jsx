@@ -8,10 +8,7 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import {
   addCardsToPiles,
   drawCard,
-  drawFromPile,
-  listCardsInPile,
   returnCardsFromPile,
-  shufflePilesTogether,
 } from "../../utils/deckOfCardsApi";
 import Card from "../Card/Card";
 import {
@@ -33,7 +30,6 @@ function Solitaire({
   discardPile,
   handleDiscardPileClick,
   animateCardDeal,
-  addCard,
   setDiscardPile,
   setIsDrawPileEmpty,
   pullCardFromPile,
