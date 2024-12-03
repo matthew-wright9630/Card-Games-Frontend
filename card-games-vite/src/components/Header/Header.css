@@ -107,7 +107,8 @@ header {
   }
 
   .header__button {
-    width: 100px;
+    width: 70px;
+    font-size: 16px;
   }
 
   .header__username {

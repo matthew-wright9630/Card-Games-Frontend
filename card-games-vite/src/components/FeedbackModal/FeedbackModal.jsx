@@ -1,5 +1,6 @@
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import { useState } from "react";
 
 function FeedbackModal({
   isOpen,
@@ -10,67 +11,108 @@ function FeedbackModal({
   serverError,
 }) {
   const {
-    values = { email: "", password: "" },
+    values = { email: "", feedbackType: "" },
     handleChange,
     errors,
     isValid,
     resetForm,
-  } = useFormWithValidation({ email: "", password: "" });
+  } = useFormWithValidation({ email: "", feedbackType: "" });
+
+  const handleFeedbackChange = (event) => {
+    handleChange(event);
+  };
+
+  const [feedbackRequestType, setFeedbackRequestType] = useState("");
 
   return (
-    <div></div>
-    // <ModalWithForm
-    //   title="Login"
-    //   buttonTitle="Login"
-    //   onClose={onCloseModal}
-    //   isOpen={isOpen}
-    //   buttonText={isLoading ? "Logging in..." : "Login"}
-    //   isDisabled={!isValid}
-    //   handleSubmit={(evt) => {
-    //     evt.preventDefault();
-    //     handleLogin(values, resetForm);
-    //   }}
-    // >
-    //   <label className="modal__label">
-    //     Email *
-    //     <input
-    //       onChange={handleChange}
-    //       type="email"
-    //       className="modal__input"
-    //       name="email"
-    //       id="loginEmail"
-    //       placeholder="email"
-    //       value={values.email || ""}
-    //       required={true}
-    //       autoComplete="username"
-    //     />
-    //   </label>
-    //   <span className="modal__error">{errors.email}</span>
-    //   <label className="modal__label">
-    //     Password *
-    //     <input
-    //       onChange={handleChange}
-    //       type="password"
-    //       className="modal__input"
-    //       id="loginPassword"
-    //       name="password"
-    //       placeholder="password"
-    //       value={values.password || ""}
-    //       required={true}
-    //       autoComplete="current-password"
-    //       minLength={8}
-    //     />
-    //   </label>
-    //   <span className="modal__error">{errors.password}</span>
-    //   <button
-    //     type="button"
-    //     onClick={handleRegistrationClick}
-    //     className="modal__login-btn"
-    //   >
-    //     or sign up
-    //   </button>
-    //   <span className="modal__error">{serverError.error}</span>
-    // </ModalWithForm>
+    <ModalWithForm
+      title={"Provide Feedback"}
+      onClose={onCloseModal}
+      isOpen={isOpen}
+      buttonText={isLoading ? "Submitting..." : "Submit"}
+      isDisabled={!isValid}
+      handleSubmit={(evt) => {
+        evt.preventDefault();
+        // handleLogin(values, resetForm);
+      }}
+    >
+      <fieldset className="modal__fieldset_radio" required={true}>
+        <legend className="modal__legend">Select the feedback type:</legend>
+        <div>
+          <input
+            onChange={(event) => {
+              handleFeedbackChange(event);
+              setFeedbackRequestType("recommendation");
+            }}
+            type="radio"
+            className="modal__input_radio"
+            id="recommendation"
+            name="feedbackType"
+            value="recommendation"
+            checked={values.feedbackType === "recommendation"}
+          />
+          <label htmlFor="recommendation" className="modal__label_radio">
+            Recommendation
+          </label>
+        </div>
+        <div>
+          <input
+            onChange={(event) => {
+              handleFeedbackChange(event);
+              setFeedbackRequestType("bug");
+            }}
+            type="radio"
+            className="modal__input_radio"
+            id="bug"
+            name="feedbackType"
+            value="bug"
+            checked={values.feedbackType === "bug"}
+          />
+          <label htmlFor="bug" className="modal__label_radio">
+            Report a bug
+          </label>
+        </div>
+      </fieldset>
+      <label className="modal__label">
+        Email
+        <p className="modal__help-text">
+          If you would like a response, please provide an email
+        </p>
+        <input
+          onChange={handleChange}
+          type="email"
+          className="modal__input"
+          name="email"
+          id="feedbackEmail"
+          placeholder="email"
+          value={values.email || ""}
+          autoComplete="email"
+        />
+      </label>
+        {feedbackRequestType === "bug"
+          ? "Please add a description of the bug."
+          : ""}
+        {feedbackRequestType === "recommendation"
+          ? "Here you can share your recommendation! If possible, I'll try to incorporate it when I have time"
+          : ""}
+      <label className="modal__label">
+        <textarea
+          rows={5}
+          onChange={handleChange}
+          type="text"
+          className="modal__input"
+          required={true}
+        />
+      </label>
+      {feedbackRequestType === "bug" ? (
+        <label className="modal__label">
+          If able, please attach a screenshot of the bug
+          <input type="file" className="modal__file" id="bugAttachment" />
+        </label>
+      ) : (
+        ""
+      )}
+    </ModalWithForm>
   );
 }
 

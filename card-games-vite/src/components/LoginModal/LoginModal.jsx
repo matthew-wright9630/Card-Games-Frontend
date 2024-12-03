@@ -21,7 +21,6 @@ function LoginModal({
   return (
     <ModalWithForm
       title="Login"
-      buttonTitle="Login"
       onClose={onCloseModal}
       isOpen={isOpen}
       buttonText={isLoading ? "Logging in..." : "Login"}

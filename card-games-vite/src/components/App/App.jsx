@@ -765,11 +765,11 @@ function App() {
               serverError={serverError}
             />
             <FeedbackModal
-              isOpen={isLoginModalOpen}
+              isOpen={isFeedbackModalOpen}
               onCloseModal={handleCloseModal}
-              handleLogin={handleLogin}
+              // handleLogin={handleLogin}
               isLoading={isLoading}
-              handleRegistrationClick={handleRegistrationClick}
+              // handleRegistrationClick={handleRegistrationClick}
               serverError={serverError}
             />
             <DiscardModal

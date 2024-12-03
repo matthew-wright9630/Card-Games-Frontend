@@ -58,6 +58,7 @@ function Header({
             >
               Log In
             </button>
+            <button onClick={handleFeedbackClick} type="button" className="header__button header__feedback">Feedback</button>
           </div>
         )}
       </div>
