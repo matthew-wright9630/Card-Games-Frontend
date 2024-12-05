@@ -638,7 +638,7 @@ function Solitaire({
           ) {
             deck.cards[i].isHidden = false;
           } else {
-            // deck.cards[i].isHidden = true;
+            deck.cards[i].isHidden = true;
           }
         }
         setTabluea1([...tabluea1, deck.cards[0]]);
