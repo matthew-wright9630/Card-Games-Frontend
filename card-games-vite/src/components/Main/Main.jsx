@@ -1,7 +1,6 @@
 import GamesList from "../GamesList/GamesList";
 import Demo from "../Demo/Demo";
 import "./Main.css";
-import Preloader from "../Preloader/Preloader";
 
 function Main({
   gameInfo,
@@ -19,7 +18,8 @@ function Main({
   isLoading,
   handleDiscardPileClick,
   isLoggedIn,
-  animateCardDeal
+  animateCardDeal,
+  closeGameSite
 }) {
   return (
     <main>
@@ -33,6 +33,7 @@ function Main({
               gameInfo={gameInfo}
               handleCardLike={handleCardLike}
               isLoggedIn={isLoggedIn}
+              closeGameSite={closeGameSite}
             />
           }
         </div>

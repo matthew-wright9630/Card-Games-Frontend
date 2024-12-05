@@ -2,22 +2,30 @@ import { backOfCard } from "../../utils/constants";
 import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import "./Card.css";
-import { usePreview } from "react-dnd-multi-backend";
 
-function Card({ card, moveCardListItem, index }) {
+function Card({
+  card,
+  moveCardListItem,
+  index,
+  canBeFlipped = true,
+  id = card.code,
+  isHidden,
+}) {
   const [isCardFlipped, setIsCardFlipped] = useState([]);
 
   const flipCard = () => {
-    if (isCardFlipped) {
-      setIsCardFlipped(false);
-    } else {
-      setIsCardFlipped(true);
+    if (canBeFlipped) {
+      if (isCardFlipped) {
+        setIsCardFlipped(false);
+      } else {
+        setIsCardFlipped(true);
+      }
     }
   };
 
   const [{ isDragging }, dragRef] = useDrag({
     type: "card",
-    item: { id: card.code, card: card, index },
+    item: { id: id, card: card, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -48,15 +56,15 @@ function Card({ card, moveCardListItem, index }) {
   return (
     <div
       className={`card ${isDragging ? "card_is-dragging" : ""}`}
-      id={`id_${card.code}`}
-      ref={dragDropRef}
+      id={`id_${card?.code}`}
+      ref={isHidden ? useRef("") : dragDropRef}
     >
       {isDragging}
-      <div onClick={flipCard} className="card__box">
+      <div onClick={flipCard} className={`card__box`}>
         <div
           className={`card__container ${
             isCardFlipped ? "" : "card__container_flipped"
-          }`}
+          } ${isHidden ? "card__container_flipped" : ""}`}
         >
           <img
             src={backOfCard}
@@ -66,7 +74,7 @@ function Card({ card, moveCardListItem, index }) {
             }`}
           />
           <div className="card__face card__front">
-            <img src={card.image} alt={card.code} className="card__image" />
+            <img src={card?.image} alt={card?.code} className="card__image" />
           </div>
         </div>
       </div>

@@ -21,7 +21,6 @@ function LoginModal({
   return (
     <ModalWithForm
       title="Login"
-      buttonTitle="Login"
       onClose={onCloseModal}
       isOpen={isOpen}
       buttonText={isLoading ? "Logging in..." : "Login"}
@@ -65,7 +64,7 @@ function LoginModal({
       <button
         type="button"
         onClick={handleRegistrationClick}
-        className="modal__login-btn"
+        className="modal__signup-btn modal__submit-button"
       >
         or sign up
       </button>

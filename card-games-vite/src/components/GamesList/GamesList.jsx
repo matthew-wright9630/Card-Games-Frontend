@@ -4,7 +4,7 @@ import "./GamesList.css";
 import { useContext } from "react";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
-function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
+function GamesList({ gameInfo, handleCardLike, isLoggedIn, closeGameSite }) {
   const user = useContext(CurrentUserContext);
   function checkIsLiked(selectedGame) {
     const test = gameInfo?.filter((game) => {
@@ -29,6 +29,7 @@ function GamesList({ gameInfo, handleCardLike, isLoggedIn }) {
             handleCardLike={handleCardLike}
             isLoggedIn={isLoggedIn}
             isNotLiked={isNotLiked}
+            closeGameSite={closeGameSite}
           />
         );
       })}

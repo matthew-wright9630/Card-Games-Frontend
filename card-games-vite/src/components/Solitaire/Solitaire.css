@@ -7,3 +7,317 @@
   font-size: 24px;
   text-align: center;
 }
+
+.solitaire__start {
+  display: flex;
+}
+
+.solitaire__deal-btn {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 50px auto;
+  font-size: 40px;
+  /* font-weight: 700; */
+  width: 200px;
+  border: none;
+  background-color: #35654d;
+  color: #000;
+  cursor: pointer;
+  transition: 0.3s linear;
+}
+
+.solitaire__deal-btn:hover {
+  opacity: 0.4;
+}
+
+.solitaire__draw-discard-piles {
+  display: flex;
+  gap: 100px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.solitaire__draw-title {
+  text-align: center;
+  font-size: 18px;
+}
+
+.solitaire__draw-pile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.solitaire__discard-pile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.solitaire__discard-title {
+  text-align: center;
+  font-size: 18px;
+}
+
+.solitaire__discard-pile-three {
+  height: 100%;
+  width: 100%;
+}
+
+.solitaire__card-discard {
+  position: absolute;
+  width: 85px;
+  height: 115px;
+  top: 0;
+  left: 15px;
+}
+
+.solitaire__card-discard_second {
+  left: 0;
+}
+
+.solitaire__card-discard_first {
+  left: -15px;
+}
+
+.solitaire__btn {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 50px auto;
+  font-size: 32px;
+  width: 200px;
+  border: none;
+  background-color: #35654d;
+  color: #f3f3f3;
+  cursor: pointer;
+  transition: 0.3s linear;
+}
+
+.solitaire__btn_reset {
+  color: #000;
+  margin: 50px 0;
+}
+
+.solitaire__btn:hover {
+  opacity: 0.3;
+}
+
+.solitaire__card-btn {
+  padding: 0;
+  width: 85px;
+  height: 115px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s linear;
+  border-radius: 3%;
+}
+
+.solitaire__card-btn:hover {
+  opacity: 0.6;
+}
+
+.solitaire__pile {
+  background-image: url("https://deckofcardsapi.com/static/img/back.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  border-radius: 6%;
+}
+
+.solitaire__pile_empty {
+  background-image: url("../../assets//Cross.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #35654d;
+  background-position-y: center;
+  border: none;
+  width: 80px;
+  height: 85px;
+  margin: 0 auto;
+}
+
+.game__animation-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.solitaire__game-area {
+  position: relative;
+  display: flex;
+  gap: 20px;
+}
+
+.solitaire__error {
+  color: #000;
+  font-size: 20px;
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.solitaire__error_hidden {
+  visibility: hidden;
+}
+
+.solitaire__foundation-piles {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.solitaire__pile {
+  position: relative;
+  height: 115px;
+  width: 85px;
+  border: 1px #000 solid;
+}
+
+.solitaire__foundation-pile_empty {
+  display: flex;
+  background-color: #35654d;
+  width: 85px;
+  height: 115px;
+  border-radius: 6%;
+  color: #000;
+  justify-content: center;
+  align-items: center;
+}
+
+.solitaire__pile_red {
+  color: red;
+}
+
+.solitaire__tableau {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 85px);
+  justify-content: space-between;
+  height: 800px;
+}
+
+.solitaire__tabluea-pile {
+  position: relative;
+  border: 1px #000 solid;
+}
+
+.solitaire__stack {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.solitaire__card {
+  display: flex;
+  width: 85px;
+  height: 115px;
+  margin: 0 0 -80px;
+}
+
+@media screen and (max-width: 795px) {
+  .solitaire__draw-discard-piles {
+    gap: 40px;
+  }
+
+  .solitaire__card-btn {
+    width: 65px;
+    height: 80px;
+  }
+
+  .solitaire__card-discard {
+    width: 65px;
+    height: 80px;
+  }
+
+  .solitaire__game-area {
+    flex-direction: column;
+  }
+
+  .solitaire__tableau {
+    grid-template-columns: repeat(auto-fit, 65px);
+    height: 600px;
+  }
+
+  .solitaire__card {
+    width: 65px;
+    height: 80px;
+    margin-bottom: -50px;
+  }
+
+  .solitaire__foundation-pile_empty {
+    width: 65px;
+    height: 80px;
+    font-size: 12px;
+  }
+
+  .solitaire__pile {
+    width: 65px;
+    height: 80px;
+  }
+
+  .solitaire__pile_empty {
+    width: 60px;
+    height: 80px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .solitaire__draw-discard-piles {
+    gap: 10px;
+  }
+
+  .solitaire__draw-title {
+    font-size: 16px;
+  }
+
+  .solitaire__discard-title {
+    font-size: 16px;
+  }
+
+  .solitaire__card-btn {
+    width: 35px;
+    height: 60px;
+  }
+  
+  .solitaire__card-discard {
+    width: 35px;
+    height: 60px;
+  }
+
+  .solitaire__game-area {
+    flex-direction: column;
+  }
+
+  .solitaire__tableau {
+    grid-template-columns: repeat(auto-fit, 35px);
+    height: 500px;
+  }
+
+  .solitaire__card {
+    width: 35px;
+    height: 60px;
+    margin-bottom: -40px;
+  }
+
+  .solitaire__foundation-pile_empty {
+    width: 35px;
+    height: 60px;
+    font-size: 8px;
+  }
+
+  .solitaire__pile {
+    width: 35px;
+    height: 60px;
+  }
+
+  .solitaire__pile_empty {
+    width: 30px;
+    height: 60px;
+    font-size: 8px;
+  }
+}

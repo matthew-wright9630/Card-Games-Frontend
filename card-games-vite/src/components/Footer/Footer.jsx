@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./Footer.css";
 
-function Footer() {
+function Footer({ handleFeedbackClick }) {
   return (
     <footer className="footer">
       <div>
@@ -14,6 +14,14 @@ function Footer() {
           to learn more about me
         </p>
       </div>
+      {/* <button
+        onClick={handleFeedbackClick}
+        type="button"
+        className="footer__feedback"
+      >
+        Feedback
+      </button> */}
+
       <p className="footer__year">2024</p>
     </footer>
   );

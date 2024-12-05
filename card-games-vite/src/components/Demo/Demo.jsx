@@ -46,7 +46,6 @@ function Demo({
   }
 
   function clickedDiscardPile() {
-    console.log(discardPile);
     handleDiscardPileClick();
   }
 
@@ -129,7 +128,7 @@ function Demo({
                 <img
                   src={backOfCard}
                   alt="Card Back"
-                  className="demo__animation-card"
+                  className="game__animation-card"
                 />
               </button>
             </div>
@@ -160,13 +159,15 @@ function Demo({
             <div className="demo__cards">
               {hand?.map((card) => {
                 return (
-                  <Card
-                    key={card.code}
-                    index={hand.indexOf(card)}
-                    card={card}
-                    moveCardListItem={moveCardListItem}
-                    draggable
-                  ></Card>
+                  <div className="demo__card-container">
+                    <Card
+                      key={card.code}
+                      index={hand.indexOf(card)}
+                      card={card}
+                      moveCardListItem={moveCardListItem}
+                      draggable
+                    ></Card>
+                  </div>
                 );
               })}
             </div>

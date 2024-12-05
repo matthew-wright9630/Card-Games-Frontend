@@ -70,6 +70,13 @@
   line-height: 1.2;
 }
 
+.modal__help-text {
+  margin: 0;
+  padding: 0 16px;
+  font-size: 14px;
+  opacity: .8;
+}
+
 .modal__input {
   border: none;
   background-color: #f3f3f3;

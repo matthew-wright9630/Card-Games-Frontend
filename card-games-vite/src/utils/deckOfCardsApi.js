@@ -10,6 +10,12 @@ function drawCard(deck_id, numberOfCards) {
   return request(`${deckOfCardsUrl}${deck_id}/draw/?count=${numberOfCards}`);
 }
 
+function drawFromPile(deck_id, pileName) {
+  return request(
+    `${deckOfCardsUrl}${deck_id}/pile/${pileName}/draw/`
+  );
+}
+
 function shuffleAllCards(deck_id) {
   return request(`${deckOfCardsUrl}${deck_id}/shuffle/`);
 }
@@ -54,6 +60,7 @@ function returnCardsFromPile(deck_id, pileName) {
 export {
   createNewDeck,
   drawCard,
+  drawFromPile,
   shuffleAllCards,
   shuffleCardsNotInPlay,
   createUnshuffledDeck,

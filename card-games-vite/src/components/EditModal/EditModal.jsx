@@ -25,7 +25,6 @@ function EditModal({
       {isLoading ? <Preloader></Preloader> : ""}
       <ModalWithForm
         title="Edit Profile"
-        buttonTitle="Save changes"
         onClose={onCloseModal}
         isOpen={isOpen}
         buttonText={isLoading ? "Saving..." : "Save changes"}

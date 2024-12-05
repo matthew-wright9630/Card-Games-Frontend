@@ -14,9 +14,9 @@ function DiscardModal({ isOpen, discardPile, onCloseModal }) {
           {discardPile.map((card) => {
             return (
               <img
-                key={card.code}
+                key={card?.code}
                 className="modal__discard__images"
-                src={card.image}
+                src={card?.image}
               ></img>
             );
           })}

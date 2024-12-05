@@ -1,7 +1,7 @@
 const baseUrl =
   process.env.NODE_ENV === "production"
-    ? "https://api.mwcardgames.fairuse.org"
-    : "http://localhost:3001";
+    ? "https://api.mwcardgames.csproject.org"
+    : "http://127.0.0.1:3001";
 
 function checkResponse(res) {
   return res ? res.json() : Promise.reject(`Error: ${res.status}`);

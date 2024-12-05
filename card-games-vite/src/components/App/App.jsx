@@ -13,9 +13,6 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmati
 import DiscardModal from "../DiscardModal/DiscardModal";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import About from "../About/About";
-// import { DndProvider } from "react-dnd";
-// import { HTML5Backend } from "react-dnd-html5-backend";
-// import { TouchBackend } from "react-dnd-touch-backend";
 import { DndProvider, Preview, usePreview } from "react-dnd-multi-backend";
 import { HTML5toTouch } from "rdndmb-html5-to-touch";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
@@ -32,15 +29,16 @@ import {
   deleteGameInfo,
 } from "../../utils/api";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import {
   addCardsToPiles,
   createNewDeck,
   drawCard,
+  drawFromPile,
   listCardsInPile,
   shuffleAllCards,
 } from "../../utils/deckOfCardsApi";
-import Card from "../Card/Card";
+import FeedbackModal from "../FeedbackModal/FeedbackModal";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -57,6 +55,7 @@ function App() {
   const [currentGame, setCurrentGame] = useState({});
   const [selectedItem, setSelectedItem] = useState({});
   const [serverError, setServerError] = useState({});
+  const [errorMessage, setErrorMessage] = useState("No Errors");
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -77,6 +76,10 @@ function App() {
     setSelectedItem(item);
   };
 
+  const handleFeedbackClick = () => {
+    setActiveModal("feedback-modal");
+  };
+
   const handleCloseModal = () => {
     setActiveModal("");
     setServerError({});
@@ -88,6 +91,7 @@ function App() {
   const isDiscardModalOpen = activeModal === "discard-modal";
   const isDeleteConfirmationModalOpen =
     activeModal === "delete-confirmation-modal";
+  const isFeedbackModalOpen = activeModal === "feedback-modal";
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
@@ -435,8 +439,29 @@ function App() {
     }
   };
 
+  const pullCardFromDiscard = (deck) => {
+    setIsLoading(true);
+    drawFromPile(deck, "discard", 1)
+      .then((res) => {
+        updateDiscardPile(deck, res.cards[0]);
+      })
+      .then(() => {
+        renderDiscardPile();
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
+
+  const pullCardFromPile = (deck, pileName, numberOfCards) => {
+    setIsLoading(true);
+    drawFromPile(deck, pileName, numberOfCards)
+      .then((res) => {})
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
+
   function animateCardDeal(left, top) {
-    const elm = document.querySelector(".demo__animation-card");
+    const elm = document.querySelector(".game__animation-card");
 
     const first = elm.getBoundingClientRect();
 
@@ -472,6 +497,7 @@ function App() {
     );
     setTimeout(() => {
       elm.style.setProperty("top", 0 + "px");
+      elm.style.setProperty("left", 0 + "px");
     }, 300);
   }
 
@@ -482,13 +508,20 @@ function App() {
   const addCardToHand = (deck, playerName, card) => {
     const name = removeSpacesFromName(playerName);
     addCardsToPiles(deck, name, card.code)
-      .then(() => {
+      .then((data) => {
         listCardsInPile(deck, name).then((deck) => {
           deck.piles[name].cards.map((card) => {
             setHand([...hand, card]);
           });
         });
       })
+      .catch((err) => console.error(err));
+  };
+
+  const addCard = (deck, pileName, card) => {
+    const name = removeSpacesFromName(pileName);
+    addCardsToPiles(deck, name, card.code)
+      .then(() => {})
       .catch((err) => console.error(err));
   };
 
@@ -505,17 +538,29 @@ function App() {
   };
 
   const addToDiscard = (card) => {
-    addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code).then(
-      () => {
-        listCardsInPile(localStorage.getItem("deck_id"), "discard")
-          .then((deck) => {
+    setIsLoading(true);
+    addCardsToPiles(localStorage.getItem("deck_id"), "discard", card.code)
+      .then(() => {
+        listCardsInPile(localStorage.getItem("deck_id"), "discard").then(
+          (deck) => {
             deck.piles.discard.cards.map((card) => {
               setDiscardPile([...discardPile, card]);
             });
-          })
-          .catch((err) => console.error(err));
-      }
-    );
+          }
+        );
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
+
+  const updateDiscardPile = (deck) => {
+    listCardsInPile(deck, "discard").then((res) => {
+      setDiscardPile(
+        res.piles.discard.cards?.map((card) => {
+          return card;
+        })
+      );
+    });
   };
 
   const openGameSite = (game) => {
@@ -564,16 +609,30 @@ function App() {
     renderDiscardPile();
   }, [discardPile]);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setErrorMessage("No Errors");
+    }, 4000);
+    return () => clearTimeout(timeoutId);
+  }, [errorMessage]);
+
   const generateCardPreview = ({ itemType, item, style }) => {
-    // console.log("TEST");
-    // <Card />;
+    if (window.innerWidth <= 550) {
+      style.height = 60;
+      style.width = 35;
+    } else if (window.innerWidth <= 795) {
+      style.height = 80;
+      style.width = 65;
+    } else {
+      style.height = 105;
+      style.width = 80;
+    }
     return <img className="card" src={item.card.image} style={style}></img>;
   };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        {/* <DndProvider backend={HTML5Backend}> */}
         <DndProvider options={HTML5toTouch}>
           <Preview generator={generateCardPreview} />
           <div className="page__content">
@@ -606,6 +665,7 @@ function App() {
                     handleDiscardPileClick={handleDiscardPileClick}
                     isLoggedIn={isLoggedIn}
                     animateCardDeal={animateCardDeal}
+                    closeGameSite={closeGameSite}
                   />
                 }
               ></Route>
@@ -631,25 +691,24 @@ function App() {
                 path="/solitaire"
                 element={
                   <Solitaire
-                    currentGame={currentGame}
                     handleGameIncrement={handleGameIncrement}
                     incrementGameWon={incrementGameWon}
                     gameActive={gameActive}
                     handleGameStart={handleGameStart}
-                    handleGameEnd={handleGameEnd}
                     isLoggedIn={isLoggedIn}
                     getCurrentGame={getCurrentGame}
-                    pullCard={pullCard}
                     hand={hand}
                     setHand={setHand}
-                    handleCardLike={handleCardLike}
                     isDrawPileEmpty={isDrawPileEmpty}
-                    isDiscardPileEmpty={isDiscardPileEmpty}
-                    handleDiscard={handleDiscard}
                     discardPile={discardPile}
-                    isLoading={isLoading}
                     handleDiscardPileClick={handleDiscardPileClick}
                     animateCardDeal={animateCardDeal}
+                    pullCardFromPile={pullCardFromPile}
+                    setDiscardPile={setDiscardPile}
+                    closeGameSite={closeGameSite}
+                    setIsLoading={setIsLoading}
+                    setErrorMessage={setErrorMessage}
+                    errorMessage={errorMessage}
                   />
                 }
               ></Route>
@@ -669,7 +728,9 @@ function App() {
                 }
               ></Route>
             </Routes>
-            <Footer />
+            <Footer
+            // handleFeedbackClick={handleFeedbackClick} 
+            />
             <LoginModal
               isOpen={isLoginModalOpen}
               onCloseModal={handleCloseModal}
@@ -693,6 +754,12 @@ function App() {
               handleLoginClick={handleLoginClick}
               serverError={serverError}
             />
+            {/* <FeedbackModal
+              isOpen={isFeedbackModalOpen}
+              onCloseModal={handleCloseModal}
+              isLoading={isLoading}
+              serverError={serverError}
+            /> */}
             <DiscardModal
               isOpen={isDiscardModalOpen}
               onCloseModal={handleCloseModal}
