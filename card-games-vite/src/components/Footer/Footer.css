@@ -5,6 +5,7 @@
 }
 
 .footer__copyright {
+  margin-top: 22px;
   margin-bottom: 5px;
 }
 
@@ -31,4 +32,9 @@
   transition: 0.3s linear;
   border: 1px #000 solid;
   margin-top: 5px
+}
+
+.footer__year {
+  margin: 22px 0;
+  height: 18.3px;
 }

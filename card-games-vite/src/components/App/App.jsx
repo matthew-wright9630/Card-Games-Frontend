@@ -728,7 +728,9 @@ function App() {
                 }
               ></Route>
             </Routes>
-            <Footer handleFeedbackClick={handleFeedbackClick} />
+            <Footer
+            // handleFeedbackClick={handleFeedbackClick} 
+            />
             <LoginModal
               isOpen={isLoginModalOpen}
               onCloseModal={handleCloseModal}
@@ -752,14 +754,12 @@ function App() {
               handleLoginClick={handleLoginClick}
               serverError={serverError}
             />
-            <FeedbackModal
+            {/* <FeedbackModal
               isOpen={isFeedbackModalOpen}
               onCloseModal={handleCloseModal}
-              // handleLogin={handleLogin}
               isLoading={isLoading}
-              // handleRegistrationClick={handleRegistrationClick}
               serverError={serverError}
-            />
+            /> */}
             <DiscardModal
               isOpen={isDiscardModalOpen}
               onCloseModal={handleCloseModal}
