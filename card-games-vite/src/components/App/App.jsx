@@ -709,6 +709,7 @@ function App() {
                     setIsLoading={setIsLoading}
                     setErrorMessage={setErrorMessage}
                     errorMessage={errorMessage}
+                    setIsDrawPileEmpty={setIsDrawPileEmpty}
                   />
                 }
               ></Route>
@@ -729,7 +730,7 @@ function App() {
               ></Route>
             </Routes>
             <Footer
-            // handleFeedbackClick={handleFeedbackClick} 
+            // handleFeedbackClick={handleFeedbackClick}
             />
             <LoginModal
               isOpen={isLoginModalOpen}
