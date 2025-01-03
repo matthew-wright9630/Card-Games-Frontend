@@ -394,7 +394,7 @@ function App() {
           setDiscardPile([]);
           renderDrawPile(data.remaining);
         } else {
-          console.log("Sorry, an error has occurred");
+          createNewDeck(1);
         }
       })
       .catch((err) => console.error(err))
@@ -439,18 +439,18 @@ function App() {
     }
   };
 
-  const pullCardFromDiscard = (deck) => {
-    setIsLoading(true);
-    drawFromPile(deck, "discard", 1)
-      .then((res) => {
-        updateDiscardPile(deck, res.cards[0]);
-      })
-      .then(() => {
-        renderDiscardPile();
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  };
+  // const pullCardFromDiscard = (deck) => {
+  //   setIsLoading(true);
+  //   drawFromPile(deck, "discard", 1)
+  //     .then((res) => {
+  //       updateDiscardPile(deck, res.cards[0]);
+  //     })
+  //     .then(() => {
+  //       renderDiscardPile();
+  //     })
+  //     .catch((err) => console.error(err))
+  //     .finally(() => setIsLoading(false));
+  // };
 
   const pullCardFromPile = (deck, pileName, numberOfCards) => {
     setIsLoading(true);
@@ -508,7 +508,7 @@ function App() {
   const addCardToHand = (deck, playerName, card) => {
     const name = removeSpacesFromName(playerName);
     addCardsToPiles(deck, name, card.code)
-      .then((data) => {
+      .then(() => {
         listCardsInPile(deck, name).then((deck) => {
           deck.piles[name].cards.map((card) => {
             setHand([...hand, card]);
@@ -518,12 +518,12 @@ function App() {
       .catch((err) => console.error(err));
   };
 
-  const addCard = (deck, pileName, card) => {
-    const name = removeSpacesFromName(pileName);
-    addCardsToPiles(deck, name, card.code)
-      .then(() => {})
-      .catch((err) => console.error(err));
-  };
+  // const addCard = (deck, pileName, card) => {
+  //   const name = removeSpacesFromName(pileName);
+  //   addCardsToPiles(deck, name, card.code)
+  //     .then(() => {})
+  //     .catch((err) => console.error(err));
+  // };
 
   const handleDiscard = (discardedCard) => {
     setHand((cards) => {
