@@ -319,7 +319,7 @@ function App() {
         .catch((err) => console.error(err))
         .finally(() => setIsLoading(false));
     } else {
-      shuffle();
+      shuffle(numberOfDecks);
     }
   };
 
@@ -385,7 +385,7 @@ function App() {
     shuffle();
   };
 
-  const shuffle = () => {
+  const shuffle = (numberOfDecks = 1) => {
     setIsLoading(true);
     shuffleAllCards(localStorage.getItem("deck_id"))
       .then((data) => {
@@ -394,7 +394,13 @@ function App() {
           setDiscardPile([]);
           renderDrawPile(data.remaining);
         } else {
-          createNewDeck(1);
+          localStorage.removeItem("deck_id");
+          createNewDeck(numberOfDecks)
+            .then((data) => {
+              localStorage.setItem("deck_id", `${data.deck_id}`);
+            })
+            .catch((err) => console.error(err))
+            .finally(() => setIsLoading(false));
         }
       })
       .catch((err) => console.error(err))
