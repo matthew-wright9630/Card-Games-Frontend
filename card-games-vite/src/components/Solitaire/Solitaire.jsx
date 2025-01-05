@@ -58,6 +58,9 @@ function Solitaire({
 
   const [areCardsDealt, setAreCardsDealt] = useState(false);
 
+  const [allCardsRevealed, setAllCardsRevealed] = useState(false);
+  const [numberOfCardsHidden, setNumberOfCardsHidden] = useState(0);
+
   const [gameWon, setGameWon] = useState(false);
 
   function startSolitaireGame(number) {
@@ -244,8 +247,12 @@ function Solitaire({
       }
       setTabluea1(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
+          if (
+            card.code === newArray[newArray.length - 1].code &&
+            card.isHidden === true
+          ) {
             card.isHidden = false;
+            setNumberOfCardsHidden(numberOfCardsHidden - 1);
           }
           return card;
         })
@@ -264,8 +271,12 @@ function Solitaire({
       }
       setTabluea2(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
+          if (
+            card.code === newArray[newArray.length - 1].code &&
+            card.isHidden === true
+          ) {
             card.isHidden = false;
+            setNumberOfCardsHidden(numberOfCardsHidden - 1);
           }
           return card;
         })
@@ -284,8 +295,12 @@ function Solitaire({
       }
       setTabluea3(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
+          if (
+            card.code === newArray[newArray.length - 1].code &&
+            card.isHidden === true
+          ) {
             card.isHidden = false;
+            setNumberOfCardsHidden(numberOfCardsHidden - 1);
           }
           return card;
         })
@@ -304,8 +319,12 @@ function Solitaire({
       }
       setTabluea4(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
+          if (
+            card.code === newArray[newArray.length - 1].code &&
+            card.isHidden === true
+          ) {
             card.isHidden = false;
+            setNumberOfCardsHidden(numberOfCardsHidden - 1);
           }
           return card;
         })
@@ -324,8 +343,12 @@ function Solitaire({
       }
       setTabluea5(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
+          if (
+            card.code === newArray[newArray.length - 1].code &&
+            card.isHidden === true
+          ) {
             card.isHidden = false;
+            setNumberOfCardsHidden(numberOfCardsHidden - 1);
           }
           return card;
         })
@@ -344,8 +367,12 @@ function Solitaire({
       }
       setTabluea6(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
+          if (
+            card.code === newArray[newArray.length - 1].code &&
+            card.isHidden === true
+          ) {
             card.isHidden = false;
+            setNumberOfCardsHidden(numberOfCardsHidden - 1);
           }
           return card;
         })
@@ -364,8 +391,12 @@ function Solitaire({
       }
       setTabluea7(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
+          if (
+            card.code === newArray[newArray.length - 1].code &&
+            card.isHidden === true
+          ) {
             card.isHidden = false;
+            setNumberOfCardsHidden(numberOfCardsHidden - 1);
           }
           return card;
         })
@@ -378,16 +409,15 @@ function Solitaire({
         }
         if (cardIsFound) {
           returnArray.push(spadeFoundation[i]);
-          pullCardFromPile(localStorage.getItem("deck_id"), "Spade", 1);
         } else {
           newArray.push(spadeFoundation[i]);
         }
       }
       setSpadeFoundation(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
-            card.isHidden = false;
-          }
+          // if (card.code === newArray[newArray.length - 1].code) {
+          //   card.isHidden = false;
+          // }
           return card;
         })
       );
@@ -399,16 +429,15 @@ function Solitaire({
         }
         if (cardIsFound) {
           returnArray.push(heartFoundation[i]);
-          pullCardFromPile(localStorage.getItem("deck_id"), "Heart", 1);
         } else {
           newArray.push(heartFoundation[i]);
         }
       }
       setHeartFoundation(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
-            card.isHidden = false;
-          }
+          // if (card.code === newArray[newArray.length - 1].code) {
+          //   card.isHidden = false;
+          // }
           return card;
         })
       );
@@ -420,16 +449,15 @@ function Solitaire({
         }
         if (cardIsFound) {
           returnArray.push(clubFoundation[i]);
-          pullCardFromPile(localStorage.getItem("deck_id"), "Club", 1);
         } else {
           newArray.push(clubFoundation[i]);
         }
       }
       setClubFoundation(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
-            card.isHidden = false;
-          }
+          // if (card.code === newArray[newArray.length - 1].code) {
+          //   card.isHidden = false;
+          // }
           return card;
         })
       );
@@ -441,16 +469,15 @@ function Solitaire({
         }
         if (cardIsFound) {
           returnArray.push(diamondFoundation[i]);
-          pullCardFromPile(localStorage.getItem("deck_id"), "Diamond", 1);
         } else {
           newArray.push(diamondFoundation[i]);
         }
       }
       setDiamondFoundation(
         newArray.map((card) => {
-          if (card.code === newArray[newArray.length - 1].code) {
-            card.isHidden = false;
-          }
+          // if (card.code === newArray[newArray.length - 1].code) {
+          //   card.isHidden = false;
+          // }
           return card;
         })
       );
@@ -463,7 +490,9 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last in pile to be added to the foundation");
+      setErrorMessage(
+        "Card must be last in pile to be added to the foundation"
+      );
       return;
     }
     if (checkCardFoundation(item.card, "Spade")) {
@@ -496,7 +525,9 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last in pile to be added to the foundation");
+      setErrorMessage(
+        "Card must be last in pile to be added to the foundation"
+      );
       return;
     }
     if (checkCardFoundation(item.card, "Heart")) {
@@ -529,7 +560,9 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last in pile to be added to the foundation");
+      setErrorMessage(
+        "Card must be last in pile to be added to the foundation"
+      );
       return;
     }
     if (checkCardFoundation(item.card, "Club")) {
@@ -562,7 +595,9 @@ function Solitaire({
       return;
     }
     if (!checkCardIsLast(item)) {
-      setErrorMessage("Card must be last in pile to be added to the foundation");
+      setErrorMessage(
+        "Card must be last in pile to be added to the foundation"
+      );
       return;
     }
     if (checkCardFoundation(item.card, "Diamond")) {
@@ -622,10 +657,11 @@ function Solitaire({
     }),
   });
 
-  function setupTabluea() { 
+  function setupTabluea() {
     setIsLoading(true);
     drawCard(localStorage.getItem("deck_id"), 28)
       .then((deck) => {
+        setNumberOfCardsHidden(21);
         for (let i = 0; i < 28; i++) {
           if (
             i === 0 ||
@@ -890,6 +926,14 @@ function Solitaire({
       }
     }
   }, [spadeFoundation, diamondFoundation, clubFoundation, heartFoundation]);
+
+  useEffect(() => {
+    if (numberOfCardsHidden === 0) {
+      console.log("Congrats!");
+    } else {
+      console.log("Still working!");
+    }
+  }, [tabluea1, tabluea2, tabluea3, tabluea4, tabluea5, tabluea6, tabluea7]);
 
   const { width, height } = useWindowSize();
 
