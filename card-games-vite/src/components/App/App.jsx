@@ -39,6 +39,7 @@ import {
   shuffleAllCards,
 } from "../../utils/deckOfCardsApi";
 import FeedbackModal from "../FeedbackModal/FeedbackModal";
+import SolitairePopup from "../SolitairePopup/SolitairePopup";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -80,6 +81,10 @@ function App() {
     setActiveModal("feedback-modal");
   };
 
+  const handleSolitaireModalOpenClick = () => {
+    setActiveModal("solitaire-modal");
+  };
+
   const handleCloseModal = () => {
     setActiveModal("");
     setServerError({});
@@ -92,6 +97,7 @@ function App() {
   const isDeleteConfirmationModalOpen =
     activeModal === "delete-confirmation-modal";
   const isFeedbackModalOpen = activeModal === "feedback-modal";
+  const isSolitaireModalOpen = activeModal === "solitaire-modal";
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
@@ -716,6 +722,9 @@ function App() {
                     setErrorMessage={setErrorMessage}
                     errorMessage={errorMessage}
                     setIsDrawPileEmpty={setIsDrawPileEmpty}
+                    onCloseModal={handleCloseModal}
+                    handleSolitaireModalOpen={handleSolitaireModalOpenClick}
+                    isOpen={isSolitaireModalOpen}
                   />
                 }
               ></Route>
@@ -781,6 +790,11 @@ function App() {
               selectedItem={selectedItem}
               buttonText={isLoading ? "Deleting..." : "Yes, delete item"}
             />
+            {/* <SolitairePopup
+              isOpen={isSolitaireModalOpen}
+              onCloseModal={handleCloseModal}
+              isLoading={isLoading}
+            /> */}
           </div>
         </DndProvider>
       </div>

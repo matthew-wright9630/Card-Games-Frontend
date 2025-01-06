@@ -16,6 +16,7 @@ import {
   checkFoundationNumber,
   checkTablueaCardValid,
 } from "../../utils/solitaire";
+import SolitairePopup from "../SolitairePopup/SolitairePopup";
 
 function Solitaire({
   handleGameIncrement,
@@ -37,6 +38,9 @@ function Solitaire({
   setIsLoading,
   setErrorMessage,
   errorMessage,
+  handleSolitaireModalOpen,
+  isSolitaireModalOpen,
+  onClose,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -59,9 +63,13 @@ function Solitaire({
   const [areCardsDealt, setAreCardsDealt] = useState(false);
 
   const [allCardsRevealed, setAllCardsRevealed] = useState(false);
-  const [numberOfCardsHidden, setNumberOfCardsHidden] = useState(0);
+  const [numberOfCardsHidden, setNumberOfCardsHidden] = useState(21);
 
   const [gameWon, setGameWon] = useState(false);
+
+  function openSolitaireModal() {
+    handleSolitaireModalOpen();
+  }
 
   function startSolitaireGame(number) {
     setGameWon(false);
@@ -661,7 +669,7 @@ function Solitaire({
     setIsLoading(true);
     drawCard(localStorage.getItem("deck_id"), 28)
       .then((deck) => {
-        setNumberOfCardsHidden(21);
+        setNumberOfCardsHidden(3);
         for (let i = 0; i < 28; i++) {
           if (
             i === 0 ||
@@ -928,7 +936,7 @@ function Solitaire({
   }, [spadeFoundation, diamondFoundation, clubFoundation, heartFoundation]);
 
   useEffect(() => {
-    if (numberOfCardsHidden === 0) {
+    if (numberOfCardsHidden === 0 && gameActive) {
       console.log("Congrats!");
     } else {
       console.log("Still working!");
@@ -953,6 +961,20 @@ function Solitaire({
         </div>
       ) : (
         <div className="solitaire__game">
+          {numberOfCardsHidden ? (
+            ""
+          ) : (
+            // <button
+            //   onClick={openSolitaireModal}
+            //   className="solitaire__popup-btn"
+            // >
+            //   Auto-complete?
+            // </button>
+            <SolitairePopup
+              isOpen={true}
+              onClose={onClose}
+            />
+          )}
           <button
             onClick={endSolitaireGame}
             className="solitaire__btn solitaire__btn_reset"
@@ -1330,14 +1352,6 @@ function Solitaire({
           </div>
         </div>
       )}
-
-      {/* <button
-                className="solitaire__btn"
-                type="button"
-                onClick={() => endSolitaireGame(false)}
-              >
-                End Game
-              </button> */}
     </div>
   );
 }
