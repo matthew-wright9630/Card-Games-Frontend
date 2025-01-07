@@ -973,11 +973,6 @@ function Solitaire({
     <div className="solitaire">
       {gameWon ? <Confetti width={width - 20} height={height + 500} /> : ""}
       <h2 className="solitaire__title">Solitaire</h2>
-      <button
-        onClick={() => {
-          setDiscardPile([]);
-        }}
-      ></button>
       {!gameActive ? (
         <div className="solitaire__start">
           <button onClick={startSolitaireDrawOne} className="solitaire__btn">
