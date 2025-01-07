@@ -7,6 +7,12 @@ When a user is logged in, they are able to view their profile. The profile will 
 
 Solitaire has now been implemented. Both a 1 and 3 card draw version are added. When a game is won, a confetti effect is displayed. If a user is logged in when starting a game, it will record how many games have been won or lost.
 
+## Updates:
+
+This section will list recent updates to the website.
+
+January 7, 2025: An auto-complete function has been added to the Solitaire game. Now when all cards are revealed, an option to auto-complete the game will be displayed. If playing the draw-three version of the game, you will need to also have no cards in the draw and discard piles.
+
 ## Technologies Used
 
 HTML, CSS, and JavaScript were used to create the website, and Vite was used for the project template. The project was split into different components using React.
@@ -27,7 +33,7 @@ react, react-dnd-multi-backend, rdndmb-html5-to-touch, react-confetti, react-dnd
 
 ## Future Improvements
 
-Currently the website does not have any card games coded. The next major improvements will be to get Solitaire and War working, and adding drag and drop functionality. Be sure to check back later for any updates!
+The next planned improvement is getting War coded, including multiplayer functionality, and getting a feedback form added. Please check back for future updates!
 
 ## Links
 

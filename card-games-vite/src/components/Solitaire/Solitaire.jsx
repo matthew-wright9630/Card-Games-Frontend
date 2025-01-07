@@ -39,8 +39,8 @@ function Solitaire({
   setErrorMessage,
   errorMessage,
   handleSolitaireModalOpen,
-  isSolitaireModalOpen,
-  onClose,
+  gameWon,
+  setGameWon,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -64,8 +64,9 @@ function Solitaire({
 
   const [allCardsRevealed, setAllCardsRevealed] = useState(false);
   const [numberOfCardsHidden, setNumberOfCardsHidden] = useState(21);
+  const [isStockPilesEmpty, setIsStockPilesEmpty] = useState(false);
 
-  const [gameWon, setGameWon] = useState(false);
+  // const [gameWon, setGameWon] = useState(false);
 
   function openSolitaireModal() {
     handleSolitaireModalOpen();
@@ -90,6 +91,7 @@ function Solitaire({
   function endSolitaireGame() {
     setAreCardsDealt(false);
     resetTabluea();
+    setGameWon(false);
     closeGameSite();
   }
 
@@ -669,7 +671,7 @@ function Solitaire({
     setIsLoading(true);
     drawCard(localStorage.getItem("deck_id"), 28)
       .then((deck) => {
-        setNumberOfCardsHidden(3);
+        setNumberOfCardsHidden(21);
         for (let i = 0; i < 28; i++) {
           if (
             i === 0 ||
@@ -936,12 +938,34 @@ function Solitaire({
   }, [spadeFoundation, diamondFoundation, clubFoundation, heartFoundation]);
 
   useEffect(() => {
-    if (numberOfCardsHidden === 0 && gameActive) {
-      console.log("Congrats!");
+    console.log(gameWon, "Game won");
+    if (numberOfCardsHidden <= 0 && gameActive) {
+      setAllCardsRevealed(true);
+      console.log(gameWon, "Game won");
     } else {
-      console.log("Still working!");
+      setAllCardsRevealed(false);
     }
   }, [tabluea1, tabluea2, tabluea3, tabluea4, tabluea5, tabluea6, tabluea7]);
+
+  useEffect(() => {
+    if (isDrawPileEmpty && discardPile.length === 0) {
+      setIsStockPilesEmpty(true);
+    }
+  }, [discardPile]);
+
+  useEffect(() => {
+    if (gameWon) {
+      setTabluea1([]);
+      setTabluea2([]);
+      setTabluea3([]);
+      setTabluea4([]);
+      setTabluea5([]);
+      setTabluea6([]);
+      setTabluea7([]);
+      setIsDrawPileEmpty(true);
+      setDiscardPile([]);
+    }
+  }, [gameWon]);
 
   const { width, height } = useWindowSize();
 
@@ -949,7 +973,11 @@ function Solitaire({
     <div className="solitaire">
       {gameWon ? <Confetti width={width - 20} height={height + 500} /> : ""}
       <h2 className="solitaire__title">Solitaire</h2>
-
+      <button
+        onClick={() => {
+          setDiscardPile([]);
+        }}
+      ></button>
       {!gameActive ? (
         <div className="solitaire__start">
           <button onClick={startSolitaireDrawOne} className="solitaire__btn">
@@ -961,20 +989,6 @@ function Solitaire({
         </div>
       ) : (
         <div className="solitaire__game">
-          {numberOfCardsHidden ? (
-            ""
-          ) : (
-            // <button
-            //   onClick={openSolitaireModal}
-            //   className="solitaire__popup-btn"
-            // >
-            //   Auto-complete?
-            // </button>
-            <SolitairePopup
-              isOpen={true}
-              onClose={onClose}
-            />
-          )}
           <button
             onClick={endSolitaireGame}
             className="solitaire__btn solitaire__btn_reset"
@@ -1052,9 +1066,18 @@ function Solitaire({
                 </button>
               </div>
               <div className="solitaire__foundation-piles">
-                <div className="solitaire__pile" ref={dropSpadeFoundation}>
+                <div
+                  className="solitaire__pile solitaire__pile_spade"
+                  ref={dropSpadeFoundation}
+                >
                   {isOverSpadeFoundation}
-                  {spadeFoundation.length === 0 ? (
+                  {gameWon ? (
+                    <img
+                      src="https://deckofcardsapi.com/static/img/KS.png"
+                      alt="King of Spades"
+                      className="solitaire__pile solitaire__foundation_complete"
+                    />
+                  ) : spadeFoundation.length === 0 ? (
                     <div className="solitaire__foundation-pile_empty">
                       SPADE
                     </div>
@@ -1069,7 +1092,13 @@ function Solitaire({
                 </div>
                 <div className="solitaire__pile" ref={dropHeartFoundation}>
                   {isOverHeartFoundation}
-                  {heartFoundation.length === 0 ? (
+                  {gameWon ? (
+                    <img
+                      src="https://deckofcardsapi.com/static/img/KH.png"
+                      alt="King of Hearts"
+                      className="solitaire__pile solitaire__foundation_complete"
+                    />
+                  ) : heartFoundation.length === 0 ? (
                     <div className="solitaire__foundation-pile_empty solitaire__pile_red">
                       HEART
                     </div>
@@ -1084,7 +1113,13 @@ function Solitaire({
                 </div>
                 <div className="solitaire__pile" ref={dropClubFoundation}>
                   {isOverClubFoundation}
-                  {clubFoundation.length === 0 ? (
+                  {gameWon ? (
+                    <img
+                      src="https://deckofcardsapi.com/static/img/KC.png"
+                      alt="King of Clubs"
+                      className="solitaire__pile solitaire__foundation_complete"
+                    />
+                  ) : clubFoundation.length === 0 ? (
                     <div className="solitaire__foundation-pile_empty">CLUB</div>
                   ) : (
                     <Card
@@ -1097,7 +1132,13 @@ function Solitaire({
                 </div>
                 <div className="solitaire__pile" ref={dropDiamondFoundation}>
                   {isOverDiamondFoundation}
-                  {diamondFoundation.length === 0 ? (
+                  {gameWon ? (
+                    <img
+                      src="https://deckofcardsapi.com/static/img/KD.png"
+                      alt="King of Diamonds"
+                      className="solitaire__pile solitaire__foundation_complete"
+                    />
+                  ) : diamondFoundation.length === 0 ? (
                     <div className="solitaire__foundation-pile_empty solitaire__pile_red">
                       DIAMOND
                     </div>
@@ -1128,6 +1169,32 @@ function Solitaire({
               {errorMessage}
             </p>
           }
+          {/* Below functions checks if there are no hidden cards. It then checks if the game is draw one or draw three.
+              If it is draw one, then the auto-complete button becomes displayed.
+              If it is draw three, it checks that the draw and discard piles are empty before the button is displayed. */}
+          {allCardsRevealed ? (
+            isGameDrawThree ? (
+              isStockPilesEmpty ? (
+                <button
+                  onClick={openSolitaireModal}
+                  className="solitaire__popup-btn"
+                >
+                  Auto-complete?
+                </button>
+              ) : (
+                ""
+              )
+            ) : (
+              <button
+                onClick={openSolitaireModal}
+                className="solitaire__popup-btn"
+              >
+                Auto-complete?
+              </button>
+            )
+          ) : (
+            ""
+          )}
           <div className="solitaire__game-area">
             <div className="solitaire__tableau" id="solitaire__tabluea">
               <div className="solitaire__tabluea-pile" ref={dropRefT1}>

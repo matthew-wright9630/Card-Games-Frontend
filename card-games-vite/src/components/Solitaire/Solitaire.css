@@ -148,6 +148,12 @@
   height: 100%;
 }
 
+.solitaire__popup-btn {
+  width: 100px;
+  margin: 0 calc(50% - 50px) 30px;
+  text-align: center;
+}
+
 .solitaire__game-area {
   position: relative;
   display: flex;

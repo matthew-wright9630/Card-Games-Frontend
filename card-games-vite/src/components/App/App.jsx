@@ -57,6 +57,7 @@ function App() {
   const [selectedItem, setSelectedItem] = useState({});
   const [serverError, setServerError] = useState({});
   const [errorMessage, setErrorMessage] = useState("No Errors");
+  const [gameWon, setGameWon] = useState(false);
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -583,6 +584,10 @@ function App() {
     handleGameEnd();
   };
 
+  const handleSolitaireSubmit = () => {
+    setGameWon(true);
+  };
+
   useEffect(() => {
     if (!activeModal) return;
 
@@ -725,6 +730,8 @@ function App() {
                     onCloseModal={handleCloseModal}
                     handleSolitaireModalOpen={handleSolitaireModalOpenClick}
                     isOpen={isSolitaireModalOpen}
+                    gameWon={gameWon}
+                    setGameWon={setGameWon}
                   />
                 }
               ></Route>
@@ -790,11 +797,12 @@ function App() {
               selectedItem={selectedItem}
               buttonText={isLoading ? "Deleting..." : "Yes, delete item"}
             />
-            {/* <SolitairePopup
+            <SolitairePopup
               isOpen={isSolitaireModalOpen}
               onCloseModal={handleCloseModal}
+              handleSolitaireSubmit={handleSolitaireSubmit}
               isLoading={isLoading}
-            /> */}
+            />
           </div>
         </DndProvider>
       </div>
