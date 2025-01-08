@@ -962,6 +962,9 @@ function Solitaire({
       setTabluea7([]);
       setIsDrawPileEmpty(true);
       setDiscardPile([]);
+      if (currentUser) {
+        incrementGameWin();
+      }
     }
   }, [gameWon]);
 
