@@ -938,10 +938,8 @@ function Solitaire({
   }, [spadeFoundation, diamondFoundation, clubFoundation, heartFoundation]);
 
   useEffect(() => {
-    console.log(gameWon, "Game won");
     if (numberOfCardsHidden <= 0 && gameActive) {
       setAllCardsRevealed(true);
-      console.log(gameWon, "Game won");
     } else {
       setAllCardsRevealed(false);
     }

@@ -197,6 +197,10 @@ function App() {
     });
   };
 
+  const handleFeedbackSubmit = () => {
+
+  }
+
   const setUser = (token) => {
     setIsLoading(true);
     checkToken(token)

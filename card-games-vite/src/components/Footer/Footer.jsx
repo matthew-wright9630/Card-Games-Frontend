@@ -14,15 +14,16 @@ function Footer({ handleFeedbackClick }) {
           to learn more about me
         </p>
       </div>
-      {/* <button
-        onClick={handleFeedbackClick}
-        type="button"
-        className="footer__feedback"
-      >
-        Feedback
-      </button> */}
-
-      <p className="footer__year">2024</p>
+      <div className="footer__section">
+        <p className="footer__year">2024</p>
+        {/* <button
+          onClick={handleFeedbackClick}
+          type="button"
+          className="footer__feedback"
+        >
+          Feedback
+        </button> */}
+      </div>
     </footer>
   );
 }

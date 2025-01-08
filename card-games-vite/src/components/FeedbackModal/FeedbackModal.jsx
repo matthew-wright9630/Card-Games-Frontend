@@ -5,9 +5,7 @@ import { useState } from "react";
 function FeedbackModal({
   isOpen,
   onCloseModal,
-  handleLogin,
   isLoading,
-  handleRegistrationClick,
   serverError,
 }) {
   const {

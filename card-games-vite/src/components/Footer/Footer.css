@@ -19,6 +19,12 @@
   border-bottom: 1px #0000ff solid;
 }
 
+.footer__year {
+  margin: 22px 0 5px;
+  height: 18.3px;
+  text-align: center;
+}
+
 .footer__feedback {
   padding: 0;
   margin: 0;
@@ -27,14 +33,16 @@
   height: 50px;
   border: none;
   background-color: #35654d;
-  color: #f3f3f3;
+  color: black;
   cursor: pointer;
   transition: 0.3s linear;
   border: 1px #000 solid;
-  margin-top: 5px
+  margin-top: 5px;
+  margin-bottom: 5px;
+  transition: .3 linear;
 }
 
-.footer__year {
-  margin: 22px 0;
-  height: 18.3px;
+.footer__feedback:hover {
+  opacity: .5;
 }
+
