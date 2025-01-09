@@ -90,7 +90,7 @@ function App() {
 
   const handleConfirmationModalOpen = () => {
     setActiveModal("confirmation-modal");
-  }
+  };
 
   const handleCloseModal = () => {
     setActiveModal("");
@@ -208,10 +208,16 @@ function App() {
     { feedbackType, email = "", description },
     resetForm
   ) => {
+    const date = new Date().toLocaleDateString("en-US", {
+      timeZone: "America/New_York",
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+
     setIsLoading(true);
-    submitFeedbackRequest(feedbackType, email, description)
+    submitFeedbackRequest(feedbackType, email, description, date)
       .then((data) => {
-        console.log(data);
         if (data.feedbackType) {
           resetForm();
           handleCloseModal();
@@ -834,7 +840,7 @@ function App() {
               handleSolitaireSubmit={handleSolitaireSubmit}
               isLoading={isLoading}
             />
-            <ConfirmationModal 
+            <ConfirmationModal
               isOpen={isConfirmationModalOpen}
               onCloseModal={handleCloseModal}
             />

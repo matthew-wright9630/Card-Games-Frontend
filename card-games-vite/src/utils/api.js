@@ -115,13 +115,13 @@ function deleteGameInfo({ id }, token) {
   });
 }
 
-function submitFeedbackRequest(feedbackType, email, description) {
+function submitFeedbackRequest(feedbackType, email, description, date) {
   return request(`${baseUrl}/feedback`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ feedbackType, email, description }),
+    body: JSON.stringify({ feedbackType, email, description, date }),
   });
 }
 
