@@ -953,13 +953,7 @@ function Solitaire({
 
   useEffect(() => {
     if (gameWon) {
-      setTabluea1([]);
-      setTabluea2([]);
-      setTabluea3([]);
-      setTabluea4([]);
-      setTabluea5([]);
-      setTabluea6([]);
-      setTabluea7([]);
+      resetTabluea();
       setIsDrawPileEmpty(true);
       setDiscardPile([]);
       if (currentUser) {

@@ -6,15 +6,16 @@ function FeedbackModal({
   isOpen,
   onCloseModal,
   isLoading,
+  handleFeedbackSubmit,
   serverError,
 }) {
   const {
-    values = { email: "", feedbackType: "" },
+    values = { email: "", feedbackType: "", description: "" },
     handleChange,
     errors,
     isValid,
     resetForm,
-  } = useFormWithValidation({ email: "", feedbackType: "" });
+  } = useFormWithValidation({ email: "", feedbackType: "", description: "" });
 
   const handleFeedbackChange = (event) => {
     handleChange(event);
@@ -31,11 +32,12 @@ function FeedbackModal({
       isDisabled={!isValid}
       handleSubmit={(evt) => {
         evt.preventDefault();
-        // handleLogin(values, resetForm);
+        handleFeedbackSubmit(values, resetForm);
       }}
     >
       <fieldset className="modal__fieldset_radio" required={true}>
-        <legend className="modal__legend">Select the feedback type:</legend>
+        <legend className="modal__legend">* Select the feedback type:</legend>
+
         <div>
           <input
             onChange={(event) => {
@@ -89,15 +91,17 @@ function FeedbackModal({
       </label>
       {feedbackRequestType === "bug" ? (
         <label className="modal__label">
-          Please add a description of the bug.
+          * Please add a description of the bug.
+          <span className="modal__error">{errors.feedbackRequestType}</span>
         </label>
       ) : (
         ""
       )}
       {feedbackRequestType === "recommendation" ? (
         <label className="modal__label">
-          Thank you for your recommendation! If possible, I'll try to
+          * Thank you for your recommendation! If possible, I'll try to
           incorporate it when I have time
+          <span className="modal__error">{errors.feedbackRequestType}</span>
         </label>
       ) : (
         ""
@@ -108,17 +112,11 @@ function FeedbackModal({
             rows={5}
             onChange={handleChange}
             type="text"
+            name="description"
+            value={values.description || ""}
             className="modal__input"
             required={true}
           />
-        </label>
-      ) : (
-        ""
-      )}
-      {feedbackRequestType === "bug" ? (
-        <label className="modal__label">
-          If able, please attach a screenshot of the bug
-          <input type="file" className="modal__file" id="bugAttachment" />
         </label>
       ) : (
         ""

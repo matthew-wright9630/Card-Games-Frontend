@@ -16,13 +16,13 @@ function Footer({ handleFeedbackClick }) {
       </div>
       <div className="footer__section">
         <p className="footer__year">2024</p>
-        {/* <button
+        <button
           onClick={handleFeedbackClick}
           type="button"
           className="footer__feedback"
         >
           Feedback
-        </button> */}
+        </button>
       </div>
     </footer>
   );

@@ -115,14 +115,14 @@ function deleteGameInfo({ id }, token) {
   });
 }
 
-function submitFeedbackRequest(feedbackType, email="", description, attachment) {
+function submitFeedbackRequest(feedbackType, email, description) {
   return request(`${baseUrl}/feedback`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-    }, 
-    body: JSON.stringify({ email, password, name }),
-  })
+    },
+    body: JSON.stringify({ feedbackType, email, description }),
+  });
 }
 
 export {
@@ -138,4 +138,5 @@ export {
   updateGamesPlayed,
   updateGamesWon,
   deleteGameInfo,
+  submitFeedbackRequest,
 };

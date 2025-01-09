@@ -27,6 +27,7 @@ import {
   updateGamesWon,
   deleteUser,
   deleteGameInfo,
+  submitFeedbackRequest,
 } from "../../utils/api";
 import "./App.css";
 import { act, useEffect, useState } from "react";
@@ -197,9 +198,29 @@ function App() {
     });
   };
 
-  const handleFeedbackSubmit = () => {
-
-  }
+  const handleFeedbackSubmit = (
+    { feedbackType, email = "", description },
+    resetForm
+  ) => {
+    setIsLoading(true);
+    submitFeedbackRequest(feedbackType, email, description)
+      .then((data) => {
+        console.log(data);
+        if (data) {
+          handleCloseModal();
+          resetForm();
+          setServerError({});
+        } else if (data.validation) {
+          setServerError({
+            error: data.validation.body.message,
+          });
+        } else {
+          setServerError({ error: data.message });
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  };
 
   const setUser = (token) => {
     setIsLoading(true);
@@ -755,9 +776,7 @@ function App() {
                 }
               ></Route>
             </Routes>
-            <Footer
-            // handleFeedbackClick={handleFeedbackClick}
-            />
+            <Footer handleFeedbackClick={handleFeedbackClick} />
             <LoginModal
               isOpen={isLoginModalOpen}
               onCloseModal={handleCloseModal}
@@ -781,12 +800,13 @@ function App() {
               handleLoginClick={handleLoginClick}
               serverError={serverError}
             />
-            {/* <FeedbackModal
+            <FeedbackModal
               isOpen={isFeedbackModalOpen}
               onCloseModal={handleCloseModal}
               isLoading={isLoading}
+              handleFeedbackSubmit={handleFeedbackSubmit}
               serverError={serverError}
-            /> */}
+            />
             <DiscardModal
               isOpen={isDiscardModalOpen}
               onCloseModal={handleCloseModal}
