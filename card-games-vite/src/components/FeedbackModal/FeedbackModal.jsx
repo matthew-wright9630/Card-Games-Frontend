@@ -88,6 +88,7 @@ function FeedbackModal({
           value={values.email || ""}
           autoComplete="email"
         />
+        <span className="modal__error">{errors.email}</span>
       </label>
       {feedbackRequestType === "bug" ? (
         <label className="modal__label">
@@ -113,10 +114,12 @@ function FeedbackModal({
             onChange={handleChange}
             type="text"
             name="description"
+            minLength={10}
             value={values.description || ""}
             className="modal__input"
             required={true}
           />
+          <span className="modal__error">{errors.description}</span>
         </label>
       ) : (
         ""

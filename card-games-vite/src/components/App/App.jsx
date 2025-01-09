@@ -41,6 +41,7 @@ import {
 } from "../../utils/deckOfCardsApi";
 import FeedbackModal from "../FeedbackModal/FeedbackModal";
 import SolitairePopup from "../SolitairePopup/SolitairePopup";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -87,6 +88,10 @@ function App() {
     setActiveModal("solitaire-modal");
   };
 
+  const handleConfirmationModalOpen = () => {
+    setActiveModal("confirmation-modal");
+  }
+
   const handleCloseModal = () => {
     setActiveModal("");
     setServerError({});
@@ -100,6 +105,7 @@ function App() {
     activeModal === "delete-confirmation-modal";
   const isFeedbackModalOpen = activeModal === "feedback-modal";
   const isSolitaireModalOpen = activeModal === "solitaire-modal";
+  const isConfirmationModalOpen = activeModal === "confirmation-modal";
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
@@ -206,9 +212,10 @@ function App() {
     submitFeedbackRequest(feedbackType, email, description)
       .then((data) => {
         console.log(data);
-        if (data) {
-          handleCloseModal();
+        if (data.feedbackType) {
           resetForm();
+          handleCloseModal();
+          handleConfirmationModalOpen();
           setServerError({});
         } else if (data.validation) {
           setServerError({
@@ -826,6 +833,10 @@ function App() {
               onCloseModal={handleCloseModal}
               handleSolitaireSubmit={handleSolitaireSubmit}
               isLoading={isLoading}
+            />
+            <ConfirmationModal 
+              isOpen={isConfirmationModalOpen}
+              onCloseModal={handleCloseModal}
             />
           </div>
         </DndProvider>
