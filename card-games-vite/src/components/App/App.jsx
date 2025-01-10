@@ -216,8 +216,12 @@ function App() {
     });
 
     setIsLoading(true);
+    if (email === "") {
+      email = "nomail@nomail.com";
+    }
     submitFeedbackRequest(feedbackType, email, description, date)
       .then((data) => {
+        console.log(data);
         if (data.feedbackType) {
           resetForm();
           handleCloseModal();
