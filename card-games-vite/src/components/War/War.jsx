@@ -42,27 +42,13 @@ function War({
         Please come back another time!
       </p>
 
-      {!gameActive ? (
-        <button
-          onClick={() => {
-            incrementGame();
-            handleGameStart(1);
-          }}
-          className="playGame"
-        >
-          Increment Games Played
-        </button>
-      ) : (
-        <button
-          onClick={() => {
-            incrementGameWin();
-            handleGameEnd();
-          }}
-          className="solitaire__win-game"
-        >
-          Increment Games Won
-        </button>
-      )}
+      <div className="war__game-area">
+        <div className="war__piles">
+          <div className="war__piles__player2">Player 2</div>
+          <div className="war__piles__draw">Draw Pile</div>
+          <div className="war__piles__player1">Player 1</div>
+        </div>
+      </div>
     </div>
   );
 }
