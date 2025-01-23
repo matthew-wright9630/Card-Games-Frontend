@@ -1,17 +1,12 @@
 header {
+  max-width: 1360px;
   padding: 32px 20px 28px;
-  display: flex;
+  margin: 0 auto;
+  /* display: flex; */
   font-weight: 700;
   font-size: 20px;
   line-height: 1.2;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.header__title {
-  margin: 0 auto;
-  text-align: center;
-  font-size: 60px;
+  /* background-color: #092b1a; */
 }
 
 .header__description {
@@ -20,20 +15,62 @@ header {
 }
 
 .header__container {
+  /* margin: 0 auto; */
+  max-width: 1360px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   gap: 10px;
 }
 
+.header__logo-section {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  width: 33%;
+}
+
+.header__title {
+  margin: 0;
+  text-align: center;
+  font-size: 24px;
+  width: 178px;
+}
+
 .header__home {
-  width: 24px;
-  height: 24px;
+  width: 60px;
+  height: 60px;
   transition: 0.3s linear;
 }
 
 .header__home:hover {
   opacity: 0.4;
+}
+
+.header__navigation {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  width: 33%;
+  gap: 10px;
+}
+
+.header__list-item {
+  text-decoration: none;
+  list-style-type: none;
+  text-wrap: nowrap;
+  transition: .3s linear;
+  cursor: pointer;
+}
+
+.header__list-item:hover {
+  opacity: .6;
+}
+
+.header__mobile-menu {
+  visibility: hidden;
+  position: absolute;
 }
 
 .header__profile {
@@ -76,19 +113,23 @@ header {
   display: flex;
   gap: 10px;
   align-items: center;
+  width: 33%;
+  justify-content: flex-end;
 }
 
 .header__button {
   padding: 0;
   margin: 0;
   font-size: 20px;
-  width: 129px;
+  width: 90px;
+  height: 30px;
   border: none;
-  background-color: #35654d;
+  background-color: transparent;
   color: #f3f3f3;
   cursor: pointer;
   transition: 0.3s linear;
-  border: 1px #000 solid
+  border: 1px #f3f3f3 solid;
+  border-radius: 18px;
 }
 
 .header__button:hover {
@@ -96,15 +137,56 @@ header {
 }
 
 @media screen and (max-width: 795px) {
+  .header__home {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header__title {
+    max-width: 100px;
+    font-size: 16px;
+  }
+
   .header__username {
     max-width: 250px;
   }
+
+  .header__profile {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  .header__auth {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  .header__mobile-menu {
+    visibility: visible;
+    position: relative;
+  }
+
 }
 
 @media screen and (max-width: 550px) {
+  .header__container {
+    flex-direction: column;
+  }
+
+  .header__logo-section {
+    /* min-width: 320px; */
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header__home {
+    width: 75px;
+    height: 75px;
+  }
+
   .header__title {
-    font-size: 40px;
-    max-width: 320px;
+    font-size: 30px;
+    /* max-width: 320px; */
   }
 
   .header__button {

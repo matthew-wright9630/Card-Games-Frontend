@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { useContext } from "react";
 import "./Header.css";
-import homeIcon from "../../assets/home.svg";
+import cardLogo from "../../assets/card_logo_v2.png";
 
 function Header({
   handleLoginClick,
@@ -12,13 +12,21 @@ function Header({
   closeGameSite,
 }) {
   const user = useContext(CurrentUserContext);
+
   return (
     <header className="header">
-      <h1 className="header__title">The Wright Collection of Card Games</h1>
       <div className="header__container">
-        <Link onClick={closeGameSite} className="header__link" to="/">
-          <img src={homeIcon} alt="Home Icon" className="header__home" />
-        </Link>
+        <div className="header__logo-section">
+          <Link onClick={closeGameSite} className="header__link" to="/">
+            <img src={cardLogo} alt="Home Icon" className="header__home" />
+          </Link>
+          <h2 className="header__title">Wright Card Games</h2>
+        </div>
+        <ul className="header__navigation">
+          <li className="header__list-item">Home</li>
+          <li className="header__list-item">About Me</li>
+          <li className="header__list-item">Contact</li>
+        </ul>
         {isLoggedIn ? (
           <div className="header__profile">
             <button
@@ -59,6 +67,7 @@ function Header({
             </button>
           </div>
         )}
+        <button className="header__mobile-menu">Click me!</button>
       </div>
     </header>
   );
