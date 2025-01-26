@@ -24,6 +24,9 @@ function Main({
   return (
     <main>
       <section className="homepage">
+        <h1 className="homepage__title">
+          The Wright Collection of Card Games
+        </h1>
         <p className="homepage__description">
           Select a game below! Click on a card to see a brief introduction.
         </p>

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { useContext } from "react";
 import "./Header.css";
-import cardLogo from "../../assets/card_logo_v2.png";
+import cardLogo from "../../assets/poker-cards.png";
 
 function Header({
   handleLoginClick,

@@ -209,7 +209,8 @@
 
 .solitaire__tabluea-pile {
   position: relative;
-  border: 1px #000 solid;
+  background: rgba(7,41,24,.3);
+  border: 1px rgb(7,41,24) solid;
 }
 
 .solitaire__stack {
