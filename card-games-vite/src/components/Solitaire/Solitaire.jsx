@@ -994,7 +994,7 @@ function Solitaire({
                   onClick={draw}
                   className={`solitaire__card-btn ${
                     isDrawPileEmpty
-                      ? "solitaire__pile_empty"
+                      ? "solitaire__pile_empty solitaire__draw-discard_empty"
                       : "solitaire__pile"
                   }`}
                 >
@@ -1015,7 +1015,7 @@ function Solitaire({
                   type="button"
                   onClick={clickedDiscardPile}
                   className={`solitaire__card-btn ${
-                    discardPile.length === 0 ? "solitaire__pile_empty" : ""
+                    discardPile.length === 0 ? "solitaire__pile_empty solitaire__draw-discard_empty" : ""
                   }`}
                 >
                   {discardPile.length === 0 ? (

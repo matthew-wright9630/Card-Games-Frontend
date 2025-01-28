@@ -136,8 +136,12 @@
   background-position-y: center;
   border: none;
   width: 80px;
-  height: 85px;
+  height: 113px;
   margin: 0 auto;
+}
+
+.solitaire__draw-discard_empty {
+  border: 1px rgba(255, 255, 255, 0.3) solid;
 }
 
 .game__animation-card {
@@ -181,7 +185,7 @@
   position: relative;
   height: 115px;
   width: 85px;
-  border: 1px #000 solid;
+  border: 1px rgba(255, 255, 255, 0.3) solid;
 }
 
 .solitaire__foundation-pile_empty {
@@ -209,8 +213,8 @@
 
 .solitaire__tabluea-pile {
   position: relative;
-  background: rgba(7,41,24,.3);
-  border: 1px rgb(7,41,24) solid;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px rgb(7, 41, 24) solid;
 }
 
 .solitaire__stack {
@@ -290,7 +294,7 @@
     width: 35px;
     height: 60px;
   }
-  
+
   .solitaire__card-discard {
     width: 35px;
     height: 60px;

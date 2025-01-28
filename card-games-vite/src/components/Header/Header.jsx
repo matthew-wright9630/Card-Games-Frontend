@@ -22,11 +22,15 @@ function Header({
           </Link>
           <h2 className="header__title">Wright Card Games</h2>
         </div>
-        <ul className="header__navigation">
-          <li className="header__list-item">Home</li>
-          <li className="header__list-item">About Me</li>
-          <li className="header__list-item">Contact</li>
-        </ul>
+        <div className="header__navigation">
+          <Link className="header__button header__link" to={"/"}>
+            Home
+          </Link>
+          <Link className="header__button header__link" to={"/about-me"}>
+            About Me
+          </Link>
+          <Link className="header__button header__link" to={"/contact"}>Contact</Link>
+        </div>
         {isLoggedIn ? (
           <div className="header__profile">
             <button
