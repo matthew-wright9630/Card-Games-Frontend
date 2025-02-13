@@ -694,13 +694,14 @@ function App() {
       <div className="page">
         <DndProvider options={HTML5toTouch}>
           <Preview generator={generateCardPreview} />
-            <Header
-              handleLoginClick={handleLoginClick}
-              handleRegistrationClick={handleRegistrationClick}
-              isLoggedIn={isLoggedIn}
-              handleLogout={handleLogout}
-              closeGameSite={closeGameSite}
-            />
+          <Header
+            handleLoginClick={handleLoginClick}
+            handleRegistrationClick={handleRegistrationClick}
+            isLoggedIn={isLoggedIn}
+            handleLogout={handleLogout}
+            closeGameSite={closeGameSite}
+            handleFeedbackClick={handleFeedbackClick}
+          />
           <div className="page__content">
             <Routes>
               <Route path="*" element={<PageNotFound />}></Route>
@@ -793,7 +794,7 @@ function App() {
                 }
               ></Route>
             </Routes>
-            <Footer handleFeedbackClick={handleFeedbackClick} />
+            <Footer />
             <LoginModal
               isOpen={isLoginModalOpen}
               onCloseModal={handleCloseModal}

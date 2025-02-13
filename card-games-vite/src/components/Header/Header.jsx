@@ -10,6 +10,7 @@ function Header({
   isLoggedIn,
   handleLogout,
   closeGameSite,
+  handleFeedbackClick,
 }) {
   const user = useContext(CurrentUserContext);
 
@@ -29,7 +30,15 @@ function Header({
           <Link className="header__button header__link" to={"/about-me"}>
             About Me
           </Link>
-          <Link className="header__button header__link" to={"/contact"}>Contact</Link>
+          <button
+            onClick={handleFeedbackClick}
+            className="header__feedback header__button"
+          >
+            Contact Us
+          </button>
+          {/* <Link className="header__button header__link" to={"/contact"}>
+            Contact
+          </Link> */}
         </div>
         {isLoggedIn ? (
           <div className="header__profile">

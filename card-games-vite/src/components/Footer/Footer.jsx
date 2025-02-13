@@ -1,28 +1,18 @@
 import { Link } from "react-router-dom";
 import "./Footer.css";
 
-function Footer({ handleFeedbackClick }) {
+const copyrightLogo = "\u00A9";
+
+function Footer() {
   return (
     <footer className="footer">
       <div>
-        <p className="footer__copyright">Developed By: Matthew Wright</p>
-        <p className="footer__about">
-          Click{" "}
-          <Link className="footer__link" to={"/about-me"}>
-            here
-          </Link>{" "}
-          to learn more about me
+        <p className="footer__year">
+          {copyrightLogo} 2024. Wright Card Games. All rights reserved
         </p>
       </div>
       <div className="footer__section">
-        <p className="footer__year">2024</p>
-        <button
-          onClick={handleFeedbackClick}
-          type="button"
-          className="footer__feedback"
-        >
-          Feedback
-        </button>
+        <p className="footer__copyright">Developed By: Matthew Wright</p>
       </div>
     </footer>
   );

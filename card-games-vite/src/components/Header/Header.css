@@ -84,6 +84,10 @@ header {
 
 .header__link {
   text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .header__profile-info {
@@ -122,8 +126,8 @@ header {
   padding: 0;
   margin: 0;
   font-size: 20px;
-  width: 90px;
-  height: 30px;
+  width: 98px;
+  height: 50px;
   border: none;
   background-color: transparent;
   color: #f3f3f3;
