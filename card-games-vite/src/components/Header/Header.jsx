@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import "./Header.css";
 import cardLogo from "../../assets/poker-cards.png";
 
@@ -13,6 +13,15 @@ function Header({
   handleFeedbackClick,
 }) {
   const user = useContext(CurrentUserContext);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleMobileMenuClick = () => {
+    setIsMobileMenuOpen(true);
+  };
+
+  const handleMobileMenuClose = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <header className="header">
@@ -36,12 +45,13 @@ function Header({
           >
             Contact Us
           </button>
-          {/* <Link className="header__button header__link" to={"/contact"}>
-            Contact
-          </Link> */}
         </div>
         {isLoggedIn ? (
-          <div className="header__profile">
+          <div
+            className={`header__profile ${
+              isMobileMenuOpen ? "header__profile__mobile_open" : ""
+            }`}
+          >
             <button
               onClick={() => {
                 handleLogout();
@@ -63,7 +73,11 @@ function Header({
             </Link>
           </div>
         ) : (
-          <div className="header__auth">
+          <div
+            className={`header__auth ${
+              isMobileMenuOpen ? "header__auth__mobile_open" : ""
+            }`}
+          >
             <button
               onClick={handleRegistrationClick}
               type="button"
@@ -80,8 +94,18 @@ function Header({
             </button>
           </div>
         )}
-        <button className="header__mobile-menu">Click me!</button>
+        <button
+          onClick={handleMobileMenuClick}
+          className="header__mobile-menu"
+        ></button>
       </div>
+      <button
+        onClick={handleMobileMenuClose}
+        type="button"
+        className={`header__menu-close-button ${
+          isMobileMenuOpen === true ? "header__menu-close-button_open" : ""
+        }`}
+      ></button>
     </header>
   );
 }

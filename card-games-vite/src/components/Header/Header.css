@@ -71,6 +71,8 @@ header {
 }
 
 .header__mobile-menu {
+  background-image: url("../../assets/mobile-menu.svg");
+  background-size: cover;
   visibility: hidden;
   position: absolute;
 }
@@ -141,6 +143,28 @@ header {
   opacity: 0.5;
 }
 
+.header__menu-close-button {
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 29px;
+  right: 28px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  background-image: url("../../assets/Cross.svg");
+  background-position: center;
+  background-size: contain;
+  border: none;
+  visibility: hidden;
+  cursor: pointer;
+  transition: .3s linear;
+}
+
+.header__menu-close-button:hover {
+  opacity: .5;
+}
+
 @media screen and (max-width: 795px) {
   .header__container {
     padding: 0;
@@ -163,16 +187,51 @@ header {
   .header__profile {
     visibility: hidden;
     position: absolute;
+    justify-content: center;
+    top: 2.5%;
+    left: 2.5%;
+  }
+
+  .header__profile__mobile_open {
+    visibility: visible;
+    width: 95%;
+    height: 208px;
+    background: rgba(7, 41, 24, 1);
+    border-radius: 5%;
+    z-index: 1;
+    opacity: 1;
+    transition: 0.3s linear;
   }
 
   .header__auth {
     visibility: hidden;
     position: absolute;
+    justify-content: center;
+    top: 2.5%;
+    left: 2.5%;
+  }
+
+  .header__auth__mobile_open {
+    visibility: visible;
+    width: 95%;
+    height: 208px;
+    background: rgba(7, 41, 24, 1);
+    border-radius: 5%;
+    z-index: 1;
+    opacity: 1;
+    transition: 0.3s linear;
   }
 
   .header__mobile-menu {
+    width: 40px;
+    height: 40px;
     visibility: visible;
     position: relative;
+  }
+
+  .header__menu-close-button_open {
+    visibility: visible;
+    z-index: 2;
   }
 }
 
@@ -204,5 +263,13 @@ header {
 
   .header__username {
     max-width: 125px;
+  }
+
+  .header__profile__mobile_open {
+    height: 255px;
+  }
+
+  .header__auth__mobile_open {
+    height: 255px;
   }
 }
