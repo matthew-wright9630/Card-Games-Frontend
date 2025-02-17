@@ -8,11 +8,38 @@
   text-align: center;
 }
 
-.war__piles {
+.war__game-area {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 300px;
+  min-height: 700px;
   width: 100%;
+}
+
+.war__card-btn {
+  padding: 0;
+  width: 85px;
+  height: 115px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s linear;
+  border-radius: 3%;
+}
+
+.war__piles__play-area {
+  display: flex;
+  gap: 30px;
+}
+
+.war__play-pile {
+  width: 85px;
+  height: 115px;
+  border: 1px solid #fff;
+}
+
+.war__start-game {
+  display: flex;
+  align-items: center;
+  gap: 30px;
 }

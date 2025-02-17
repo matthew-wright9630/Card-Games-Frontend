@@ -60,6 +60,7 @@ function App() {
   const [serverError, setServerError] = useState({});
   const [errorMessage, setErrorMessage] = useState("No Errors");
   const [gameWon, setGameWon] = useState(false);
+  const [areCardsDealt, setAreCardsDealt] = useState(false);
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -775,6 +776,8 @@ function App() {
                     isOpen={isSolitaireModalOpen}
                     gameWon={gameWon}
                     setGameWon={setGameWon}
+                    areCardsDealt={areCardsDealt}
+                    setAreCardsDealt={setAreCardsDealt}
                   />
                 }
               ></Route>
@@ -782,14 +785,30 @@ function App() {
                 path="/war"
                 element={
                   <War
-                    currentGame={currentGame}
                     handleGameIncrement={handleGameIncrement}
                     incrementGameWon={incrementGameWon}
                     gameActive={gameActive}
                     handleGameStart={handleGameStart}
-                    handleGameEnd={handleGameEnd}
                     isLoggedIn={isLoggedIn}
                     getCurrentGame={getCurrentGame}
+                    hand={hand}
+                    setHand={setHand}
+                    isDiscardPileEmpty={isDiscardPileEmpty}
+                    discardPile={discardPile}
+                    handleDiscardPileClick={handleDiscardPileClick}
+                    animateCardDeal={animateCardDeal}
+                    pullCardFromPile={pullCardFromPile}
+                    setDiscardPile={setDiscardPile}
+                    onCloseModal={handleCloseModal}
+                    closeGameSite={closeGameSite}
+                    setIsLoading={setIsLoading}
+                    setErrorMessage={setErrorMessage}
+                    errorMessage={errorMessage}
+                    setIsDiscardPileEmpty={setIsDiscardPileEmpty}
+                    gameWon={gameWon}
+                    setGameWon={setGameWon}
+                    areCardsDealt={areCardsDealt}
+                    setAreCardsDealt={setAreCardsDealt}
                   />
                 }
               ></Route>

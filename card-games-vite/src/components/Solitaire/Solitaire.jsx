@@ -41,6 +41,8 @@ function Solitaire({
   handleSolitaireModalOpen,
   gameWon,
   setGameWon,
+  areCardsDealt,
+  setAreCardsDealt,
 }) {
   const currentUser = useContext(CurrentUserContext);
 
@@ -59,8 +61,6 @@ function Solitaire({
   const [tabluea5, setTabluea5] = useState([]);
   const [tabluea6, setTabluea6] = useState([]);
   const [tabluea7, setTabluea7] = useState([]);
-
-  const [areCardsDealt, setAreCardsDealt] = useState(false);
 
   const [allCardsRevealed, setAllCardsRevealed] = useState(false);
   const [numberOfCardsHidden, setNumberOfCardsHidden] = useState(21);
@@ -1015,7 +1015,9 @@ function Solitaire({
                   type="button"
                   onClick={clickedDiscardPile}
                   className={`solitaire__card-btn ${
-                    discardPile.length === 0 ? "solitaire__pile_empty solitaire__draw-discard_empty" : ""
+                    discardPile.length === 0
+                      ? "solitaire__pile_empty solitaire__draw-discard_empty"
+                      : ""
                   }`}
                 >
                   {discardPile.length === 0 ? (
