@@ -516,8 +516,13 @@ function App() {
       .finally(() => setIsLoading(false));
   };
 
-  function animateCardDeal(left, top) {
-    const elm = document.querySelector(".game__animation-card");
+  function animateCardDeal(
+    left,
+    top,
+    duration = 300,
+    elmName = ".game__animation-card"
+  ) {
+    const elm = document.querySelector(elmName);
 
     const first = elm.getBoundingClientRect();
 
@@ -531,14 +536,15 @@ function App() {
     const deltaW = first.width / last.width;
     const deltaH = first.height / last.height;
 
+    // if ((duration === 300)) {
     elm.animate(
       [
         {
           transformOrigin: "top left",
           transform: `
-    translate(${deltaX}px, ${deltaY}px)
-    scale(${deltaW}, ${deltaH})
-  `,
+            translate(${deltaX}px, ${deltaY}px)
+            scale(${deltaW}, ${deltaH})
+            `,
         },
         {
           transformOrigin: "top left",
@@ -546,7 +552,7 @@ function App() {
         },
       ],
       {
-        duration: 300,
+        duration: duration,
         easing: "ease-in-out",
         fill: "both",
       }
@@ -554,8 +560,12 @@ function App() {
     setTimeout(() => {
       elm.style.setProperty("top", 0 + "px");
       elm.style.setProperty("left", 0 + "px");
-    }, 300);
+    }, duration);
   }
+  // else if (duration === 100) {
+
+  // }
+  // }
 
   const removeSpacesFromName = (name) => {
     return name.replaceAll(" ", "_");
