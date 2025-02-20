@@ -30,6 +30,7 @@ function War({
 }) {
   const [playerOneDeck, setPlayerOneDeck] = useState([]);
   const [playerTwoDeck, setPlayerTwoDeck] = useState([]);
+  const [gameIsInPlay, setGameIsInPlay] = useState(false);
   const [roundIsInPlay, setRoundIsInPlay] = useState(false);
   const [playerOnePlayedCard, setPlayerOnePlayedCard] = useState({});
   const [playerTwoPlayedCard, setPlayerTwoPlayedCard] = useState({});
@@ -37,6 +38,7 @@ function War({
   function startWarGame() {
     setGameWon(false);
     handleGameStart(1); //Sets the localStorage.getItem("deck_id")
+
     dealCards();
   }
 
@@ -74,9 +76,9 @@ function War({
       .then((deck) => {
         for (let i = 1; i <= 52; i++) {
           if (i % 2 === 0) {
-            playerTwoArray.push(deck.cards[i]);
+            playerTwoArray.push(deck.cards[i - 1]);
           } else {
-            playerOneArray.push(deck.cards[i]);
+            playerOneArray.push(deck.cards[i - 1]);
           }
           setTimeout(function timer() {
             if (i % 2 === 0) {
@@ -92,6 +94,7 @@ function War({
       .then(() => {
         setTimeout(function timer() {
           beginRound();
+          setGameIsInPlay(true);
         }, 53 * 120);
       })
       .catch((err) => console.error(err));
@@ -100,16 +103,25 @@ function War({
   function beginRound() {
     setRoundIsInPlay(true);
     console.log("This is a test to begin the round");
+    return true;
   }
 
-  function playRound() {
+  function endRound() {
+    setRoundIsInPlay(false);
+    console.log("The round has ended");
+  }
+
+  function drawCards() {
     playPlayerOne();
     playPlayerTwo();
+    // while (roundIsInPlay && (!playerOnePlayedCard || !playerTwoPlayedCard)) {
+    //   setTimeout(50);
+    //   console.log("test");
+    // }
   }
 
   function playPlayerOne() {
-    if (roundIsInPlay) {
-      console.log(playerOneDeck[playerOneDeck.length - 1]);
+    if (gameIsInPlay) {
       animateCardDeal(94, -231, 500, ".war__card__player-one");
       setTimeout(function timer() {
         const playerOneCard = playerOneDeck[playerOneDeck.length - 1];
@@ -120,8 +132,7 @@ function War({
   }
 
   function playPlayerTwo() {
-    if (roundIsInPlay) {
-      console.log(playerTwoDeck[playerTwoDeck.length - 1]);
+    if (gameIsInPlay) {
       animateCardDeal(-94, 231, 500, ".war__card__player-two");
       setTimeout(function timer() {
         const playerTwoCard = playerTwoDeck[playerTwoDeck.length - 1];
@@ -132,7 +143,6 @@ function War({
   }
 
   function removeCardFromDeck(playerNumber) {
-    console.log(playerNumber);
     const newArray = [];
     if (playerNumber === 1) {
       for (let i = 0; i < playerOneDeck.length - 1; i++) {
@@ -187,7 +197,7 @@ function War({
                 ""
               )}
             </div>
-            {roundIsInPlay ? (
+            {gameIsInPlay ? (
               ""
             ) : (
               <button
@@ -256,7 +266,7 @@ function War({
         <div className="war__pile war__player-one-pile">
           {areCardsDealt ? (
             <button
-              onClick={playRound}
+              onClick={drawCards}
               className="war__card-btn war__player-pile"
             >
               <img
