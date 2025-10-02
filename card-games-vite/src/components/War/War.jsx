@@ -36,6 +36,7 @@ function War({
   const [roundIsInPlay, setRoundIsInPlay] = useState(false);
   const [playerOnePlayedCard, setPlayerOnePlayedCard] = useState({});
   const [playerTwoPlayedCard, setPlayerTwoPlayedCard] = useState({});
+  const [cardsAreBeingDrawn, setCardsAreBeingDrawn] = useState(false);
 
   function startWarGame() {
     setGameWon(false);
@@ -71,6 +72,7 @@ function War({
   }
 
   function dealCards() {
+    setCardsAreBeingDrawn(false);
     const playerOneArray = [];
     const playerTwoArray = [];
     drawCard(localStorage.getItem("deck_id"), 52)
@@ -94,7 +96,6 @@ function War({
       })
       .then(() => {
         setTimeout(function timer() {
-          // beginRound();
           setGameIsInPlay(true);
         }, 53 * 85);
       })
@@ -115,32 +116,30 @@ function War({
   }
 
   function drawCards() {
+    setCardsAreBeingDrawn(true);
     beginRound();
-    // if (playerOnePlayedCard || playerTwoPlayedCard) {
-    //   return;
-    // }
     playPlayerOne();
     playPlayerTwo();
   }
 
   function playPlayerOne() {
+    const playerOneCard = playerOneDeck[playerOneDeck.length - 1];
+    removeCardFromDeck(1);
     if (gameIsInPlay) {
-      animateCardDeal(225, -235, 500, ".war__card__player-one");
       setTimeout(function timer() {
-        const playerOneCard = playerOneDeck[playerOneDeck.length - 1];
         setPlayerOnePlayedCard(playerOneCard);
-        removeCardFromDeck(1);
+        setCardsAreBeingDrawn(false);
       }, 510);
     }
   }
 
   function playPlayerTwo() {
+    const playerTwoCard = playerTwoDeck[playerTwoDeck.length - 1];
+    removeCardFromDeck(2);
     if (gameIsInPlay) {
-      animateCardDeal(-120, 231, 500, ".war__card__player-two");
       setTimeout(function timer() {
-        const playerTwoCard = playerTwoDeck[playerTwoDeck.length - 1];
         setPlayerTwoPlayedCard(playerTwoCard);
-        removeCardFromDeck(2);
+        setCardsAreBeingDrawn(false);
       }, 510);
     }
   }
@@ -167,6 +166,8 @@ function War({
     const cardOneEl = document.querySelector(".war__player-one-card");
     const cardTwoEl = document.querySelector(".war__player-two-card");
     const discardEl = document.querySelector(".war__discard__player-two");
+
+    console.log(cardOneEl, cardTwoEl);
 
     if (cardOneEl && cardTwoEl && discardEl) {
       flyCardToDiscard(cardTwoEl, cardOneEl, discardEl, () => {
@@ -219,14 +220,13 @@ function War({
         if (onFinish) onFinish();
       });
 
-    cloneTwo
-      .animate(
-        [
-          { transform: "translate(0,0)" },
-          { transform: `translate(${dxTwo}px, ${dyTwo}px)` },
-        ],
-        { duration: 500 }
-      )
+    cloneTwo.animate(
+      [
+        { transform: "translate(0,0)" },
+        { transform: `translate(${dxTwo}px, ${dyTwo}px)` },
+      ],
+      { duration: 500 }
+    );
   }
 
   function removeCardFromDeck(playerNumber) {
@@ -247,24 +247,17 @@ function War({
   async function compareCards() {
     const playerOneCardValue = getCardValue(playerOnePlayedCard);
     const playerTwoCardValue = getCardValue(playerTwoPlayedCard);
+    console.log(
+      playerOneCardValue,
+      playerTwoCardValue,
+      playerOneCardValue < playerTwoCardValue
+    );
     if (Number(playerOneCardValue) > Number(playerTwoCardValue)) {
-      // setPlayerOneDiscard([
-      //   ...playerOneDiscard,
-      //   playerTwoPlayedCard,
-      //   playerOnePlayedCard,
-      // ]);
       addToPlayerOneDiscard();
       endRound();
-      // return 1;
     } else if (Number(playerOneCardValue) < Number(playerTwoCardValue)) {
-      // setPlayerTwoDiscard([
-      //   ...playerTwoDiscard,
-      //   playerOnePlayedCard,
-      //   playerTwoPlayedCard,
-      // ]);
       addToPlayerTwoDiscard();
       endRound();
-      // return 2;
     } else {
       endRound();
       setDiscardDeck([
@@ -295,23 +288,59 @@ function War({
     });
   }
 
+  useEffect(() => {
+    console.log("test");
+    console.log(playerOnePlayedCard);
+    if (cardsAreBeingDrawn) {
+      const cardEl = document.querySelector(".war__card__player-one");
+      const pileEl = document.querySelector(".war__play-pile__one");
+      if (cardEl && pileEl) {
+        const cardRect = cardEl.getBoundingClientRect();
+        const pileRect = pileEl.getBoundingClientRect();
+        const dx = pileRect.left - cardRect.left;
+        const dy = pileRect.top - cardRect.top;
+
+        animateCardDeal(dx, dy, 500, ".war__card__player-one");
+      }
+    }
+  }, [playerOneDeck]);
+
+  useEffect(() => {
+    if (cardsAreBeingDrawn) {
+      const cardEl = document.querySelector(".war__card__player-two");
+      const pileEl = document.querySelector(".war__play-pile__two");
+      if (cardEl && pileEl) {
+        const cardRect = cardEl.getBoundingClientRect();
+        const pileRect = pileEl.getBoundingClientRect();
+        const dx = pileRect.left - cardRect.left;
+        const dy = pileRect.top - cardRect.top;
+
+        animateCardDeal(dx, dy, 500, ".war__card__player-two");
+      }
+    }
+  }, [playerTwoDeck]);
+
   // useEffect(() => {
   //   if (playerOnePlayedCard && playerTwoPlayedCard) {
   //     compareCards();
-      // .then((returnValue) => {
-      //   if (returnValue === 1) {
-      //     addToPlayerOneDiscard();
-      //   } else if (returnValue === 2) {
-      //     addToPlayerTwoDiscard();
-      //   }
-      // });
-      // .then(() => {
-      //   setPlayerOnePlayedCard(false);
-      //   setPlayerTwoPlayedCard(false);
-      // });
-    // }
+  // .then((returnValue) => {
+  //   if (returnValue === 1) {
+  //     addToPlayerOneDiscard();
+  //   } else if (returnValue === 2) {
+  //     addToPlayerTwoDiscard();
+  //   }
+  // });
+  // .then(() => {
+  //   setPlayerOnePlayedCard(false);
+  //   setPlayerTwoPlayedCard(false);
+  // });
+  // }
   // }, [roundIsInPlay]);
 
+  function test() {
+    setPlayerOneDeck([]);
+    setPlayerTwoDeck([]);
+  }
   return (
     <div className="war">
       <h2 className="war__title">War</h2>
@@ -319,15 +348,20 @@ function War({
       <div className="war__game-area">
         <div className="war__pile war__player-two-pile">
           <h3 className="war__paragraph">Player 2</h3>
+          <button onClick={test}>Test</button>
           {areCardsDealt ? (
             <div className="war__player-area">
               <div>
                 <button className="war__card-btn war__player-pile">
+                  {/* {playerTwoDeck.length > 0 ? ( */}
                   <img
                     key={playerTwoDeck[playerTwoDeck.length - 1]?.code}
                     src={backOfCard}
                     className="war__card war__card__player-two"
                   ></img>
+                  {/* ) : (
+                    ""
+                  )} */}
                   <p className="war__paragraph">Draw Pile</p>
                 </button>
               </div>
@@ -336,11 +370,15 @@ function War({
                   onClick={checkDiscardTwo}
                   className="war__discard-btn war__card-btn war__player-pile"
                 >
-                  <img
-                    key={playerTwoDiscard[playerTwoDiscard.length - 1]?.code}
-                    src={playerTwoDiscard[playerTwoDiscard.length - 1]?.image}
-                    className="war__card war__discard__player-two"
-                  ></img>
+                  {playerTwoDeck.length > 0 ? (
+                    <img
+                      key={playerTwoDiscard[playerTwoDiscard.length - 1]?.code}
+                      src={playerTwoDiscard[playerTwoDiscard.length - 1]?.image}
+                      className="war__card war__discard__player-two"
+                    ></img>
+                  ) : (
+                    ""
+                  )}
                   <p className="war__paragraph">Discard Pile</p>
                 </button>
               </div>
@@ -439,11 +477,15 @@ function War({
                   onClick={drawCards}
                   className="war__card-btn war__player-pile"
                 >
+                  {/* {playerOneDeck.length > 0 ? ( */}
                   <img
-                    key={playerTwoDeck[playerTwoDeck.length - 1]?.code}
+                    key={playerOneDeck[playerOneDeck.length - 1]?.code}
                     src={backOfCard}
                     className="war__card war__card__player-one"
                   ></img>
+                  {/* ) : (
+                    ""
+                  )} */}
                   <p className="war__paragraph">Draw Pile</p>
                 </button>
               </div>
@@ -452,11 +494,15 @@ function War({
                   onClick={checkDiscardOne}
                   className="war__discard-btn war__card-btn war__player-pile"
                 >
-                  <img
-                    key={playerOneDiscard[playerOneDiscard.length - 1]?.code}
-                    src={playerOneDiscard[playerOneDiscard.length - 1]?.image}
-                    className="war__card war__discard__player-one"
-                  ></img>
+                  {playerOneDeck.length > 0 ? (
+                    <img
+                      key={playerOneDiscard[playerOneDiscard.length - 1]?.code}
+                      src={playerOneDiscard[playerOneDiscard.length - 1]?.image}
+                      className="war__card war__discard__player-one"
+                    ></img>
+                  ) : (
+                    ""
+                  )}
                   <p className="war__paragraph">Discard Pile</p>
                 </button>
               </div>
