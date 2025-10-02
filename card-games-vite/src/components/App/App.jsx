@@ -536,7 +536,6 @@ function App() {
     const deltaW = first.width / last.width;
     const deltaH = first.height / last.height;
 
-    // if ((duration === 300)) {
     elm.animate(
       [
         {
@@ -562,10 +561,6 @@ function App() {
       elm.style.setProperty("left", 0 + "px");
     }, duration);
   }
-  // else if (duration === 100) {
-
-  // }
-  // }
 
   const removeSpacesFromName = (name) => {
     return name.replaceAll(" ", "_");

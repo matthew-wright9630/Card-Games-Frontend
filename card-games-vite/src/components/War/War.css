@@ -67,6 +67,25 @@
   width: 85px;
   height: 100%;
   border: 1px #fff solid;
+  position: relative;
+}
+
+/* .war__played-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+} */
+
+.war__player-one-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.war__player-two-card {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .war__ready-btn {
