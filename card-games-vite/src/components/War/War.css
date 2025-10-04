@@ -80,6 +80,10 @@
   height: 115px;
 }
 
+.test {
+  height: 115px;
+}
+
 .war__reset-div {
   display: flex;
   align-items: center;
@@ -103,6 +107,10 @@
   top: 0;
   left: 0;
 } */
+
+.war__contested-card {
+  width: 85px;
+}
 
 .war__player-one-card {
   position: absolute;

@@ -159,8 +159,7 @@ function War({
             playerTwoPlayedCard,
             playerOnePlayedCard,
           ]);
-        }
-        else {
+        } else {
           setPlayerOneDiscard((prev) => [
             ...prev,
             playerTwoPlayedCard,
@@ -191,8 +190,7 @@ function War({
             playerOnePlayedCard,
             playerTwoPlayedCard,
           ]);
-        }
-        else {
+        } else {
           setPlayerTwoDiscard((prev) => [
             ...prev,
             playerOnePlayedCard,
@@ -209,32 +207,43 @@ function War({
     }
   }
 
+  function addToContestedPiles() {
+    const cardOneEl = document.querySelector(".war__player-one-card");
+    const cardTwoEl = document.querySelector(".war__player-two-card");
+    const contestedPileOne = document.querySelector(".war__contested-pile_one");
+    const contestedPileTwo = document.querySelector(".war__contested-pile_two");
+
+    flyToContestedPiles(
+      cardOneEl,
+      cardTwoEl,
+      contestedPileOne,
+      contestedPileTwo,
+      () => {
+        setContestedCards((prev) => [
+          ...prev,
+          playerOnePlayedCard,
+          playerTwoPlayedCard,
+        ]);
+        setPlayerOnePlayedCard(null);
+        setPlayerTwoPlayedCard(null);
+      }
+    );
+  }
+
   function flyContestedCards(num) {
-    if (num === 1) {
-      const contestedDeckOne = document.querySelector(
-        ".war__contested-pile_one"
-      );
-      const contestedDeckTwo = document.querySelector(
-        ".war__contested-pile_two"
-      );
-      const discardEl = document.querySelector(".war__discard__player-one");
-      flyCardToDiscard(contestedDeckOne, contestedDeckTwo, discardEl, () => {
-        // setPlayerOneDiscard((prev) => [...prev, ...contestedCards]);
-        setContestedCards([]);
-      });
-    } else if (num === 2) {
-      const contestedDeckOne = document.querySelector(
-        ".war__contested-pile_one"
-      );
-      const contestedDeckTwo = document.querySelector(
-        ".war__contested-pile_two"
-      );
-      const discardEl = document.querySelector(".war__discard__player-two");
-      flyCardToDiscard(contestedDeckTwo, contestedDeckOne, discardEl, () => {
-        // setPlayerTwoDiscard((prev) => [...prev, ...contestedCards]);
-        setContestedCards([]);
-      });
-    }
+    const contestedDeckOne = document.querySelector(".war__contested-card_one");
+    const contestedDeckTwo = document.querySelector(".war__contested-card_two");
+
+    if (!contestedDeckOne || !contestedDeckTwo) return;
+
+    const discardEl =
+      num === 1
+        ? document.querySelector(".war__discard__player-one")
+        : document.querySelector(".war__discard__player-two");
+
+    flyCardToDiscard(contestedDeckOne, contestedDeckTwo, discardEl, () => {
+      setContestedCards([]);
+    });
   }
 
   function flyCardToDiscard(cardOneEl, cardTwoEl, discardEl, onFinish) {
@@ -275,13 +284,75 @@ function War({
         if (onFinish) onFinish();
       });
 
-    cloneTwo.animate(
-      [
-        { transform: "translate(0,0)" },
-        { transform: `translate(${dxTwo}px, ${dyTwo}px)` },
-      ],
-      { duration: 300 }
-    );
+    cloneTwo
+      .animate(
+        [
+          { transform: "translate(0,0)" },
+          { transform: `translate(${dxTwo}px, ${dyTwo}px)` },
+        ],
+        { duration: 300 }
+      )
+      .finished.then(() => {
+        cloneTwo.remove();
+      });
+  }
+
+  function flyToContestedPiles(
+    cardOneEl,
+    cardTwoEl,
+    contestOne,
+    contestTwo,
+    onFinish
+  ) {
+    const cloneOne = cardOneEl.cloneNode(true);
+    cloneOne.style.position = "absolute";
+    cloneOne.style.top = cardOneEl.offsetTop + "px";
+    cloneOne.style.left = cardOneEl.offsetLeft + "px";
+    cloneOne.style.zIndex = 4;
+    cardOneEl.parentElement.appendChild(cloneOne);
+
+    const cloneTwo = cardTwoEl.cloneNode(true);
+    cloneTwo.style.position = "absolute";
+    cloneTwo.style.top = cardTwoEl.offsetTop + "px";
+    cloneTwo.style.left = cardTwoEl.offsetLeft + "px";
+    cloneTwo.style.zIndex = 3;
+    cardTwoEl.parentElement.appendChild(cloneTwo);
+
+    const cardOneRect = cardOneEl.getBoundingClientRect();
+    const cardTwoRect = cardTwoEl.getBoundingClientRect();
+    const contestOneRect = contestOne.getBoundingClientRect();
+    const contestTwoRect = contestTwo.getBoundingClientRect();
+
+    const dxOne = contestOneRect.left - cardOneRect.left;
+    const dyOne = contestOneRect.top - cardOneRect.top;
+
+    const dxTwo = contestTwoRect.left - cardTwoRect.left;
+    const dyTwo = cardTwoRect.top - cardTwoRect.top;
+
+    cloneOne
+      .animate(
+        [
+          { transform: "translate(0,0)" },
+          { transform: `translate(${dxOne}px, ${dyOne}px)` },
+        ],
+        { duration: 300 }
+      )
+      .finished.then(() => {
+        cloneOne.remove();
+        if (onFinish) onFinish();
+      });
+
+    cloneTwo
+      .animate(
+        [
+          { transform: "translate(0,0)" },
+          { transform: `translate(${dxTwo}px, ${dyTwo}px)` },
+        ],
+        { duration: 300 }
+      )
+      .finished.then(() => {
+        cloneTwo.remove();
+      });
   }
 
   function removeCardFromDeck(playerNumber) {
@@ -312,14 +383,8 @@ function War({
       playerOneCardValue &&
       Number(playerOneCardValue) === Number(playerTwoCardValue)
     ) {
+      addToContestedPiles();
       endRound();
-      setContestedCards([
-        ...contestedCards,
-        playerOnePlayedCard,
-        playerTwoPlayedCard,
-      ]);
-      setPlayerOnePlayedCard(null);
-      setPlayerTwoPlayedCard(null);
     }
   }
 
@@ -411,10 +476,18 @@ function War({
     // console.log(playerOneDiscard);
     // setPlayerOneDeck([]);
     // setPlayerTwoDeck([]);
-    setContestedCards([
-      { image: "https://deckofcardsapi.com/static/img/0S.png", code: "test 1" },
-      { image: "https://deckofcardsapi.com/static/img/0H.png", code: "test 2" },
-    ]);
+    // setContestedCards([
+    //   { image: "https://deckofcardsapi.com/static/img/0S.png", code: "test 1" },
+    //   { image: "https://deckofcardsapi.com/static/img/0H.png", code: "test 2" },
+    // ]);
+    setPlayerOnePlayedCard({
+      image: "https://deckofcardsapi.com/static/img/0S.png",
+      code: "test 1",
+    });
+    setPlayerTwoPlayedCard({
+      image: "https://deckofcardsapi.com/static/img/0H.png",
+      code: "test 2",
+    });
   }
 
   function endGame() {
@@ -480,8 +553,8 @@ function War({
         </div>
         {areCardsDealt ? (
           <div className="war__pile war__play-area">
-            {contestedCards.length !== 0 ? (
-              <div className="war__play-pile war__contested-pile_two war__pile_empty">
+            <div className="war__play-pile war__pile_empty war__contested-pile_two">
+              {contestedCards.length !== 0 ? (
                 <img
                   key={
                     contestedCards[contestedCards.length - 1]?.code ||
@@ -489,12 +562,12 @@ function War({
                   }
                   src={contestedCards[contestedCards.length - 1]?.image}
                   alt={contestedCards[contestedCards.length - 1]?.code}
-                  className="war__card"
+                  className="war__card war__contested-card_two"
                 />
-              </div>
-            ) : (
-              ""
-            )}
+              ) : (
+                ""
+              )}
+            </div>
             <div className="war__play-pile war__play-pile__two war__pile_empty">
               {playerTwoPlayedCard ? (
                 <img
@@ -550,8 +623,8 @@ function War({
                 ""
               )}
             </div>
-            {contestedCards.length !== 0 ? (
-              <div className="war__play-pile war__pile_empty war__contested-pile_one">
+            <div className="war__play-pile war__pile_empty war__contested-pile_one">
+              {contestedCards.length !== 0 ? (
                 <img
                   key={
                     contestedCards[contestedCards.length - 2]?.code ||
@@ -559,12 +632,12 @@ function War({
                   }
                   src={contestedCards[contestedCards.length - 2]?.image}
                   alt={contestedCards[contestedCards.length - 2]?.code}
-                  className="war__card"
+                  className="war__card war__contested-card_one"
                 />
-              </div>
-            ) : (
-              ""
-            )}
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         ) : (
           <div className="war__start-game">
