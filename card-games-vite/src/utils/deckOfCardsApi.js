@@ -1,4 +1,12 @@
-import { request } from "./api";
+// import { request } from "./api";
+
+function checkResponse(res) {
+  return res ? res.json() : Promise.reject(`Error: ${res.status}`);
+}
+
+function request(url, options) {
+  return fetch(url, options).then(checkResponse);
+}
 
 const deckOfCardsUrl = "https://deckofcardsapi.com/api/deck/";
 
@@ -11,9 +19,7 @@ function drawCard(deck_id, numberOfCards) {
 }
 
 function drawFromPile(deck_id, pileName) {
-  return request(
-    `${deckOfCardsUrl}${deck_id}/pile/${pileName}/draw/`
-  );
+  return request(`${deckOfCardsUrl}${deck_id}/pile/${pileName}/draw/`);
 }
 
 function shuffleAllCards(deck_id) {

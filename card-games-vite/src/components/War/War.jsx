@@ -1,11 +1,14 @@
 import "./War.css";
 
 import { backOfCard } from "../../utils/constants";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { drawCard } from "../../utils/deckOfCardsApi";
 import { getCardValue } from "../../utils/war";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
+// import { Client, Room } from "colyseus.js";
+
+// const client = new Client("http://localhost:2567");
 
 function War({
   handleGameIncrement,
@@ -28,6 +31,10 @@ function War({
   setGameWon,
   areCardsDealt,
   setAreCardsDealt,
+  room,
+  setRoom,
+  players,
+  setPlayers,
 }) {
   const [playerOneDeck, setPlayerOneDeck] = useState([]);
   const [playerTwoDeck, setPlayerTwoDeck] = useState([]);
@@ -39,6 +46,9 @@ function War({
   const [playerTwoPlayedCard, setPlayerTwoPlayedCard] = useState({});
   const [cardsAreBeingDrawn, setCardsAreBeingDrawn] = useState(false);
   const [contestedCards, setContestedCards] = useState([]);
+  const [isConnecting, setIsConnecting] = useState(true);
+  // const roomRef = useRef(null);
+  // const [players, setPlayers] = useState([]);
 
   function startWarGame() {
     setGameWon(false);
@@ -474,23 +484,6 @@ function War({
     }
   }, [playerOneDeck, playerTwoDeck, playerOneDiscard, playerTwoDiscard]);
 
-  function test() {
-    setPlayerOneDeck([]);
-    setPlayerTwoDeck([]);
-    // setContestedCards([
-    //   { image: "https://deckofcardsapi.com/static/img/0S.png", code: "test 1" },
-    //   { image: "https://deckofcardsapi.com/static/img/0H.png", code: "test 2" },
-    // ]);
-    // setPlayerOnePlayedCard({
-    //   image: "https://deckofcardsapi.com/static/img/0S.png",
-    //   code: "test 1",
-    // });
-    // setPlayerTwoPlayedCard({
-    //   image: "https://deckofcardsapi.com/static/img/0H.png",
-    //   code: "test 2",
-    // });
-  }
-
   function endGame() {
     setGameIsInPlay(false);
     setPlayerOneDeck([]);
@@ -503,6 +496,24 @@ function War({
     setAreCardsDealt(false);
     closeGameSite();
   }
+
+  // useEffect(() => {
+  //   const req = client.joinOrCreate("my_room", {});
+
+  //   req.then((room) => {
+  //     roomRef.current = room;
+
+  //     setIsConnecting(false);
+
+  //     room.onStateChange((state) => setPlayers(state.players.toJSON()));
+  //   });
+
+  //   return () => {
+  //     // make sure to leave the room when the component is unmounted
+  //     req.then((room) => room.leave());
+  //   };
+  // }, []);
+
 
   const { width, height } = useWindowSize();
 
@@ -521,7 +532,6 @@ function War({
         </button>
         <div className="war__pile war__player-two-pile">
           <h3 className="war__paragraph">Player 2</h3>
-          <button onClick={test}>Test</button>
           {areCardsDealt ? (
             <div className="war__player-area">
               <div>

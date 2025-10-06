@@ -61,6 +61,8 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("No Errors");
   const [gameWon, setGameWon] = useState(false);
   const [areCardsDealt, setAreCardsDealt] = useState(false);
+  const [room, setRoom] = useState(null);
+  const [players, setPlayers] = useState({});
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -814,6 +816,10 @@ function App() {
                     setGameWon={setGameWon}
                     areCardsDealt={areCardsDealt}
                     setAreCardsDealt={setAreCardsDealt}
+                    room={room}
+                    setRoom={setRoom}
+                    players={players}
+                    setPlayers={setPlayers}
                   />
                 }
               ></Route>
