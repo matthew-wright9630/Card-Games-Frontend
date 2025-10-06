@@ -11,7 +11,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@colyseus/schema": "^3.0.62",
+    "colyseus": "^0.16.5",
+    "express": "^5.1.0",
     "mongoose": "^8.7.3",
+    "partycles": "^1.2.6",
     "rdndmb-html5-to-touch": "^8.0.3",
     "react": "^18.3.1",
     "react-confetti": "^6.1.0",

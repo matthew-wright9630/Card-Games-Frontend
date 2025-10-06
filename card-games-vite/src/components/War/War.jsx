@@ -4,6 +4,8 @@ import { backOfCard } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import { drawCard } from "../../utils/deckOfCardsApi";
 import { getCardValue } from "../../utils/war";
+import { useWindowSize } from "react-use";
+import Confetti from "react-confetti";
 
 function War({
   handleGameIncrement,
@@ -13,7 +15,7 @@ function War({
   getCurrentGame,
   isDiscardPileEmpty,
   discardPile,
-  handleDiscardPileClick, //Need to check if this is needed later
+  handleDiscardPileClick,
   animateCardDeal,
   pullCardFromPile, //Need to check if this is needed later
   setDiscardPile,
@@ -77,7 +79,6 @@ function War({
     const playerTwoArray = [];
     drawCard(localStorage.getItem("deck_id"), 52)
       .then((deck) => {
-        console.log(deck);
         for (let i = 1; i <= 52; i++) {
           if (i % 2 === 0) {
             playerTwoArray.push(deck.cards[i - 1]);
@@ -449,7 +450,6 @@ function War({
   }, [playerTwoDeck]);
 
   useEffect(() => {
-    console.log(contestedCards);
     if (!playerOnePlayedCard || !playerTwoPlayedCard) {
       return;
     }
@@ -465,29 +465,30 @@ function War({
 
   useEffect(() => {
     if (playerOneDeck.length === 0 && playerOneDiscard.length === 0) {
-      setGameIsInPlay(false);
+      // setGameIsInPlay(false);
+      setGameWon(true);
     }
     if (playerTwoDeck.length === 0 && playerTwoDiscard.length === 0) {
-      setGameIsInPlay(false);
+      // setGameIsInPlay(false);
+      setGameWon(true);
     }
   }, [playerOneDeck, playerTwoDeck, playerOneDiscard, playerTwoDiscard]);
 
   function test() {
-    // console.log(playerOneDiscard);
-    // setPlayerOneDeck([]);
-    // setPlayerTwoDeck([]);
+    setPlayerOneDeck([]);
+    setPlayerTwoDeck([]);
     // setContestedCards([
     //   { image: "https://deckofcardsapi.com/static/img/0S.png", code: "test 1" },
     //   { image: "https://deckofcardsapi.com/static/img/0H.png", code: "test 2" },
     // ]);
-    setPlayerOnePlayedCard({
-      image: "https://deckofcardsapi.com/static/img/0S.png",
-      code: "test 1",
-    });
-    setPlayerTwoPlayedCard({
-      image: "https://deckofcardsapi.com/static/img/0H.png",
-      code: "test 2",
-    });
+    // setPlayerOnePlayedCard({
+    //   image: "https://deckofcardsapi.com/static/img/0S.png",
+    //   code: "test 1",
+    // });
+    // setPlayerTwoPlayedCard({
+    //   image: "https://deckofcardsapi.com/static/img/0H.png",
+    //   code: "test 2",
+    // });
   }
 
   function endGame() {
@@ -499,11 +500,19 @@ function War({
     setContestedCards([]);
     setPlayerOnePlayedCard({});
     setPlayerTwoPlayedCard({});
+    setAreCardsDealt(false);
     closeGameSite();
   }
 
+  const { width, height } = useWindowSize();
+
   return (
     <div className="war">
+      {gameIsInPlay && gameWon ? (
+        <Confetti width={width - 20} height={height + 150} />
+      ) : (
+        ""
+      )}
       <h2 className="war__title">War</h2>
 
       <div className="war__game-area">
@@ -512,20 +521,16 @@ function War({
         </button>
         <div className="war__pile war__player-two-pile">
           <h3 className="war__paragraph">Player 2</h3>
-          <button onClick={test}>Test</button>
+          {/* <button onClick={test}>Test</button> */}
           {areCardsDealt ? (
             <div className="war__player-area">
               <div>
                 <button className="war__card-btn war__player-pile">
-                  {/* {playerTwoDeck.length > 0 ? ( */}
                   <img
                     key={playerTwoDeck[playerTwoDeck.length - 1]?.code}
                     src={backOfCard}
                     className="war__card war__card__player-two"
                   ></img>
-                  {/* ) : (
-                    ""
-                  )} */}
                   <p className="war__paragraph">Draw Pile</p>
                 </button>
               </div>
@@ -576,7 +581,6 @@ function War({
                   className="war__card war__played-card war__player-two-card"
                 />
               ) : (
-                // <div className="war__pile_empty"></div>
                 ""
               )}
             </div>
@@ -589,7 +593,6 @@ function War({
               >
                 <div className="war__pile__discard">
                   <div
-                    // onClick={discard}
                     className={`war__card-btn ${
                       isDiscardPileEmpty
                         ? "war__pile_empty war__discard-discard_empty"
@@ -619,7 +622,6 @@ function War({
                   className="war__card war__played-card war__player-one-card"
                 />
               ) : (
-                // <div className="war__pile_empty"></div>
                 ""
               )}
             </div>
@@ -644,7 +646,6 @@ function War({
             <div className="war__pile__discard">
               <button
                 type="button"
-                // onClick={discard}
                 className={`war__card-btn ${
                   isDiscardPileEmpty
                     ? "war__discard-discard_empty"
@@ -672,15 +673,11 @@ function War({
                   onClick={drawCards}
                   className="war__card-btn war__player-pile"
                 >
-                  {/* {playerOneDeck.length > 0 ? ( */}
                   <img
                     key={playerOneDeck[playerOneDeck.length - 1]?.code}
                     src={backOfCard}
                     className="war__card war__card__player-one"
                   ></img>
-                  {/* ) : (
-                    ""
-                  )} */}
                   <p className="war__paragraph">Draw Pile</p>
                 </button>
               </div>
