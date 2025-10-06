@@ -465,11 +465,11 @@ function War({
 
   useEffect(() => {
     if (playerOneDeck.length === 0 && playerOneDiscard.length === 0) {
-      // setGameIsInPlay(false);
+      setGameIsInPlay(false);
       setGameWon(true);
     }
     if (playerTwoDeck.length === 0 && playerTwoDiscard.length === 0) {
-      // setGameIsInPlay(false);
+      setGameIsInPlay(false);
       setGameWon(true);
     }
   }, [playerOneDeck, playerTwoDeck, playerOneDiscard, playerTwoDiscard]);
@@ -508,7 +508,7 @@ function War({
 
   return (
     <div className="war">
-      {gameIsInPlay && gameWon ? (
+      {areCardsDealt && gameWon ? (
         <Confetti width={width - 20} height={height + 150} />
       ) : (
         ""
@@ -521,7 +521,7 @@ function War({
         </button>
         <div className="war__pile war__player-two-pile">
           <h3 className="war__paragraph">Player 2</h3>
-          {/* <button onClick={test}>Test</button> */}
+          <button onClick={test}>Test</button>
           {areCardsDealt ? (
             <div className="war__player-area">
               <div>
