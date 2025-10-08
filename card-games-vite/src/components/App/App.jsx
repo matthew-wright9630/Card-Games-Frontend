@@ -375,6 +375,34 @@ function App() {
     }
   };
 
+  async function serverGameStart(numberOfDecks, room) {
+    if (!room) {
+      console.error("serverGameStart called with null room");
+      return;
+    }
+    setGameActive(true);
+    setIsLoading(true);
+
+    const handleDeckCreated = (data) => {
+      try {
+        if (data?.deck_id) {
+          localStorage.setItem("deck_id", data.deck_id);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    room.onMessage("deck_created", handleDeckCreated);
+
+    if (!localStorage.getItem("deck_id")) {
+      room.send("create_deck", { deckCount: numberOfDecks });
+    } else {
+      room.send("shuffle_deck", { deck_id: localStorage.getItem("deck_id") });
+      setIsLoading(false);
+    }
+  }
+
   const getCurrentGame = ({ name, description }) => {
     let gameIsInList = false;
     const gameId = gameInfo?.filter((game) => {
@@ -796,6 +824,7 @@ function App() {
                     incrementGameWon={incrementGameWon}
                     gameActive={gameActive}
                     handleGameStart={handleGameStart}
+                    serverGameStart={serverGameStart}
                     isLoggedIn={isLoggedIn}
                     getCurrentGame={getCurrentGame}
                     hand={hand}
@@ -809,6 +838,7 @@ function App() {
                     onCloseModal={handleCloseModal}
                     closeGameSite={closeGameSite}
                     setIsLoading={setIsLoading}
+                    isLoading={isLoading}
                     setErrorMessage={setErrorMessage}
                     errorMessage={errorMessage}
                     setIsDiscardPileEmpty={setIsDiscardPileEmpty}

@@ -6,15 +6,16 @@ import { drawCard } from "../../utils/deckOfCardsApi";
 import { getCardValue } from "../../utils/war";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
-// import { Client, Room } from "colyseus.js";
+import { Client, Room } from "colyseus.js";
 
-// const client = new Client("http://localhost:2567");
+const client = new Client("http://localhost:2567");
 
 function War({
   handleGameIncrement,
   incrementGameWon,
   gameActive,
   handleGameStart,
+  serverGameStart,
   getCurrentGame,
   isDiscardPileEmpty,
   discardPile,
@@ -47,13 +48,18 @@ function War({
   const [cardsAreBeingDrawn, setCardsAreBeingDrawn] = useState(false);
   const [contestedCards, setContestedCards] = useState([]);
   const [isConnecting, setIsConnecting] = useState(true);
-  // const roomRef = useRef(null);
+  const [isSinglePlayer, setIsSinglePlayer] = useState(true);
+  const [messageFromServer, setMessageFromServer] = useState("");
+
+  const roomRef = useRef(null);
   // const [players, setPlayers] = useState([]);
 
   function startWarGame() {
+    setAreCardsDealt(true);
     setGameWon(false);
-    handleGameStart(1); //Sets the localStorage.getItem("deck_id")
-    dealCards();
+    serverGameStart(1, roomRef.current);
+    console.log(players);
+    // dealCards();
   }
 
   function incrementGame() {
@@ -75,52 +81,86 @@ function War({
   }
 
   function toggleGameStart() {
-    if (areCardsDealt) {
-      setAreCardsDealt(false);
-    } else {
-      startWarGame();
-      setAreCardsDealt(true);
-    }
+    // if (areCardsDealt) {
+    //   setAreCardsDealt(false);
+    // } else {
+    dealCards2();
+    setAreCardsDealt(true);
+    // }
   }
 
-  function dealCards() {
+  // function dealCards() {
+  //   setCardsAreBeingDrawn(false);
+  //   const playerOneArray = [];
+  //   const playerTwoArray = [];
+  //   drawCard(localStorage.getItem("deck_id"), 52)
+  //     .then((deck) => {
+  //       for (let i = 1; i <= 52; i++) {
+  //         if (i % 2 === 0) {
+  //           playerTwoArray.push(deck.cards[i - 1]);
+  //         } else {
+  //           playerOneArray.push(deck.cards[i - 1]);
+  //         }
+  //         setTimeout(function timer() {
+  //           if (i % 2 === 0) {
+  //             animateCardDeal(45, -230, 100);
+  //           } else {
+  //             animateCardDeal(45, 230, 100);
+  //           }
+  //         }, i * 85);
+  //       }
+  //       setPlayerOneDeck(playerOneArray);
+  //       setPlayerTwoDeck(playerTwoArray);
+  //     })
+  //     .then(() => {
+  //       setTimeout(function timer() {
+  //         setGameIsInPlay(true);
+  //       }, 53 * 85);
+  //     })
+  //     .catch((err) => console.error(err));
+  // }
+
+  function dealCards2() {
     setCardsAreBeingDrawn(false);
-    const playerOneArray = [];
-    const playerTwoArray = [];
-    drawCard(localStorage.getItem("deck_id"), 52)
-      .then((deck) => {
-        for (let i = 1; i <= 52; i++) {
-          if (i % 2 === 0) {
-            playerTwoArray.push(deck.cards[i - 1]);
-          } else {
-            playerOneArray.push(deck.cards[i - 1]);
-          }
-          setTimeout(function timer() {
-            if (i % 2 === 0) {
-              animateCardDeal(45, -230, 100);
-            } else {
-              animateCardDeal(45, 230, 100);
-            }
-          }, i * 85);
-        }
-        setPlayerOneDeck(playerOneArray);
-        setPlayerTwoDeck(playerTwoArray);
-      })
-      .then(() => {
-        setTimeout(function timer() {
-          setGameIsInPlay(true);
-        }, 53 * 85);
-      })
-      .catch((err) => console.error(err));
+    roomRef.current.send("deal_cards", {
+      deck_id: localStorage.getItem("deck_id"),
+    });
   }
+
+  async function animateDeal() {
+    const playerOnePileRect = document
+      .querySelector(".war__player-pile_one")
+      .getBoundingClientRect();
+    const playerTwoPileRect = document
+      .querySelector(".war__player-pile_two")
+      .getBoundingClientRect();
+    const cardStackRect = document
+      .querySelector(".game__animation-card")
+      .getBoundingClientRect();
+
+    const dxOne = cardStackRect.left - playerOnePileRect.left;
+    const dyOne = cardStackRect.top - playerOnePileRect.top;
+
+    const dxTwo = cardStackRect.left - playerTwoPileRect.left;
+    const dyTwo = cardStackRect.top - playerTwoPileRect.top;
+
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    for (let i = 0; i < 52; i++) {
+      await wait(85);
+
+      if (i % 2 === 0) {
+        animateCardDeal(dxOne, dyOne, 100);
+      } else {
+        animateCardDeal(dxTwo, dyTwo, 100);
+      }
+    }
+    await wait(100);
+    setGameIsInPlay(true);
+  }
+
 
   function beginRound() {
-    if (!playerOnePlayedCard && !playerTwoPlayedCard) {
-      return;
-    }
     setRoundIsInPlay(true);
-    compareCards();
-    return true;
   }
 
   function endRound() {
@@ -128,6 +168,9 @@ function War({
   }
 
   function drawCards() {
+    if (roundIsInPlay) {
+      return;
+    }
     setCardsAreBeingDrawn(true);
     beginRound();
     playPlayerOne();
@@ -386,16 +429,13 @@ function War({
     const playerTwoCardValue = getCardValue(playerTwoPlayedCard);
     if (Number(playerOneCardValue) > Number(playerTwoCardValue)) {
       addToPlayerOneDiscard();
-      endRound();
     } else if (Number(playerOneCardValue) < Number(playerTwoCardValue)) {
       addToPlayerTwoDiscard();
-      endRound();
     } else if (
       playerOneCardValue &&
       Number(playerOneCardValue) === Number(playerTwoCardValue)
     ) {
       addToContestedPiles();
-      endRound();
     }
   }
 
@@ -468,7 +508,9 @@ function War({
       Object.keys(playerTwoPlayedCard).length !== 0
     ) {
       setTimeout(() => {
-        compareCards();
+        compareCards().then(() => {
+          endRound();
+        });
       }, 1000);
     }
   }, [playerOnePlayedCard, playerTwoPlayedCard]);
@@ -497,23 +539,39 @@ function War({
     closeGameSite();
   }
 
-  // useEffect(() => {
-  //   const req = client.joinOrCreate("my_room", {});
+  useEffect(() => {
+    const req = client.joinOrCreate("war", { isSinglePlayer: isSinglePlayer });
 
-  //   req.then((room) => {
-  //     roomRef.current = room;
+    req.then((room) => {
+      roomRef.current = room;
+      setRoom(roomRef.current);
 
-  //     setIsConnecting(false);
+      setIsConnecting(false);
 
-  //     room.onStateChange((state) => setPlayers(state.players.toJSON()));
-  //   });
+      // room.onStateChange((state) => console.log(state.players));
+      room.onStateChange((state) => setPlayers(state.players.toJSON()));
+      room.onMessage("players_update", (players) => {
+        // console.log("Updated players:", players);
+        setPlayers(players);
+      });
 
-  //   return () => {
-  //     // make sure to leave the room when the component is unmounted
-  //     req.then((room) => room.leave());
-  //   };
-  // }, []);
+      room.onMessage("ready", () => {
+        console.log("Room is ready — starting server game");
+      });
 
+      room.onMessage("cards_dealt", (players) => {
+        console.log(players);
+        animateDeal();
+      });
+    });
+
+    return () => {
+      if (room) {
+        room.removeAllListeners();
+        room.leave();
+      }
+    };
+  }, []);
 
   const { width, height } = useWindowSize();
 
@@ -535,7 +593,7 @@ function War({
           {areCardsDealt ? (
             <div className="war__player-area">
               <div>
-                <button className="war__card-btn war__player-pile">
+                <button className="war__card-btn war__player-pile war__player-pile_two">
                   <img
                     key={playerTwoDeck[playerTwoDeck.length - 1]?.code}
                     src={backOfCard}
@@ -602,13 +660,16 @@ function War({
                 className="war__reset war__card-btn"
               >
                 <div className="war__pile__discard">
-                  <div
+                  {" "}
+                  Deal the cards!
+                  {/* <p className="war__deal-cards">Deal the cards!</p> */}
+                  {/* <div
                     className={`war__card-btn ${
                       isDiscardPileEmpty
                         ? "war__pile_empty war__discard-discard_empty"
                         : "war__pile"
                     }`}
-                  ></div>
+                  ></div> */}
                 </div>
                 <div className="war__card">
                   {isDiscardPileEmpty ? (
@@ -669,8 +730,8 @@ function War({
                 )}
               </button>
             </div>
-            <button onClick={toggleGameStart} className="solitaire__deal-btn">
-              Deal the cards!
+            <button onClick={startWarGame} className="solitaire__deal-btn">
+              Start the war!
             </button>
           </div>
         )}
@@ -681,7 +742,7 @@ function War({
               <div>
                 <button
                   onClick={drawCards}
-                  className="war__card-btn war__player-pile"
+                  className="war__card-btn war__player-pile war__player-pile_one"
                 >
                   <img
                     key={playerOneDeck[playerOneDeck.length - 1]?.code}
