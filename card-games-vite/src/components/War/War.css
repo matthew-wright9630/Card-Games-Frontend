@@ -212,21 +212,21 @@
 @media screen and (max-width: 550px) {
   .war__reset-btn {
     width: 80px;
-    height: 115px;
+    height: 100px;
   }
   .war__game-card {
     width: 80px;
-    height: 115px;
+    height: 100px;
   }
 
   .war__play-pile {
     width: 80px;
-    height: 115px;
+    height: 100px;
   }
 
   .war__contested-card {
     width: 80px;
-    height: 115px;
+    height: 100px;
   }
 
   .war__play-area {
@@ -237,8 +237,33 @@
   .war__player-piles-div {
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100%;
+    /* position: relative; */
   }
+
+  .war__player-piles-div_two {
+    flex-direction: column-reverse;
+  }
+
+  /* .war__play-pile__two,
+  .war__contested-pile_two,
+  .war__play-pile__one,
+  .war__contested-pile_one {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  } */
+/* 
+  .war__play-pile__two,
+  .war__play-pile__one {
+    top: 0%
+  }
+
+  .war__contested-pile_two,
+  .war__contested-pile_one {
+    top: 50%
+  } */
 
   .war__player-pile {
     width: 80px;

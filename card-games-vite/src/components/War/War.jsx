@@ -286,6 +286,8 @@ function War({
     contestTwo,
     onFinish
   ) {
+    const isMobile = window.innerWidth <= 550;
+
     const cloneOne = cardOneEl.cloneNode(true);
     cloneOne.style.position = "absolute";
     cloneOne.style.top = cardOneEl.offsetTop + "px";
@@ -309,7 +311,12 @@ function War({
     const dyOne = contestOneRect.top - cardOneRect.top;
 
     const dxTwo = contestTwoRect.left - cardTwoRect.left;
-    const dyTwo = cardTwoRect.top - cardTwoRect.top;
+    let dyTwo;
+    if (!isMobile) {
+      dyTwo = cardTwoRect.top - cardTwoRect.top;
+    } else {
+      dyTwo = contestTwoRect.top - cardTwoRect.top;
+    }
 
     cloneOne
       .animate(
@@ -401,8 +408,7 @@ function War({
   }, [contestedCards]);
 
   useEffect(() => {
-    if (cardsAreBeingDrawn) {
-      //Animates moving the card from player 1 pile to the play area.
+    if (cardsAreBeingDrawn && roundIsInPlay) {
       const cardEl = document.querySelector(".war__card__player-one");
       const pileEl = document.querySelector(".war__play-pile__one");
       if (cardEl && pileEl) {
@@ -417,7 +423,7 @@ function War({
   }, [playerOneDeck]);
 
   useEffect(() => {
-    if (cardsAreBeingDrawn) {
+    if (cardsAreBeingDrawn && roundIsInPlay) {
       const cardEl = document.querySelector(".war__card__player-two");
       const pileEl = document.querySelector(".war__play-pile__two");
       if (cardEl && pileEl) {
@@ -639,7 +645,7 @@ function War({
           </div>
           {areCardsDealt ? (
             <div className="war__pile war__play-area">
-              <div className="war__player-piles-div">
+              <div className="war__player-piles-div war__player-piles-div_two">
                 <div className="war__play-pile war__pile_empty war__contested-pile_two">
                   {contestedCards.length > 0 ? (
                     <img
