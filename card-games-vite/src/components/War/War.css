@@ -1,10 +1,40 @@
 .war {
-  /* height: 900px */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .war__title {
   text-align: center;
   font-size: 44px;
+  flex-grow: 2;
+}
+
+.war__end-btn {
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
+  width: 98px;
+  height: 50px;
+  border: none;
+  background-color: transparent;
+  color: #f3f3f3;
+  cursor: pointer;
+  transition: 0.3s linear;
+  border: 1px #f3f3f3 solid;
+  border-radius: 18px;
+}
+
+.war__end-btn:hover {
+  opacity: 0.5;
+}
+
+.war__game-won {
+  margin-top: 50px;
+  font-size: 44px;
+  flex-grow: 3;
 }
 
 .war__description-placeholder {
@@ -39,10 +69,21 @@
   height: 100%;
 }
 
+.war__game-card {
+  width: 100px;
+}
+
+.war__player-piles-div {
+  display: flex;
+  width: 100%;
+  /* gap: 100px; */
+  justify-content: space-around;
+}
+
 .war__card-btn {
   padding: 0;
-  width: 85px;
-  height: 115px;
+  width: 100px;
+  height: 150px;
   position: relative;
   cursor: pointer;
   transition: 0.3s linear;
@@ -52,12 +93,14 @@
 
 .war__reset {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   padding: 0;
   font-size: 20px;
   /* font-weight: 700; */
   align-items: center;
-  width: 150px;
+  width: 100%;
+  max-width: 150px;
   border: none;
   background-color: transparent;
   color: #f3f3f3;
@@ -77,12 +120,10 @@
 
 .war__play-area {
   display: flex;
-  gap: 100px;
-  height: 115px;
-}
-
-.test {
-  height: 115px;
+  gap: 80px;
+  height: 150px;
+  width: 100%;
+  justify-content: space-around;
 }
 
 .war__reset-div {
@@ -92,12 +133,12 @@
 
 .war__reset-btn {
   padding: 0;
-  width: 85px;
-  height: 115px;
+  width: 100px;
+  height: 150px;
 }
 
 .war__play-pile {
-  width: 85px;
+  width: 100px;
   height: 100%;
   border: 1px #fff solid;
   position: relative;
@@ -110,7 +151,7 @@
 } */
 
 .war__contested-card {
-  width: 85px;
+  width: 100px;
 }
 
 .war__player-one-card {
@@ -130,15 +171,77 @@
   height: 50%;
   align-self: center;
   cursor: pointer;
-  transition: .3s linear ;
+  transition: 0.3s linear;
 }
 
 .war__ready-btn:hover {
-  opacity: .7;
+  opacity: 0.7;
 }
 
 .war__start-game {
   display: flex;
   align-items: center;
   gap: 30px;
+}
+
+@media screen and (max-width: 795px) {
+  .war__reset-btn {
+    width: 80px;
+  }
+  .war__game-card {
+    width: 80px;
+  }
+
+  .war__play-pile {
+    width: 80px;
+  }
+
+  .war__play-area {
+    gap: 10px;
+  }
+
+  .war__player-piles-div {
+    gap: 25px;
+  }
+
+  .war__contested-card {
+    width: 80px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .war__reset-btn {
+    width: 80px;
+    height: 115px;
+  }
+  .war__game-card {
+    width: 80px;
+    height: 115px;
+  }
+
+  .war__play-pile {
+    width: 80px;
+    height: 115px;
+  }
+
+  .war__contested-card {
+    width: 80px;
+    height: 115px;
+  }
+
+  .war__play-area {
+    height: 225px;
+    align-items: center;
+  }
+
+  .war__player-piles-div {
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
+
+  .war__player-pile {
+    width: 80px;
+    height: 100px;
+  }
 }
