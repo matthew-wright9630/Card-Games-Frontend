@@ -116,15 +116,15 @@ function War({
       .querySelector(".game__animation-card")
       .getBoundingClientRect();
 
-    const dxOne = cardStackRect.left - playerOnePileRect.left;
+    const dxOne = playerOnePileRect.left - cardStackRect.left;
     const dyOne = cardStackRect.top - playerOnePileRect.top;
 
-    const dxTwo = cardStackRect.left - playerTwoPileRect.left;
+    const dxTwo = playerTwoPileRect.left - cardStackRect.left;
     const dyTwo = cardStackRect.top - playerTwoPileRect.top;
 
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     for (let i = 0; i < 52; i++) {
-      await wait(85);
+      await wait(100);
 
       if (i % 2 === 0) {
         animateCardDeal(dxOne, dyOne, 100);
@@ -408,7 +408,7 @@ function War({
   }, [contestedCards]);
 
   useEffect(() => {
-    if (cardsAreBeingDrawn && roundIsInPlay) {
+    if (cardsAreBeingDrawn && roundIsInPlay && !animationInProgress) {
       const cardEl = document.querySelector(".war__card__player-one");
       const pileEl = document.querySelector(".war__play-pile__one");
       if (cardEl && pileEl) {
@@ -423,7 +423,7 @@ function War({
   }, [playerOneDeck]);
 
   useEffect(() => {
-    if (cardsAreBeingDrawn && roundIsInPlay) {
+    if (cardsAreBeingDrawn && roundIsInPlay && !animationInProgress) {
       const cardEl = document.querySelector(".war__card__player-two");
       const pileEl = document.querySelector(".war__play-pile__two");
       if (cardEl && pileEl) {
@@ -486,13 +486,13 @@ function War({
 
       room.onMessage("cards_dealt", ({ player1, player2 }) => {
         animateDeal();
-        if (player1.sessionId === room.sessionId) {
-          setPlayerOneDeck([...player1.cards]);
-          setPlayerTwoDeck([...player2.cards]);
-        } else {
-          setPlayerOneDeck([...player2.cards]);
-          setPlayerTwoDeck([...player1.cards]);
-        }
+          if (player1.sessionId === room.sessionId) {
+            setPlayerOneDeck([...player1.cards]);
+            setPlayerTwoDeck([...player2.cards]);
+          } else {
+            setPlayerOneDeck([...player2.cards]);
+            setPlayerTwoDeck([...player1.cards]);
+          }
       });
 
       room.onMessage("card_drawn", (returnMessage) => {

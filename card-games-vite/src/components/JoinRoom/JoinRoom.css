@@ -1,0 +1,26 @@
+.join-room {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.join-room__btn {
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
+  width: 75%;
+  height: 50px;
+  border: none;
+  background-color: transparent;
+  color: #f3f3f3;
+  cursor: pointer;
+  transition: 0.3s linear;
+  border: 1px #f3f3f3 solid;
+  border-radius: 18px;
+  /* margin: 20px 0; */
+  background: rgba(7, 41, 24)
+}
+
+.join-room__btn:hover {
+    opacity: .5;
+}
