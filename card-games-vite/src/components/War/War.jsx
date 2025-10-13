@@ -17,7 +17,7 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 const WS_URL =
   process.env.NODE_ENV === "production"
     ? "wss://ws.mwcardgames.csproject.org"
-    : "ws://localhost:3001";
+    : "ws://localhost:2567";
 
 const client = new Client(WS_URL);
 
@@ -398,14 +398,13 @@ function War({
 
   function singlePlayerClick() {
     setIsSinglePlayer(true);
-    createOrJoinRoom(true);
+    createRoom(true);
     setNumberOfPlayersDecided(true);
     setIsConnecting(false);
   }
 
   function multiplayerClick() {
     setIsSinglePlayer(false);
-    // createOrJoinRoom(false);
     setIsConnecting(true);
     setNumberOfPlayersDecided(true);
   }
@@ -426,7 +425,7 @@ function War({
     }
   }
 
-  function createOrJoinRoom(gameIsSinglePlayer, password) {
+  async function joinRandomRoom(gameIsSinglePlayer, password) {
     if (joiningRef.current || roomRef.current) {
       console.warn("Trying to join room");
       return;
@@ -434,7 +433,7 @@ function War({
 
     console.log("room being created");
 
-    const req = client.joinOrCreate("war", {
+    const req = await client.join("war", {
       isSinglePlayer: gameIsSinglePlayer,
       password: password,
       userName: currentUser.name,
@@ -510,21 +509,21 @@ function War({
     });
   }
 
-  function createRoom(gameIsSinglePlayer, password) {
+  async function createRoom(gameIsSinglePlayer, password) {
     if (joiningRef.current || roomRef.current) {
       console.warn("Trying to join room");
       return;
     }
+
     console.log("room being created");
-
-    const req = client.create("war", {
-      isSinglePlayer: gameIsSinglePlayer,
-      password: password,
-    });
-
     joiningRef.current = true;
 
-    req.then((room) => {
+    try {
+      const room = await client.create("war", {
+        isSinglePlayer: gameIsSinglePlayer,
+        password: password,
+      });
+
       roomRef.current = room;
       setRoom(room);
 
@@ -547,9 +546,13 @@ function War({
         myIdRef,
         opponentIdRef,
       });
-    });
 
-    room.send("ready");
+      // Send "ready" after the room exists and listeners are attached
+      room.send("ready");
+    } catch (err) {
+      console.error("Failed to create room:", err);
+      joiningRef.current = false;
+    }
   }
 
   function attachListeners(
@@ -1040,7 +1043,7 @@ function War({
             isConnecting={isConnecting}
             singlePlayerClick={singlePlayerClick}
             multiplayerClick={multiplayerClick}
-            createOrJoinRoom={createOrJoinRoom}
+            joinRandomRoom={joinRandomRoom}
             createRoom={createRoom}
             joinGameRoom={joinWarRoom}
             joiningRef={joiningRef}

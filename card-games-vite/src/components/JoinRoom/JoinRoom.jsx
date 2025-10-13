@@ -17,7 +17,7 @@ export default function JoinRoom({
   isConnecting,
   singlePlayerClick,
   multiplayerClick,
-  createOrJoinRoom,
+  joinRandomRoom,
   createRoom,
   joinGameRoom,
   joiningRef,
@@ -50,11 +50,11 @@ export default function JoinRoom({
     }
   };
 
-  const joinRandomRoom = async () => {
+  const findAndJoinRandomRoom = async () => {
     setIsJoining(true);
     setError("");
     try {
-      createOrJoinRoom(false);
+      await joinRandomRoom(false, roomPassword);
       setNumberOfPlayersDecided(true);
     } catch (err) {
       console.error(err);
@@ -69,7 +69,7 @@ export default function JoinRoom({
     setIsJoining(true);
     setError("");
     try {
-      createRoom(false, roomPassword);
+      await createRoom(false, roomPassword);
       setNumberOfPlayersDecided(true);
     } catch (err) {
       console.error(err);
@@ -120,7 +120,7 @@ export default function JoinRoom({
           </button>
           <button
             className="join-room__btn"
-            onClick={joinRandomRoom}
+            onClick={findAndJoinRandomRoom}
             disabled={isJoining}
           >
             Join a random room
