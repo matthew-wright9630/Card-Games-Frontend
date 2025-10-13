@@ -14,7 +14,12 @@ import { Client, Room } from "colyseus.js";
 import JoinRoom from "../JoinRoom/JoinRoom";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
-const client = new Client("http://localhost:2567");
+const WS_URL =
+  process.env.NODE_ENV === "production"
+    ? "wss://api.mwcardgames.csproject.org"
+    : "ws://localhost:3001";
+
+const client = new Client(WS_URL);
 
 function War({
   handleGameIncrement,
