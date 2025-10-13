@@ -2,7 +2,12 @@ import "./JoinRoom.css";
 import { useState } from "react";
 import { Client } from "colyseus.js";
 
-const client = new Client("http://localhost:2567");
+const WS_URL =
+  process.env.NODE_ENV === "production"
+    ? "wss://ws.mwcardgames.csproject.org"
+    : "ws://localhost:3001";
+
+const client = new Client(WS_URL);
 
 export default function JoinRoom({
   setRoom,

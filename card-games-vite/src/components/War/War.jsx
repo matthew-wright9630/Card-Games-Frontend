@@ -16,7 +16,7 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 const WS_URL =
   process.env.NODE_ENV === "production"
-    ? "wss://api.mwcardgames.csproject.org"
+    ? "wss://ws.mwcardgames.csproject.org"
     : "ws://localhost:3001";
 
 const client = new Client(WS_URL);
@@ -610,16 +610,6 @@ function War({
         }, 350);
         setPlayerOneDeck(returnMessage.deck);
       } else {
-        // const cardEl = document.querySelector(".war__card__player-two");
-        // const pileEl = document.querySelector(".war__play-pile__two");
-        // if (cardEl && pileEl) {
-        //   const cardRect = cardEl.getBoundingClientRect();
-        //   const pileRect = pileEl.getBoundingClientRect();
-        //   console.log(cardRect, pileRect);
-        //   const dx = cardRect.left - pileRect.left;
-        //   const dy = cardRect.top - pileRect.top;
-        //   animateCardDeal(dx, dy, 350, ".war__card__player-two");
-        // }
         setOpponentCardDrawn(true);
         setTimeout(() => {
           playCard(returnMessage.card, "Player 2");
