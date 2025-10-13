@@ -185,6 +185,20 @@
   gap: 30px;
 }
 
+.war__how-many-players {
+  display: flex;
+  flex-direction: column;
+}
+
+.war__buttons {
+  display: flex;
+  gap: 5%;
+}
+
+.war__decision-btn {
+  width: 45%;
+}
+
 @media screen and (max-width: 795px) {
   .war__reset-btn {
     width: 80px;

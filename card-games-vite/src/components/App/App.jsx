@@ -42,6 +42,8 @@ import {
 import FeedbackModal from "../FeedbackModal/FeedbackModal";
 import SolitairePopup from "../SolitairePopup/SolitairePopup";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import MultiplayerModal from "../MultiplayerModal/MultiplayerModal";
+// import Lobby from "../Lobby/Lobby";
 
 function App() {
   const [activeModal, setActiveModal] = useState("");
@@ -63,6 +65,8 @@ function App() {
   const [areCardsDealt, setAreCardsDealt] = useState(false);
   const [room, setRoom] = useState(null);
   const [players, setPlayers] = useState({});
+  const [currentRoomId, setCurrentRoomId] = useState(null);
+  const [numPlayers, setNumPlayers] = useState(1);
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -95,6 +99,10 @@ function App() {
     setActiveModal("confirmation-modal");
   };
 
+  const handleMultiplayerClick = () => {
+    setActiveModal("multiplayer-modal");
+  }
+
   const handleCloseModal = () => {
     setActiveModal("");
     setServerError({});
@@ -109,6 +117,7 @@ function App() {
   const isFeedbackModalOpen = activeModal === "feedback-modal";
   const isSolitaireModalOpen = activeModal === "solitaire-modal";
   const isConfirmationModalOpen = activeModal === "confirmation-modal";
+  const isMultiplayerModalOpen = activeModal === "multiplayer-modal"
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
@@ -525,19 +534,6 @@ function App() {
     }
   };
 
-  // const pullCardFromDiscard = (deck) => {
-  //   setIsLoading(true);
-  //   drawFromPile(deck, "discard", 1)
-  //     .then((res) => {
-  //       updateDiscardPile(deck, res.cards[0]);
-  //     })
-  //     .then(() => {
-  //       renderDiscardPile();
-  //     })
-  //     .catch((err) => console.error(err))
-  //     .finally(() => setIsLoading(false));
-  // };
-
   const pullCardFromPile = (deck, pileName, numberOfCards) => {
     setIsLoading(true);
     drawFromPile(deck, pileName, numberOfCards)
@@ -664,6 +660,16 @@ function App() {
 
   const handleSolitaireSubmit = () => {
     setGameWon(true);
+  };
+
+  const handleStartGame = (roomId, players) => {
+    setCurrentRoomId(roomId);
+    setNumPlayers(players);
+  };
+
+  const handleExitGame = () => {
+    setCurrentRoomId(null);
+    setNumPlayers(1);
   };
 
   useEffect(() => {
@@ -861,6 +867,13 @@ function App() {
               handleLogin={handleLogin}
               isLoading={isLoading}
               handleRegistrationClick={handleRegistrationClick}
+              serverError={serverError}
+            />
+            <MultiplayerModal
+              isOpen={isLoginModalOpen}
+              onCloseModal={handleCloseModal}
+              handleLogin={handleLogin}
+              isLoading={isLoading}
               serverError={serverError}
             />
             <EditModal

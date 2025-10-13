@@ -1,33 +1,31 @@
 import "./War.css";
 
 import { backOfCard } from "../../utils/constants";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { drawCard } from "../../utils/deckOfCardsApi";
-import { getCardValue } from "../../utils/war";
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
 import { Client, Room } from "colyseus.js";
+import JoinRoom from "../JoinRoom/JoinRoom";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 const client = new Client("http://localhost:2567");
 
 function War({
   handleGameIncrement,
   incrementGameWon,
-  gameActive,
-  handleGameStart,
   serverGameStart,
   getCurrentGame,
   isDiscardPileEmpty,
-  discardPile,
   handleDiscardPileClick,
   animateCardDeal,
-  pullCardFromPile, //Need to check if this is needed later
   setDiscardPile,
   closeGameSite,
-  setIsLoading,
-  setErrorMessage,
-  errorMessage,
-  setIsDiscardPileEmpty,
   gameWon,
   setGameWon,
   areCardsDealt,
@@ -47,13 +45,15 @@ function War({
   const [playerTwoPlayedCard, setPlayerTwoPlayedCard] = useState({});
   const [cardsAreBeingDrawn, setCardsAreBeingDrawn] = useState(false);
   const [contestedCards, setContestedCards] = useState([]);
-  const [isConnecting, setIsConnecting] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [isSinglePlayer, setIsSinglePlayer] = useState(true);
   const [animationInProgress, setAnimationInProgress] = useState(false);
   const [myId, setMyId] = useState("");
   const [opponentId, setOpponentId] = useState("");
   const [contestedAnimateFor, setContestedAnimateFor] = useState(null);
   const [winner, setWinner] = useState("");
+  const [numberOfPlayersDecided, setNumberOfPlayersDecided] = useState(false);
+  const [opponentCardDrawn, setOpponentCardDrawn] = useState(false);
 
   const contestedCardsRef = useRef([]);
   const contestedOneRef = useRef(null);
@@ -63,6 +63,8 @@ function War({
   const roomRef = useRef(null);
   const myIdRef = useRef("");
   const opponentIdRef = useRef("");
+  const joiningRef = useRef(false);
+  const currentUser = useContext(CurrentUserContext);
 
   function startWarGame() {
     setAreCardsDealt(true);
@@ -143,6 +145,7 @@ function War({
 
   function endRound() {
     setRoundIsInPlay(false);
+    setOpponentCardDrawn(false);
   }
 
   function drawCard(id) {
@@ -355,6 +358,11 @@ function War({
     handleDiscardPileClick();
   }
 
+  // const handleMultiplayerJoin = (multiRoom) => {
+  //   setRoom(multiRoom);
+  //   // setIsMultiplayerActive(false);
+  // };
+
   function getGame() {
     return getCurrentGame({
       name: "War",
@@ -364,7 +372,9 @@ function War({
   }
 
   function endGame() {
-    room.send("end_game");
+    if (room) {
+      room.send("end_game");
+    }
     setGameIsInPlay(false);
     setPlayerOneDeck([]);
     setPlayerTwoDeck([]);
@@ -377,6 +387,291 @@ function War({
     setRoundIsInPlay(false);
     setGameWon(false);
     closeGameSite();
+    setNumberOfPlayersDecided(false);
+    setIsConnecting(false);
+  }
+
+  function singlePlayerClick() {
+    setIsSinglePlayer(true);
+    createOrJoinRoom(true);
+    setNumberOfPlayersDecided(true);
+    setIsConnecting(false);
+  }
+
+  function multiplayerClick() {
+    setIsSinglePlayer(false);
+    // createOrJoinRoom(false);
+    setIsConnecting(true);
+    setNumberOfPlayersDecided(true);
+  }
+
+  function leaveRoom() {
+    setRoom(null);
+    endGame();
+    setIsConnecting(true);
+    if (room) {
+      room.send("end_game");
+    }
+    setNumberOfPlayersDecided(false);
+    if (roomRef.current) {
+      roomRef.current.removeAllListeners();
+      roomRef.current.leave();
+      roomRef.current = null;
+      joiningRef.current = false;
+    }
+  }
+
+  function createOrJoinRoom(gameIsSinglePlayer, password) {
+    if (joiningRef.current || roomRef.current) {
+      console.warn("Trying to join room");
+      return;
+    }
+
+    console.log("room being created");
+
+    const req = client.joinOrCreate("war", {
+      isSinglePlayer: gameIsSinglePlayer,
+      password: password,
+      userName: currentUser.name,
+    });
+
+    joiningRef.current = true;
+
+    req.then((room) => {
+      roomRef.current = room;
+      setRoom(room);
+
+      attachListeners(room, {
+        setPlayers,
+        setIsConnecting,
+        setAreCardsDealt,
+        setGameWon,
+        animateDeal,
+        setPlayerOneDeck,
+        setPlayerTwoDeck,
+        setCardsAreBeingDrawn,
+        playCard,
+        addToPlayerOneDiscard,
+        addToPlayerTwoDiscard,
+        addToContestedPiles,
+        setPlayerOneDiscard,
+        setPlayerTwoDiscard,
+        endGame,
+        myIdRef,
+        opponentIdRef,
+      });
+      room.send("ready");
+    });
+  }
+
+  function joinWarRoom(gameIsSinglePlayer, password, roomId) {
+    if (joiningRef.current || roomRef.current) {
+      console.warn("Trying to join room");
+      return;
+    }
+    console.log("room being created");
+
+    const req = client.joinById(roomId, {
+      isSinglePlayer: gameIsSinglePlayer,
+      password: password,
+    });
+
+    joiningRef.current = true;
+
+    req.then((room) => {
+      roomRef.current = room;
+      setRoom(room);
+
+      attachListeners(room, {
+        setPlayers,
+        setIsConnecting,
+        setAreCardsDealt,
+        setGameWon,
+        animateDeal,
+        setPlayerOneDeck,
+        setPlayerTwoDeck,
+        setCardsAreBeingDrawn,
+        playCard,
+        addToPlayerOneDiscard,
+        addToPlayerTwoDiscard,
+        addToContestedPiles,
+        setPlayerOneDiscard,
+        setPlayerTwoDiscard,
+        endGame,
+        myIdRef,
+        opponentIdRef,
+      });
+      room.send("ready");
+    });
+  }
+
+  function createRoom(gameIsSinglePlayer, password) {
+    if (joiningRef.current || roomRef.current) {
+      console.warn("Trying to join room");
+      return;
+    }
+    console.log("room being created");
+
+    const req = client.create("war", {
+      isSinglePlayer: gameIsSinglePlayer,
+      password: password,
+    });
+
+    joiningRef.current = true;
+
+    req.then((room) => {
+      roomRef.current = room;
+      setRoom(room);
+
+      attachListeners(room, {
+        setPlayers,
+        setIsConnecting,
+        setAreCardsDealt,
+        setGameWon,
+        animateDeal,
+        setPlayerOneDeck,
+        setPlayerTwoDeck,
+        setCardsAreBeingDrawn,
+        playCard,
+        addToPlayerOneDiscard,
+        addToPlayerTwoDiscard,
+        addToContestedPiles,
+        setPlayerOneDiscard,
+        setPlayerTwoDiscard,
+        endGame,
+        myIdRef,
+        opponentIdRef,
+      });
+    });
+
+    room.send("ready");
+  }
+
+  function attachListeners(
+    room,
+    {
+      setPlayers,
+      setIsConnecting,
+      setAreCardsDealt,
+      setGameWon,
+      animateDeal,
+      setPlayerOneDeck,
+      setPlayerTwoDeck,
+      setCardsAreBeingDrawn,
+      playCard,
+      addToPlayerOneDiscard,
+      addToPlayerTwoDiscard,
+      addToContestedPiles,
+      setPlayerOneDiscard,
+      setPlayerTwoDiscard,
+      endGame,
+      myIdRef,
+      opponentIdRef,
+    }
+  ) {
+    room.removeAllListeners();
+    room.onStateChange((state) => setPlayers(state.players.toJSON()));
+
+    room.onMessage("players_update", (players) => {
+      setPlayers(players);
+      console.log(players);
+    });
+
+    room.onMessage("game_ready", () => {
+      setIsConnecting(false);
+    });
+
+    room.onMessage("deck_created", () => {
+      setAreCardsDealt(true);
+      setGameWon(false);
+    });
+
+    room.onMessage("cards_dealt", ({ player1, player2 }) => {
+      animateDeal();
+      if (player1.sessionId === room.sessionId) {
+        setPlayerOneDeck([...player1.cards]);
+        setPlayerTwoDeck([...player2.cards]);
+      } else {
+        setPlayerOneDeck([...player2.cards]);
+        setPlayerTwoDeck([...player1.cards]);
+      }
+    });
+
+    room.onMessage("card_drawn", (returnMessage) => {
+      setCardsAreBeingDrawn(true);
+      if (returnMessage.card.owner === room.sessionId) {
+        setTimeout(() => {
+          playCard(returnMessage.card, "Player 1");
+        }, 350);
+        setPlayerOneDeck(returnMessage.deck);
+      } else {
+        // const cardEl = document.querySelector(".war__card__player-two");
+        // const pileEl = document.querySelector(".war__play-pile__two");
+        // if (cardEl && pileEl) {
+        //   const cardRect = cardEl.getBoundingClientRect();
+        //   const pileRect = pileEl.getBoundingClientRect();
+        //   console.log(cardRect, pileRect);
+        //   const dx = cardRect.left - pileRect.left;
+        //   const dy = cardRect.top - pileRect.top;
+        //   animateCardDeal(dx, dy, 350, ".war__card__player-two");
+        // }
+        setOpponentCardDrawn(true);
+        setTimeout(() => {
+          playCard(returnMessage.card, "Player 2");
+        }, 350);
+        setPlayerTwoDeck(returnMessage.deck);
+      }
+    });
+
+    room.onMessage("battle_resolved", (returnMessage) => {
+      setTimeout(() => {
+        if (
+          JSON.stringify(returnMessage.winner) ===
+          JSON.stringify(myIdRef.current)
+        ) {
+          addToPlayerOneDiscard(returnMessage.deck);
+        } else if (
+          JSON.stringify(returnMessage.winner) ===
+          JSON.stringify(opponentIdRef.current)
+        ) {
+          addToPlayerTwoDiscard(returnMessage.deck);
+        }
+      }, 1000);
+    });
+
+    room.onMessage("battle_contested", (returnMessage) => {
+      setTimeout(() => {
+        addToContestedPiles(returnMessage.deck);
+      }, 1000);
+    });
+
+    room.onMessage("cards_reshuffled", (returnMessage) => {
+      if (
+        JSON.stringify(returnMessage.player) === JSON.stringify(myIdRef.current)
+      ) {
+        setPlayerOneDeck(returnMessage.drawPile);
+        setPlayerOneDiscard(returnMessage.discard);
+      } else if (
+        JSON.stringify(returnMessage.player) ===
+        JSON.stringify(opponentIdRef.current)
+      ) {
+        setPlayerTwoDeck(returnMessage.drawPile);
+        setPlayerTwoDiscard(returnMessage.discard);
+      }
+    });
+
+    room.onMessage("end_game", () => {
+      endGame();
+    });
+
+    room.send("ready");
+
+    return () => {
+      if (room) {
+        room.removeAllListeners();
+        room.leave();
+      }
+    };
   }
 
   useLayoutEffect(() => {
@@ -423,7 +718,7 @@ function War({
   }, [playerOneDeck]);
 
   useEffect(() => {
-    if (cardsAreBeingDrawn && roundIsInPlay && !animationInProgress) {
+    if (cardsAreBeingDrawn && opponentCardDrawn && !animationInProgress) {
       const cardEl = document.querySelector(".war__card__player-two");
       const pileEl = document.querySelector(".war__play-pile__two");
       if (cardEl && pileEl) {
@@ -467,92 +762,12 @@ function War({
   }, [roundIsInPlay]);
 
   useEffect(() => {
-    const req = client.joinOrCreate("war", { isSinglePlayer: isSinglePlayer });
-
-    req.then((room) => {
-      roomRef.current = room;
-      setRoom(roomRef.current);
-
-      setIsConnecting(false);
-
-      room.onStateChange((state) => setPlayers(state.players.toJSON()));
-      room.onMessage("players_update", (players) => {
-        setPlayers(players);
-      });
-
-      room.onMessage("ready", () => {
-        console.log("Room is ready — starting server game");
-      });
-
-      room.onMessage("cards_dealt", ({ player1, player2 }) => {
-        animateDeal();
-          if (player1.sessionId === room.sessionId) {
-            setPlayerOneDeck([...player1.cards]);
-            setPlayerTwoDeck([...player2.cards]);
-          } else {
-            setPlayerOneDeck([...player2.cards]);
-            setPlayerTwoDeck([...player1.cards]);
-          }
-      });
-
-      room.onMessage("card_drawn", (returnMessage) => {
-        setCardsAreBeingDrawn(true);
-        if (returnMessage.card.owner === room.sessionId) {
-          setTimeout(() => {
-            playCard(returnMessage.card, "Player 1");
-          }, 350);
-          setPlayerOneDeck(returnMessage.deck);
-        } else {
-          setTimeout(() => {
-            playCard(returnMessage.card, "Player 2");
-          }, 350);
-          setPlayerTwoDeck(returnMessage.deck);
-        }
-      });
-
-      room.onMessage("battle_resolved", (returnMessage) => {
-        setTimeout(() => {
-          if (
-            JSON.stringify(returnMessage.winner) ===
-            JSON.stringify(myIdRef.current)
-          ) {
-            addToPlayerOneDiscard(returnMessage.deck);
-          } else if (
-            JSON.stringify(returnMessage.winner) ===
-            JSON.stringify(opponentIdRef.current)
-          ) {
-            addToPlayerTwoDiscard(returnMessage.deck);
-          }
-        }, 1000);
-      });
-
-      room.onMessage("battle_contested", (returnMessage) => {
-        setTimeout(() => {
-          addToContestedPiles(returnMessage.deck);
-        }, 1000);
-      });
-
-      room.onMessage("cards_reshuffled", (returnMessage) => {
-        if (
-          JSON.stringify(returnMessage.player) ===
-          JSON.stringify(myIdRef.current)
-        ) {
-          setPlayerOneDeck(returnMessage.drawPile);
-          setPlayerOneDiscard(returnMessage.discard);
-        } else if (
-          JSON.stringify(returnMessage.player) ===
-          JSON.stringify(opponentIdRef.current)
-        ) {
-          setPlayerTwoDeck(returnMessage.drawPile);
-          setPlayerTwoDiscard(returnMessage.discard);
-        }
-      });
-    });
-
     return () => {
-      if (room) {
-        room.removeAllListeners();
-        room.leave();
+      if (roomRef.current) {
+        roomRef.current.removeAllListeners();
+        roomRef.current.leave();
+        roomRef.current = null;
+        joiningRef.current = false;
       }
     };
   }, []);
@@ -576,226 +791,265 @@ function War({
 
   return (
     <div className="war">
-      {areCardsDealt && gameWon ? (
-        <Confetti width={width - 20} height={height + 150} />
-      ) : (
-        ""
-      )}
-      <h2 className="war__title">War</h2>
-      {areCardsDealt ? (
-        <button className="war__end-btn" onClick={endGame}>
-          End Game
-        </button>
-      ) : (
-        ""
-      )}
-      {areCardsDealt && gameWon ? (
-        <div className="war__game-won">{winner} has won!</div>
-      ) : (
-        <div className="war__game-area">
-          <div className="war__pile war__player-two-pile">
-            <h3 className="war__paragraph">
-              {Object.keys(players)
-                .filter((id) => id !== room?.sessionId)
-                .map((id) => players[id].userName)[0] || "Player 2"}
-            </h3>
+      {numberOfPlayersDecided && !isConnecting ? (
+        <>
+          {areCardsDealt && gameWon ? (
+            <Confetti width={width - 20} height={height + 150} />
+          ) : (
+            ""
+          )}
+          <h2 className="war__title">War</h2>
+          {areCardsDealt ? (
+            <>
+              <button className="war__end-btn" onClick={endGame}>
+                End Game
+              </button>
+              <button onClick={leaveRoom} className="war__leave-room">
+                Leave Room
+              </button>
+            </>
+          ) : (
+            ""
+          )}
+          {areCardsDealt && gameWon ? (
+            <div className="war__game-won">{winner} has won!</div>
+          ) : (
+            <div className="war__game-area">
+              <div className="war__pile war__player-two-pile">
+                <h3 className="war__paragraph">
+                  {Object.keys(players)
+                    .filter((id) => id !== room?.sessionId)
+                    .map((id) => players[id].userName)[0] || "Player 2"}
+                </h3>
 
-            {areCardsDealt ? (
-              <div className="war__player-area">
-                <div>
-                  <button
-                    onClick={() => drawCard(opponentId)}
-                    className="war__card-btn war__player-pile war__player-pile_two"
-                  >
-                    <img
-                      key={playerTwoDeck[playerTwoDeck.length - 1]?.code}
-                      src={backOfCard}
-                      className="war__card war__card__player-two"
-                    ></img>
-                    <p className="war__paragraph">Draw Pile</p>
-                  </button>
-                </div>
-                <div>
-                  <div ref={discardTwoRef} className="war__discard__player-two">
-                    <button
-                      onClick={checkDiscardTwo}
-                      className="war__discard-btn war__card-btn war__player-pile"
-                    >
-                      {playerTwoDeck.length > 0 ? (
+                {areCardsDealt ? (
+                  <div className="war__player-area">
+                    <div>
+                      <button
+                        onClick={() => drawCard(opponentId)}
+                        className="war__card-btn war__player-pile war__player-pile_two"
+                      >
                         <img
-                          key={
-                            playerTwoDiscard[playerTwoDiscard.length - 1]?.code
-                          }
-                          src={
-                            playerTwoDiscard[playerTwoDiscard.length - 1]?.image
-                          }
-                          className="war__card"
+                          key={playerTwoDeck[playerTwoDeck.length - 1]?.code}
+                          src={backOfCard}
+                          className="war__card war__card__player-two"
                         ></img>
+                        <p className="war__paragraph">Draw Pile</p>
+                      </button>
+                    </div>
+                    <div>
+                      <div
+                        ref={discardTwoRef}
+                        className="war__discard__player-two"
+                      >
+                        <button
+                          onClick={checkDiscardTwo}
+                          className="war__discard-btn war__card-btn war__player-pile"
+                        >
+                          {playerTwoDeck.length > 0 ? (
+                            <img
+                              key={
+                                playerTwoDiscard[playerTwoDiscard.length - 1]
+                                  ?.code
+                              }
+                              src={
+                                playerTwoDiscard[playerTwoDiscard.length - 1]
+                                  ?.image
+                              }
+                              className="war__card"
+                            ></img>
+                          ) : (
+                            ""
+                          )}
+                          <p className="war__paragraph">Discard Pile</p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              {areCardsDealt ? (
+                <div className="war__pile war__play-area">
+                  <div className="war__player-piles-div war__player-piles-div_two">
+                    <div className="war__play-pile war__pile_empty war__contested-pile_two">
+                      {contestedCards.length > 0 ? (
+                        <img
+                          ref={contestedTwoRef}
+                          key={
+                            contestedCards[contestedCards.length - 1]?.code ||
+                            "empty-two"
+                          }
+                          src={contestedCards[contestedCards.length - 1]?.image}
+                          className="war__card war__contested-card_two"
+                        />
+                      ) : null}
+                    </div>
+                    <div className="war__play-pile war__play-pile__two war__pile_empty">
+                      {playerTwoPlayedCard ? (
+                        <img
+                          src={playerTwoPlayedCard?.image}
+                          alt={playerTwoPlayedCard?.code}
+                          className="war__card war__played-card war__player-two-card"
+                        />
                       ) : (
                         ""
                       )}
-                      <p className="war__paragraph">Discard Pile</p>
+                    </div>
+                  </div>
+                  {gameIsInPlay ? (
+                    ""
+                  ) : (
+                    <button
+                      onClick={toggleGameStart}
+                      className="war__reset war__card-btn"
+                    >
+                      <div className="war__pile__discard">Deal the cards!</div>
+                      <div className="war__card war__game-card">
+                        {isDiscardPileEmpty ? (
+                          <img
+                            src={backOfCard}
+                            alt="Card Back"
+                            className="game__animation-card"
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </button>
+                  )}
+
+                  <div className="war__player-piles-div">
+                    <div className="war__play-pile war__play-pile__one war__pile_empty">
+                      {playerOnePlayedCard ? (
+                        <img
+                          src={playerOnePlayedCard.image}
+                          alt={playerOnePlayedCard.code}
+                          className="war__card war__played-card war__player-one-card"
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div className="war__play-pile war__pile_empty war__contested-pile_one">
+                      {contestedCards.length > 0 ? (
+                        <img
+                          ref={contestedOneRef}
+                          key={
+                            contestedCards[contestedCards.length - 2]?.code ||
+                            "empty-one"
+                          }
+                          src={contestedCards[contestedCards.length - 2]?.image}
+                          className="war__card war__contested-card_one"
+                        />
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="war__start-game">
+                  <div className="war__pile__discard">
+                    <button
+                      type="button"
+                      className={`war__card-btn ${
+                        isDiscardPileEmpty
+                          ? "war__discard-discard_empty"
+                          : "war__pile"
+                      }`}
+                    >
+                      {isDiscardPileEmpty ? (
+                        <img
+                          src={backOfCard}
+                          alt="Card Back"
+                          className="war__card"
+                        />
+                      ) : (
+                        ""
+                      )}
                     </button>
                   </div>
+                  <button
+                    onClick={startWarGame}
+                    className="solitaire__deal-btn"
+                  >
+                    Start the war!
+                  </button>
                 </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          {areCardsDealt ? (
-            <div className="war__pile war__play-area">
-              <div className="war__player-piles-div war__player-piles-div_two">
-                <div className="war__play-pile war__pile_empty war__contested-pile_two">
-                  {contestedCards.length > 0 ? (
-                    <img
-                      ref={contestedTwoRef}
-                      key={
-                        contestedCards[contestedCards.length - 1]?.code ||
-                        "empty-two"
-                      }
-                      src={contestedCards[contestedCards.length - 1]?.image}
-                      className="war__card war__contested-card_two"
-                    />
-                  ) : null}
-                </div>
-                <div className="war__play-pile war__play-pile__two war__pile_empty">
-                  {playerTwoPlayedCard ? (
-                    <img
-                      src={playerTwoPlayedCard?.image}
-                      alt={playerTwoPlayedCard?.code}
-                      className="war__card war__played-card war__player-two-card"
-                    />
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-              {gameIsInPlay ? (
-                ""
-              ) : (
-                <button
-                  onClick={toggleGameStart}
-                  className="war__reset war__card-btn"
-                >
-                  <div className="war__pile__discard">Deal the cards!</div>
-                  <div className="war__card war__game-card">
-                    {isDiscardPileEmpty ? (
-                      <img
-                        src={backOfCard}
-                        alt="Card Back"
-                        className="game__animation-card"
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </button>
               )}
-
-              <div className="war__player-piles-div">
-                <div className="war__play-pile war__play-pile__one war__pile_empty">
-                  {playerOnePlayedCard ? (
-                    <img
-                      src={playerOnePlayedCard.image}
-                      alt={playerOnePlayedCard.code}
-                      className="war__card war__played-card war__player-one-card"
-                    />
-                  ) : (
-                    ""
-                  )}
-                </div>
-                <div className="war__play-pile war__pile_empty war__contested-pile_one">
-                  {contestedCards.length > 0 ? (
-                    <img
-                      ref={contestedOneRef}
-                      key={
-                        contestedCards[contestedCards.length - 2]?.code ||
-                        "empty-one"
-                      }
-                      src={contestedCards[contestedCards.length - 2]?.image}
-                      className="war__card war__contested-card_one"
-                    />
-                  ) : null}
-                </div>
+              <div className="war__pile war__player-one-pile">
+                <h3 className="war__paragraph">
+                  {room && players[room.sessionId]
+                    ? `${players[room.sessionId].userName}`
+                    : "Name"}
+                </h3>
+                {areCardsDealt ? (
+                  <div className="war__player-area">
+                    <div>
+                      <button
+                        onClick={() => drawCard(myId)}
+                        className="war__card-btn war__player-pile war__player-pile_one"
+                      >
+                        <img
+                          key={playerOneDeck[playerOneDeck.length - 1]?.code}
+                          src={backOfCard}
+                          className="war__card war__card__player-one"
+                        ></img>
+                        <p className="war__paragraph">Draw Pile</p>
+                      </button>
+                    </div>
+                    <div>
+                      <div
+                        ref={discardOneRef}
+                        className="war__discard__player-one"
+                      >
+                        <button
+                          onClick={checkDiscardOne}
+                          className="war__discard-btn war__card-btn war__player-pile"
+                        >
+                          {playerOneDeck.length > 0 ? (
+                            <img
+                              key={
+                                playerOneDiscard[playerOneDiscard.length - 1]
+                                  ?.code
+                              }
+                              src={
+                                playerOneDiscard[playerOneDiscard.length - 1]
+                                  ?.image
+                              }
+                              className="war__card"
+                            ></img>
+                          ) : (
+                            ""
+                          )}
+                          <p className="war__paragraph">Discard Pile</p>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
-            </div>
-          ) : (
-            <div className="war__start-game">
-              <div className="war__pile__discard">
-                <button
-                  type="button"
-                  className={`war__card-btn ${
-                    isDiscardPileEmpty
-                      ? "war__discard-discard_empty"
-                      : "war__pile"
-                  }`}
-                >
-                  {isDiscardPileEmpty ? (
-                    <img
-                      src={backOfCard}
-                      alt="Card Back"
-                      className="war__card"
-                    />
-                  ) : (
-                    ""
-                  )}
-                </button>
-              </div>
-              <button onClick={startWarGame} className="solitaire__deal-btn">
-                Start the war!
-              </button>
             </div>
           )}
-          <div className="war__pile war__player-one-pile">
-            <h3 className="war__paragraph">
-              {room && players[room.sessionId]
-                ? `${players[room.sessionId].userName}`
-                : "Name"}
-            </h3>
-            {areCardsDealt ? (
-              <div className="war__player-area">
-                <div>
-                  <button
-                    onClick={() => drawCard(myId)}
-                    className="war__card-btn war__player-pile war__player-pile_one"
-                  >
-                    <img
-                      key={playerOneDeck[playerOneDeck.length - 1]?.code}
-                      src={backOfCard}
-                      className="war__card war__card__player-one"
-                    ></img>
-                    <p className="war__paragraph">Draw Pile</p>
-                  </button>
-                </div>
-                <div>
-                  <div ref={discardOneRef} className="war__discard__player-one">
-                    <button
-                      onClick={checkDiscardOne}
-                      className="war__discard-btn war__card-btn war__player-pile"
-                    >
-                      {playerOneDeck.length > 0 ? (
-                        <img
-                          key={
-                            playerOneDiscard[playerOneDiscard.length - 1]?.code
-                          }
-                          src={
-                            playerOneDiscard[playerOneDiscard.length - 1]?.image
-                          }
-                          className="war__card"
-                        ></img>
-                      ) : (
-                        ""
-                      )}
-                      <p className="war__paragraph">Discard Pile</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
+        </>
+      ) : (
+        <div className="war__how-many-players">
+          {/* {isConnecting ? ( */}
+          <JoinRoom
+            setRoom={setRoom}
+            room={room}
+            setNumberOfPlayersDecided={setNumberOfPlayersDecided}
+            setIsConnecting={setIsConnecting}
+            isConnecting={isConnecting}
+            singlePlayerClick={singlePlayerClick}
+            multiplayerClick={multiplayerClick}
+            createOrJoinRoom={createOrJoinRoom}
+            createRoom={createRoom}
+            joinGameRoom={joinWarRoom}
+            joiningRef={joiningRef}
+          />
         </div>
       )}
     </div>
