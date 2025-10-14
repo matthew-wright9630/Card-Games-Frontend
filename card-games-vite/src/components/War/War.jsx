@@ -39,6 +39,7 @@ function War({
   setRoom,
   players,
   setPlayers,
+  setIsLoading,
 }) {
   const [playerOneDeck, setPlayerOneDeck] = useState([]);
   const [playerTwoDeck, setPlayerTwoDeck] = useState([]);
@@ -59,6 +60,7 @@ function War({
   const [winner, setWinner] = useState("");
   const [numberOfPlayersDecided, setNumberOfPlayersDecided] = useState(false);
   const [opponentCardDrawn, setOpponentCardDrawn] = useState(false);
+  const [multiplayerRoomSelected, setMultiplayerRoomSelected] = useState(false);
 
   const contestedCardsRef = useRef([]);
   const contestedOneRef = useRef(null);
@@ -392,27 +394,32 @@ function War({
     setRoundIsInPlay(false);
     setGameWon(false);
     closeGameSite();
-    setNumberOfPlayersDecided(false);
-    setIsConnecting(false);
   }
 
   function singlePlayerClick() {
     setIsSinglePlayer(true);
-    createRoom(true);
-    setNumberOfPlayersDecided(true);
-    setIsConnecting(false);
+    setIsLoading(true);
+    createRoom(true).then(() => {
+      console.log("test");
+      setNumberOfPlayersDecided(true);
+      setIsConnecting(false);
+      setIsLoading(false);
+    });
   }
 
   function multiplayerClick() {
     setIsSinglePlayer(false);
     setIsConnecting(true);
     setNumberOfPlayersDecided(true);
+    setMultiplayerRoomSelected(true);
   }
 
   function leaveRoom() {
     setRoom(null);
     endGame();
-    // setIsConnecting(true);
+    setNumberOfPlayersDecided(false);
+    setIsConnecting(false);
+    setMultiplayerRoomSelected(false);
     joiningRef.current = null;
     if (room) {
       room.leave();
@@ -425,6 +432,10 @@ function War({
         roomRef.current = null;
       }, 50);
     }
+  }
+
+  function forfeitGame() {
+    room.send("forfeit_game", { sessionId: myId });
   }
 
   async function joinRandomRoom(gameIsSinglePlayer, password) {
@@ -644,13 +655,13 @@ function War({
         ) {
           addToPlayerTwoDiscard(returnMessage.deck);
         }
-      }, 1000);
+      }, 500);
     });
 
     room.onMessage("battle_contested", (returnMessage) => {
       setTimeout(() => {
         addToContestedPiles(returnMessage.deck);
-      }, 1000);
+      }, 500);
     });
 
     room.onMessage("cards_reshuffled", (returnMessage) => {
@@ -665,6 +676,21 @@ function War({
       ) {
         setPlayerTwoDeck(returnMessage.drawPile);
         setPlayerTwoDiscard(returnMessage.discard);
+      }
+    });
+
+    room.onMessage("forfeit", (returnMessage) => {
+      if (
+        JSON.stringify(returnMessage.player) === JSON.stringify(myIdRef.current)
+      ) {
+        setPlayerOneDeck([]);
+        setPlayerOneDiscard([]);
+      } else if (
+        JSON.stringify(returnMessage.player) ===
+        JSON.stringify(opponentIdRef.current)
+      ) {
+        setPlayerTwoDeck([]);
+        setPlayerTwoDiscard([]);
       }
     });
 
@@ -770,6 +796,12 @@ function War({
   }, [roundIsInPlay]);
 
   useEffect(() => {
+    if (room && playerOnePlayedCard && playerTwoPlayedCard) {
+      room.send("resolve_battle");
+    }
+  }, [playerOnePlayedCard, playerTwoPlayedCard]);
+
+  useEffect(() => {
     return () => {
       if (roomRef.current) {
         roomRef.current.removeAllListeners();
@@ -809,9 +841,15 @@ function War({
           <h2 className="war__title">War</h2>
           {areCardsDealt ? (
             <>
-              <button className="war__end-btn" onClick={endGame}>
-                End Game
-              </button>
+              {!gameWon ? (
+                <button className="war__end-btn" onClick={forfeitGame}>
+                  Forfeit Game
+                </button>
+              ) : (
+                <button className="war__end-btn" onClick={endGame}>
+                  End Game
+                </button>
+              )}
               <button onClick={leaveRoom} className="war__leave-room">
                 Leave Room
               </button>
@@ -834,7 +872,7 @@ function War({
                   <div className="war__player-area">
                     <div>
                       <button
-                        onClick={() => drawCard(opponentId)}
+                        // onClick={() => drawCard(opponentId)}
                         className="war__card-btn war__player-pile war__player-pile_two"
                       >
                         <img
@@ -1057,8 +1095,9 @@ function War({
             createRoom={createRoom}
             joinGameRoom={joinWarRoom}
             joiningRef={joiningRef}
-            roomRef={roomRef}
             leaveRoom={leaveRoom}
+            setIsLoading={setIsLoading}
+            multiplayerRoomSelected={multiplayerRoomSelected}
           />
         </div>
       )}
