@@ -21,6 +21,8 @@ export default function JoinRoom({
   createRoom,
   joinGameRoom,
   joiningRef,
+  roomRef,
+  leaveRoom,
 }) {
   const [roomId, setRoomId] = useState("");
   const [error, setError] = useState("");
@@ -31,18 +33,27 @@ export default function JoinRoom({
     // if (!roomId) return;
     setIsJoining(true);
     setError("");
+    console.log(roomId);
+    if (roomId === "") {
+      setError("room ID has not been entered.");
+      setIsJoining(false);
+      return;
+    }
     try {
       await joinGameRoom(false, roomPassword, roomId);
       setNumberOfPlayersDecided(true);
     } catch (err) {
       console.error("Join failed:", err);
       const msg = err?.message?.toLowerCase?.() || "";
-      if (err?.code === 4212 || msg.includes("not found") || !roomId) {
+      if (err.code === 4210 || err?.code === 4212 || msg.includes("no rooms")) {
         setError("Room not found or no longer available.");
+        throw err;
       } else if (err.code === 4211) {
         setError("Incorrect password.");
+        throw err;
       } else {
         setError("Failed to join room. Please try again.");
+        throw err;
       }
     } finally {
       setIsJoining(false);
@@ -59,9 +70,11 @@ export default function JoinRoom({
     } catch (err) {
       console.error(err);
       setError("Failed to join a room. Try again.");
+      throw err;
     } finally {
       setIsJoining(false);
       joiningRef.current = null;
+      console.log("test");
     }
   };
 
@@ -74,6 +87,7 @@ export default function JoinRoom({
     } catch (err) {
       console.error(err);
       setError("Failed to join room. Please check the ID.");
+      throw err;
     } finally {
       setIsJoining(false);
       joiningRef.current = null;
@@ -141,8 +155,9 @@ export default function JoinRoom({
           {error && <p style={{ color: "red" }}>{error}</p>}
           <button
             className="join-room__btn"
-            onClick={() => setIsConnecting(false)}
-            disabled={isJoining}
+            onClick={() => {
+              leaveRoom();
+            }}
           >
             Back to Single Player
           </button>

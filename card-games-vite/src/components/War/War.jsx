@@ -412,16 +412,18 @@ function War({
   function leaveRoom() {
     setRoom(null);
     endGame();
-    setIsConnecting(true);
+    // setIsConnecting(true);
+    joiningRef.current = null;
     if (room) {
-      room.send("end_game");
+      room.leave();
     }
     setNumberOfPlayersDecided(false);
     if (roomRef.current) {
-      roomRef.current.removeAllListeners();
       roomRef.current.leave();
-      roomRef.current = null;
-      joiningRef.current = false;
+      setTimeout(() => {
+        roomRef.current?.removeAllListeners();
+        roomRef.current = null;
+      }, 50);
     }
   }
 
@@ -467,6 +469,7 @@ function War({
     } catch (err) {
       console.error("Failed to create room:", err);
       joiningRef.current = false;
+      throw err;
     }
   }
 
@@ -511,6 +514,7 @@ function War({
     } catch (err) {
       console.error("Failed to create room:", err);
       joiningRef.current = false;
+      throw err;
     }
   }
 
@@ -557,6 +561,7 @@ function War({
     } catch (err) {
       console.error("Failed to create room:", err);
       joiningRef.current = false;
+      throw err;
     }
   }
 
@@ -1052,6 +1057,8 @@ function War({
             createRoom={createRoom}
             joinGameRoom={joinWarRoom}
             joiningRef={joiningRef}
+            roomRef={roomRef}
+            leaveRoom={leaveRoom}
           />
         </div>
       )}
