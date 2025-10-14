@@ -118,13 +118,13 @@ export default function JoinRoom({
           >
             Join specific room
           </button>
-          <button
+          {/* <button
             className="join-room__btn"
             onClick={findAndJoinRandomRoom}
             disabled={isJoining}
           >
             Join a random room
-          </button>
+          </button> */}
           <button
             className="join-room__btn"
             onClick={createNewGame}
