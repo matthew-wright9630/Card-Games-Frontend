@@ -433,15 +433,12 @@ function War({
 
     console.log("room being created");
 
-    const req = await client.joinOrCreate("war", {
-      isSinglePlayer: gameIsSinglePlayer,
-      password: password,
-      userName: currentUser.name,
-    });
+    try {
+      const room = await client.joinOrCreate("war", {
+        isSinglePlayer: gameIsSinglePlayer,
+        password: password,
+      });
 
-    joiningRef.current = true;
-
-    req.then((room) => {
       roomRef.current = room;
       setRoom(room);
 
@@ -464,25 +461,28 @@ function War({
         myIdRef,
         opponentIdRef,
       });
+
+      // Send "ready" after the room exists and listeners are attached
       room.send("ready");
-    });
+    } catch (err) {
+      console.error("Failed to create room:", err);
+      joiningRef.current = false;
+    }
   }
 
-  function joinWarRoom(gameIsSinglePlayer, password, roomId) {
+  async function joinWarRoom(gameIsSinglePlayer, password, roomId) {
     if (joiningRef.current || roomRef.current) {
       console.warn("Trying to join room");
       return;
     }
     console.log("room being created");
 
-    const req = client.joinById(roomId, {
-      isSinglePlayer: gameIsSinglePlayer,
-      password: password,
-    });
+    try {
+      const room = await client.join("war", {
+        isSinglePlayer: gameIsSinglePlayer,
+        password: password,
+      });
 
-    joiningRef.current = true;
-
-    req.then((room) => {
       roomRef.current = room;
       setRoom(room);
 
@@ -505,8 +505,13 @@ function War({
         myIdRef,
         opponentIdRef,
       });
+
+      // Send "ready" after the room exists and listeners are attached
       room.send("ready");
-    });
+    } catch (err) {
+      console.error("Failed to create room:", err);
+      joiningRef.current = false;
+    }
   }
 
   async function createRoom(gameIsSinglePlayer, password) {
