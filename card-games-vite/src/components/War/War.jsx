@@ -433,7 +433,7 @@ function War({
 
     console.log("room being created");
 
-    const req = await client.join("war", {
+    const req = await client.joinOrCreate("war", {
       isSinglePlayer: gameIsSinglePlayer,
       password: password,
       userName: currentUser.name,
