@@ -40,6 +40,7 @@ function War({
   players,
   setPlayers,
   setIsLoading,
+  setPreloaderText,
 }) {
   const [playerOneDeck, setPlayerOneDeck] = useState([]);
   const [playerTwoDeck, setPlayerTwoDeck] = useState([]);
@@ -400,7 +401,6 @@ function War({
     setIsSinglePlayer(true);
     setIsLoading(true);
     createRoom(true).then(() => {
-      console.log("test");
       setNumberOfPlayersDecided(true);
       setIsConnecting(false);
       setIsLoading(false);
@@ -414,7 +414,12 @@ function War({
     setMultiplayerRoomSelected(true);
   }
 
+  function informServerOfGameLeave() {
+    room.send("leave_room");
+  }
+
   function leaveRoom() {
+    // room.send("leave_room");
     setRoom(null);
     endGame();
     setNumberOfPlayersDecided(false);
@@ -443,8 +448,6 @@ function War({
       console.warn("Trying to join room");
       return;
     }
-
-    console.log("room being created");
 
     try {
       const room = await client.joinOrCreate("war", {
@@ -489,7 +492,6 @@ function War({
       console.warn("Trying to join room");
       return;
     }
-    console.log("room being created");
 
     try {
       const room = await client.join("war", {
@@ -535,7 +537,6 @@ function War({
       return;
     }
 
-    console.log("room being created");
     joiningRef.current = true;
 
     try {
@@ -603,11 +604,16 @@ function War({
 
     room.onMessage("players_update", (players) => {
       setPlayers(players);
-      console.log(players);
+    });
+
+    room.onMessage("searching_for_players", () => {
+      setPreloaderText("Searching for another player...");
     });
 
     room.onMessage("game_ready", () => {
       setIsConnecting(false);
+      setIsLoading(false);
+      setPreloaderText("");
     });
 
     room.onMessage("deck_created", () => {
@@ -696,6 +702,11 @@ function War({
 
     room.onMessage("end_game", () => {
       endGame();
+    });
+
+    room.onMessage("room_closed", () => {
+      endGame();
+      leaveRoom();
     });
 
     room.send("ready");
@@ -850,7 +861,7 @@ function War({
                   End Game
                 </button>
               )}
-              <button onClick={leaveRoom} className="war__leave-room">
+              <button onClick={informServerOfGameLeave} className="war__leave-room">
                 Leave Room
               </button>
             </>
@@ -862,7 +873,7 @@ function War({
           ) : (
             <div className="war__game-area">
               <div className="war__pile war__player-two-pile">
-                <h3 className="war__paragraph">
+                <h3 className="war__user-name">
                   {Object.keys(players)
                     .filter((id) => id !== room?.sessionId)
                     .map((id) => players[id].userName)[0] || "Player 2"}
@@ -995,16 +1006,17 @@ function War({
                 </div>
               ) : (
                 <div className="war__start-game">
-                  <div className="war__pile__discard">
-                    <button
+                  <div className="">
+                    {/* <button
                       type="button"
                       className={`war__card-btn ${
                         isDiscardPileEmpty
                           ? "war__discard-discard_empty"
                           : "war__pile"
                       }`}
-                    >
-                      {isDiscardPileEmpty ? (
+                    ></button> */}
+                    <button onClick={startWarGame} className="war__deal-btn">
+                      {/* {isDiscardPileEmpty ? (
                         <img
                           src={backOfCard}
                           alt="Card Back"
@@ -1012,19 +1024,14 @@ function War({
                         />
                       ) : (
                         ""
-                      )}
+                      )} */}
+                      Start the war!
                     </button>
                   </div>
-                  <button
-                    onClick={startWarGame}
-                    className="solitaire__deal-btn"
-                  >
-                    Start the war!
-                  </button>
                 </div>
               )}
               <div className="war__pile war__player-one-pile">
-                <h3 className="war__paragraph">
+                <h3 className="war__user-name">
                   {room && players[room.sessionId]
                     ? `${players[room.sessionId].userName}`
                     : "Name"}
@@ -1095,9 +1102,10 @@ function War({
             createRoom={createRoom}
             joinGameRoom={joinWarRoom}
             joiningRef={joiningRef}
-            leaveRoom={leaveRoom}
+            informServerOfGameLeave={informServerOfGameLeave}
             setIsLoading={setIsLoading}
             multiplayerRoomSelected={multiplayerRoomSelected}
+            setPreloaderText={setPreloaderText}
           />
         </div>
       )}

@@ -172,7 +172,7 @@ function Demo({
               })}
             </div>
             <div className="demo__hand-size">{`Hand Size: ${hand.length}/${handLimit}`}</div>
-            {isLoading ? <Preloader /> : ""}
+            
           </div>
         ) : (
           ""

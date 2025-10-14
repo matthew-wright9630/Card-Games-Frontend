@@ -43,6 +43,7 @@ import FeedbackModal from "../FeedbackModal/FeedbackModal";
 import SolitairePopup from "../SolitairePopup/SolitairePopup";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import MultiplayerModal from "../MultiplayerModal/MultiplayerModal";
+import Preloader from "../Preloader/Preloader";
 // import Lobby from "../Lobby/Lobby";
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
   const [players, setPlayers] = useState({});
   const [currentRoomId, setCurrentRoomId] = useState(null);
   const [numPlayers, setNumPlayers] = useState(1);
+  const [preloaderText, setPreloaderText] = useState("");
 
   const handleEditProfileClick = () => {
     setActiveModal("edit-profile-modal");
@@ -101,7 +103,7 @@ function App() {
 
   const handleMultiplayerClick = () => {
     setActiveModal("multiplayer-modal");
-  }
+  };
 
   const handleCloseModal = () => {
     setActiveModal("");
@@ -117,7 +119,7 @@ function App() {
   const isFeedbackModalOpen = activeModal === "feedback-modal";
   const isSolitaireModalOpen = activeModal === "solitaire-modal";
   const isConfirmationModalOpen = activeModal === "confirmation-modal";
-  const isMultiplayerModalOpen = activeModal === "multiplayer-modal"
+  const isMultiplayerModalOpen = activeModal === "multiplayer-modal";
 
   const handleLogin = ({ email, password }, resetForm) => {
     if (!email || !password) {
@@ -605,13 +607,6 @@ function App() {
       .catch((err) => console.error(err));
   };
 
-  // const addCard = (deck, pileName, card) => {
-  //   const name = removeSpacesFromName(pileName);
-  //   addCardsToPiles(deck, name, card.code)
-  //     .then(() => {})
-  //     .catch((err) => console.error(err));
-  // };
-
   const handleDiscard = (discardedCard) => {
     setHand((cards) => {
       return cards.filter((card) => {
@@ -734,6 +729,7 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
+        {isLoading ? <Preloader text={preloaderText} /> : ""}
         <DndProvider options={HTML5toTouch}>
           <Preview generator={generateCardPreview} />
           <Header
@@ -856,6 +852,7 @@ function App() {
                     setRoom={setRoom}
                     players={players}
                     setPlayers={setPlayers}
+                    setPreloaderText={setPreloaderText}
                   />
                 }
               ></Route>

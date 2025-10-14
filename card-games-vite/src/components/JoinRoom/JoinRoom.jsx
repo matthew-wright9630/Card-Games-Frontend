@@ -18,9 +18,10 @@ export default function JoinRoom({
   createRoom,
   joinGameRoom,
   joiningRef,
-  leaveRoom,
+  informServerOfGameLeave,
   setIsLoading,
   multiplayerRoomSelected,
+  setPreloaderText,
 }) {
   const [roomId, setRoomId] = useState("");
   const [error, setError] = useState("");
@@ -30,6 +31,7 @@ export default function JoinRoom({
   const joinRoomById = async () => {
     // if (!roomId) return;
     setIsLoading(true);
+    setPreloaderText("Joining game...");
     setIsJoining(true);
     setError("");
     if (roomId === "") {
@@ -56,12 +58,13 @@ export default function JoinRoom({
     } finally {
       setIsJoining(false);
       joiningRef.current = null;
-      setIsLoading(false);
+      //   setIsLoading(false);
     }
   };
 
   const findAndJoinRandomRoom = async () => {
     setIsLoading(true);
+    setPreloaderText("Searching for a game...");
     setIsJoining(true);
     setError("");
     try {
@@ -74,12 +77,13 @@ export default function JoinRoom({
     } finally {
       setIsJoining(false);
       joiningRef.current = null;
-      setIsLoading(false);
+      //   setIsLoading(false);
     }
   };
 
   const createNewGame = async () => {
     setIsLoading(true);
+    setPreloaderText("Creating a new game...");
     setIsJoining(true);
     setError("");
     try {
@@ -92,24 +96,27 @@ export default function JoinRoom({
     } finally {
       setIsJoining(false);
       joiningRef.current = null;
-      setIsLoading(false);
+      if (room) {
+        setPreloaderText("Searching for other players...");
+      }
+      //   setIsLoading(false);
     }
   };
 
   return (
     <div className="join-room">
-      "How many players do you want to play with?"
+      How many players do you want to play with?
       {!multiplayerRoomSelected ? (
-        <div className="war__buttons">
+        <div className="join-room__buttons">
           <button
             onClick={singlePlayerClick}
-            className="war__game-btn war__decision-btn"
+            className="join-room__btn join-room__decision-btn"
           >
             Single Player
           </button>
           <button
             onClick={multiplayerClick}
-            className="war__game-btn war__decision-btn"
+            className="join-room__btn join-room__decision-btn"
           >
             Multiplayer
           </button>
@@ -118,9 +125,13 @@ export default function JoinRoom({
         <>
           <h2 className="join-room__header">Multiplayer Lobby</h2>
           <div className="join-room__room-id">
-            <p className="join-room__paragraph">
-              Current room id: {room ? room.roomId : ""}
-            </p>
+            {room ? (
+              <p className="join-room__paragraph">
+                Current room id: {room ? room.roomId : ""}
+              </p>
+            ) : (
+              ""
+            )}
           </div>
           <input
             type="text"
@@ -159,10 +170,10 @@ export default function JoinRoom({
           <button
             className="join-room__btn"
             onClick={() => {
-              leaveRoom();
+              informServerOfGameLeave();
             }}
           >
-            Back to Single Player
+            Back to Menu
           </button>
         </>
       )}

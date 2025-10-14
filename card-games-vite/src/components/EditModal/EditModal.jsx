@@ -22,7 +22,7 @@ function EditModal({
 
   return (
     <div>
-      {isLoading ? <Preloader></Preloader> : ""}
+      {/* {isLoading ? <Preloader></Preloader> : ""} */}
       <ModalWithForm
         title="Edit Profile"
         onClose={onCloseModal}
