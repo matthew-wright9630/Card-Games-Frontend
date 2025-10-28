@@ -866,13 +866,13 @@ function App() {
               handleRegistrationClick={handleRegistrationClick}
               serverError={serverError}
             />
-            <MultiplayerModal
+            {/* <MultiplayerModal
               isOpen={isLoginModalOpen}
               onCloseModal={handleCloseModal}
               handleLogin={handleLogin}
               isLoading={isLoading}
               serverError={serverError}
-            />
+            /> */}
             <EditModal
               isOpen={isEditProfileModalOpen}
               onCloseModal={handleCloseModal}
